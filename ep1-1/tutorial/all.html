@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>判讀一個你打不開的檔案格式｜Claude Code 初學者教學 EP1-1</title>
+<style>
+  :root{
+    --ink:#1b2733; --soft:#5a6b7b; --faint:#8b98a5;
+    --bg:#ffffff; --panel:#f7f8fa; --border:#e4e8ee;
+    --accent:#2563eb; --accent-soft:#eff4ff;
+    --maxw:920px; --radius:12px;
+    --green:#16a34a; --blue:#2563eb; --purple:#9333ea; --amber:#d97706; --red:#dc2626;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","Noto Sans TC","Microsoft JhengHei","PingFang TC",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.85; font-size:16.5px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px 120px}
+  header.hero{max-width:var(--maxw); margin:0 auto; padding:54px 22px 26px}
+  .eyebrow{color:var(--accent); font-weight:700; font-size:13px; letter-spacing:.08em; text-transform:uppercase; margin:0 0 10px}
+  h1{font-size:33px; line-height:1.3; margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+  .subtitle{font-size:18px; color:var(--soft); margin:0 0 26px}
+  .meta-card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:18px 22px; font-size:15px}
+  .meta-card p{margin:6px 0}
+  .meta-card b{color:var(--ink)}
+  h2{font-size:25px; margin:64px 0 8px; padding-top:16px; border-top:2px solid var(--border); line-height:1.35; text-wrap:balance}
+  h2 .pt{color:var(--accent); font-size:15px; display:block; font-weight:700; letter-spacing:.05em; margin-bottom:2px}
+  h3{font-size:19px; margin:38px 0 10px; text-wrap:balance}
+  h4{font-size:16px; margin:24px 0 6px; color:var(--ink)}
+  p{margin:12px 0}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+  code{background:var(--panel); border:1px solid var(--border); border-radius:5px; padding:1px 6px; font-family:"Cascadia Code",Consolas,Menlo,monospace; font-size:.86em}
+  pre{background:#0f1622; color:#e6edf3; border-radius:10px; padding:16px 18px; overflow-x:auto; font-size:13.5px; line-height:1.6}
+  pre code{background:none; border:none; color:inherit; padding:0}
+  ul,ol{padding-left:22px}
+  li{margin:7px 0}
+  blockquote{margin:16px 0; padding:10px 18px; border-left:4px solid var(--accent); background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink)}
+
+  nav.toc{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:20px 26px; margin:30px 0}
+  nav.toc h2{border:none; margin:0 0 10px; padding:0; font-size:18px}
+  nav.toc ol{margin:6px 0 0; columns:2; column-gap:34px}
+  nav.toc a{color:var(--ink)}
+  nav.toc blockquote a{color:var(--accent); text-decoration:underline; font-weight:500}
+  @media(max-width:620px){nav.toc ol{columns:1}}
+
+  .msg{padding:11px 16px; margin:14px 0; border-radius:5px; font-size:15.5px}
+  .msg .who{font-weight:700; margin-right:4px}
+  .msg.g{background:rgba(34,197,94,.10); border-left:4px solid var(--green)}
+  .msg.b{background:rgba(59,130,246,.10); border-left:4px solid var(--blue)}
+  .msg.p{background:rgba(168,85,247,.12); border-left:4px solid var(--purple)}
+  .msg.y{background:rgba(245,158,11,.13); border-left:4px solid var(--amber)}
+  .msg.r{background:rgba(239,68,68,.10); border-left:4px solid var(--red)}
+  .ai{margin:10px 0 22px; padding-left:6px}
+  .ai .tag{display:inline-block; font-size:12px; font-weight:700; color:var(--accent); background:var(--accent-soft); border-radius:5px; padding:1px 8px; margin-right:6px}
+
+  .tblwrap{overflow-x:auto; margin:18px 0}
+  table{border-collapse:collapse; width:100%; font-size:14.5px}
+  .tblwrap table{margin:0}
+  th,td{border:1px solid var(--border); padding:9px 12px; text-align:left; vertical-align:top}
+  th{background:var(--panel); font-weight:700}
+  td code{font-size:.9em}
+  td.num-cell{font-variant-numeric:tabular-nums; white-space:nowrap}
+
+  .callout{background:#fffbeb; border:1px solid #fde68a; border-left:4px solid var(--amber); border-radius:0 8px 8px 0; padding:12px 16px; margin:18px 0; font-size:15px}
+  .note{background:var(--accent-soft); border:1px solid #c7dbff; border-radius:8px; padding:12px 16px; margin:18px 0; font-size:15px}
+  .danger{background:#fef2f2; border:1px solid #fecaca; border-left:4px solid var(--red); border-radius:0 8px 8px 0; padding:12px 16px; margin:18px 0; font-size:15px}
+  .foot{max-width:var(--maxw); margin:0 auto; padding:30px 22px; color:var(--faint); font-size:13px; border-top:1px solid var(--border)}
+  .lesson{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:4px 20px 14px; margin:16px 0}
+  .lesson h4{color:var(--accent)}
+  .seg{scroll-margin-top:16px}
+  .num{display:inline-block; min-width:30px; height:30px; line-height:30px; text-align:center; background:var(--accent); color:#fff; border-radius:8px; font-weight:700; font-size:15px; margin-right:8px}
+
+  .video-box{margin:28px 0 6px}
+  .video-box .vlabel{font-size:14px; color:var(--accent); font-weight:700; letter-spacing:.04em; margin:0 0 10px}
+  .video-wrap{position:relative; width:100%; aspect-ratio:16/9; border-radius:var(--radius); overflow:hidden; box-shadow:0 8px 30px rgba(16,24,40,.14); background:#0f1622}
+  .video-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+  .video-ph{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#8b98a5; text-align:center; padding:24px}
+  .video-ph .big{font-size:34px}
+  .video-ph .t{color:#e6edf3; font-weight:600; font-size:16px}
+  .video-ph .s{font-size:13.5px; max-width:46ch; line-height:1.7}
+  .video-box .vcap{font-size:13.5px; color:var(--soft); margin:10px 0 0}
+
+  .hexfig{background:#0f1622; border-radius:10px; padding:16px 18px; margin:18px 0; overflow-x:auto}
+  .hexfig table{width:auto; min-width:100%; border:none; font-family:"Cascadia Code",Consolas,Menlo,monospace; font-size:13px; color:#e6edf3}
+  .hexfig th,.hexfig td{border:none; border-bottom:1px solid #223; padding:5px 12px 5px 0; background:none; color:#e6edf3; white-space:nowrap}
+  .hexfig th{color:#8b98a5; font-weight:600; font-size:12px; letter-spacing:.04em}
+  .hexfig td.off{color:#8b98a5; font-variant-numeric:tabular-nums}
+  .hexfig td.hit{color:#7ee787; font-weight:700}
+  .hexfig tr.mark td{background:rgba(126,231,135,.08)}
+
+  .grade{display:grid; gap:10px; margin:18px 0}
+  .grade .row{display:flex; gap:12px; align-items:flex-start; border:1px solid var(--border); border-radius:9px; padding:11px 14px; background:var(--panel)}
+  .grade .lv{flex:none; font-size:12px; font-weight:700; border-radius:999px; padding:2px 10px; margin-top:3px; white-space:nowrap}
+  .grade .lv.ok{background:rgba(22,163,74,.14); color:#15803d}
+  .grade .lv.mid{background:rgba(217,119,6,.16); color:#b45309}
+  .grade .lv.no{background:rgba(220,38,38,.12); color:#b91c1c}
+  .grade .txt{font-size:14.5px}
+  .grade .txt b{display:block; margin-bottom:2px}
+
+  .statgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:20px 0}
+  .stat{border:1px solid var(--border); border-radius:10px; padding:14px 16px; background:var(--panel)}
+  .stat .v{font-size:26px; font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums; line-height:1.2}
+  .stat .k{font-size:13px; color:var(--soft); margin-top:3px}
+
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+  /* METHOD:CSS:START */
+  .mgroup{margin:14px 0 20px}
+  .mglabel{font-size:11.5px; font-weight:700; letter-spacing:.08em; color:var(--faint);
+    text-transform:uppercase; margin:0 0 7px}
+  .mbox{border:1px solid var(--border); border-radius:10px; background:#fbfcfe;
+    margin:7px 0; scroll-margin-top:16px}
+  .mhead{display:flex; flex-wrap:wrap; align-items:center; gap:7px 10px; padding:9px 14px}
+  .mno{flex:none; font-size:11.5px; font-weight:700; color:var(--accent);
+    background:var(--accent-soft); border-radius:6px; padding:2px 8px;
+    font-variant-numeric:tabular-nums}
+  .mtt{flex:1 1 240px; font-size:14.5px; font-weight:600; line-height:1.5}
+  .mtabs{flex:none; display:flex; flex-wrap:wrap; gap:6px}
+  .mtab{font-family:inherit; font-size:13px; line-height:1.7; color:var(--accent);
+    background:#fff; border:1px solid var(--border); border-radius:999px;
+    padding:1px 12px; cursor:pointer; transition:background .12s,border-color .12s,color .12s}
+  .mtab:hover{border-color:var(--accent); background:var(--accent-soft)}
+  .mtab[aria-expanded="true"]{background:var(--accent); border-color:var(--accent); color:#fff}
+  .mtab:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .mpane{border-top:1px solid var(--border); padding:11px 16px 14px; font-size:14.5px;
+    line-height:1.8}
+  .mpane>*:first-child{margin-top:0}
+  .mpane>*:last-child{margin-bottom:0}
+  .mpane p{margin:9px 0}
+  .mpane pre{font-size:12.5px; padding:12px 14px; margin:10px 0}
+  .mpane table{font-size:13px}
+  .mpane th,.mpane td{padding:6px 9px}
+  .mpane ol{margin:9px 0; padding-left:20px}
+  /* 列印時四欄全部攤開，並補上欄名——螢幕上是靠按鈕才知道在看哪一欄 */
+  @media print{
+    .mpane[hidden]{display:block}
+    .mpane::before{content:attr(data-label); display:block; font-size:11.5px;
+      font-weight:700; color:var(--accent); letter-spacing:.06em; margin:0 0 4px}
+    .mtabs{display:none}
+  }
+  /* METHOD:CSS:END */
+
+
+/* ===== 網站版切頁後才需要的東西（split_tutorial.py 產生） ===== */
+.tbar{position:sticky; top:0; z-index:99; background:rgba(255,255,255,.94);
+  backdrop-filter:blur(6px); border-bottom:1px solid var(--border); font-size:14px}
+.tbar .in{max-width:var(--maxw); margin:0 auto; padding:9px 22px;
+  display:flex; flex-wrap:wrap; gap:6px 16px; align-items:baseline}
+.tbar .sep{color:var(--faint)}
+.tbar .here{color:var(--soft)}
+
+/* 每一頁的第一個 h2 是頁面標題，不需要原本那條「跟上一段分隔」的上框線 */
+.wrap>h2:first-child{margin-top:20px; padding-top:0; border-top:none}
+
+/* 目錄頁的影片只是導覽，不要吃掉整個第一屏 */
+.hubvid{margin:30px 0 0}
+.hubvid .video-box{max-width:640px; margin:0}
+
+.plist{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:14px; margin:26px 0 0}
+.pcard{display:flex; flex-direction:column; border:1px solid var(--border);
+  border-radius:var(--radius); padding:18px 20px; background:var(--panel); color:var(--ink);
+  transition:border-color .15s, background .15s, box-shadow .15s, transform .15s}
+.pcard:hover{border-color:var(--accent); background:var(--accent-soft);
+  box-shadow:0 8px 26px rgba(16,24,40,.09); text-decoration:none; transform:translateY(-1px)}
+.pcard .n{font-size:12px; font-weight:700; color:var(--accent); letter-spacing:.06em}
+.pcard .t{font-size:18.5px; font-weight:700; margin:3px 0 7px; line-height:1.4}
+.pcard .d{font-size:14.5px; color:var(--soft); line-height:1.7; margin:0}
+.pcard .m{margin-top:auto; padding-top:11px; font-size:12.5px; color:var(--faint)}
+
+.pnav{display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between;
+  margin:56px 0 0; padding-top:20px; border-top:2px solid var(--border)}
+.pnav a{display:block; max-width:47%; font-size:14.5px}
+.pnav a.next{text-align:right; margin-left:auto}
+.pnav .k{display:block; font-size:12px; color:var(--faint); font-weight:700; letter-spacing:.05em}
+.pnav .v{font-weight:600}
+@media(max-width:620px){.pnav a{max-width:100%}}
+
+.allnote{margin:34px 0 0; font-size:14px; color:var(--soft)}
+
+</style>
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-1 判讀一個你打不開的檔案格式</a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">完整單頁版</span></div></div>
+
+<header class="hero">
+  <p class="eyebrow">BSC with Agentic AI Tutorial · EP1-1</p>
+  <h1>判讀一個<br>你打不開的檔案格式</h1>
+  <p class="subtitle">一次真實協作的完整重演：20 個打不開的 <code>.am</code> 檔，從「這是什麼」問到「這批資料其實分成兩群」。</p>
+  <div class="meta-card">
+    <p><b>這份文件是什麼：</b>把一次 Claude Code 協作從頭到尾拆解給你看——使用者每一句指令、AI 每一步動作、AI 自己犯的錯與更正，全程可查證。</p>
+    <p><b>適合誰讀：</b>BSC（腦空間體中心）同仁，或任何手上有「不知道怎麼開」的研究資料的人。<b>不需要會寫程式</b>。</p>
+    <p><b>成果（一句話）：</b>判定出格式（AmiraMesh binary + zlib）、產出摘要表與過程報告，並在最後意外發現——那個被當成「純外觀差異」而統一掉的欄位順序，其實是<b>兩條不同影像處理管線的指紋</b>。</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="video-box">
+    <p class="vlabel">📺 影片版</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/Yx1N5tSzRuY" title="判讀一個你打不開的檔案格式｜BSC with Agentic AI Tutorial EP1-1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <p class="vcap">不想讀字？可以先看 12 分鐘的影片導覽，再回來細讀；兩者內容一致。<br>
+      播放器沒出現畫面？把這一頁存到本機用檔案方式開啟時，YouTube 會拒絕內嵌播放——請改用
+      <a href="https://youtu.be/Yx1N5tSzRuY" target="_blank" rel="noopener">▶︎ 在 YouTube 開啟</a>。</p>
+  </div>
+
+  <nav class="toc">
+    <h2>目錄</h2>
+    <blockquote>想直接看怎麼實做，可以從 <a href="#part1">Part 1 — 完整對話時序</a> 開始。最關鍵的一段是 <a href="#s8">⑧ 事後才發現的事</a>。</blockquote>
+    <ol>
+      <li><a href="#colors">對話框顏色說明</a></li>
+      <li><a href="#glossary">名詞速查表</a></li>
+      <li><a href="#quickstart">判讀未知格式的 6 個核心觀念</a></li>
+      <li><a href="#part1">Part 1 — 完整對話時序</a></li>
+      <li><a href="#part2">Part 2 — 最佳實踐清單</a></li>
+      <li><a href="#part3">Part 3 — 本次成果</a></li>
+      <li><a href="#part4">Part 4 — 9 個核心教訓</a></li>
+      <li><a href="#closing">結語：給初學者的下一步</a></li>
+    </ol>
+  </nav>
+
+  <!-- ============ 顏色說明 ============ -->
+  <h2 id="colors">對話框顏色說明</h2>
+  <p>後面 <a href="#part1">Part 1</a> 會逐句重現使用者跟 AI 的對話。為了讓你一眼看出「這句話在做什麼」，所有使用者發言用五種顏色標示。這個分類本身就是重要觀念：<b>跟 AI 協作不是只會「叫它做事」，更重要的是在對的時機問問題、踩剎車、要證據</b>。</p>
+  <div class="msg g"><span class="who">🟢 使用者：</span>請求動作 — 叫 AI 去做一件事（「寫一段最小的程式」）。</div>
+  <div class="msg b"><span class="who">🔵 使用者：</span>問問題 — 詢問現況、判斷、細節（「這是什麼格式？」）。</div>
+  <div class="msg p"><span class="who">🟣 使用者：</span>關鍵決策 — 決定要不要動、往哪個方向動。</div>
+  <div class="msg y"><span class="who">🟡 使用者：</span>中斷 / 踩剎車 — 限制 AI 的行動範圍（「先不要寫程式」「先不要修」）。</div>
+  <div class="msg r"><span class="who">🔴 使用者：</span>設計回饋 / 糾錯 — 對 AI 的回答方式提出根本要求。</div>
+  <p class="note">小提醒：這一集裡<b>價值最高的兩句話都是 🟡 和 🔴</b>。使用者三次踩剎車、一次要求「證據要能追到位元組」，整個結果的品質幾乎都是被這幾句話決定的。</p>
+
+  <!-- ============ 名詞速查表 ============ -->
+  <h2 id="glossary">名詞速查表</h2>
+  <p>看到不懂的詞先回來查。兩張表分別對應這個案例的兩個面向。</p>
+
+  <h3>A. 檔案格式 / 影像資料</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>名詞</th><th>白話解釋</th></tr>
+    <tr><td><b>檔頭 (header)</b></td><td>檔案最前面一段「說明書」，記載這個檔裡裝的是什麼、多大、怎麼讀。這一集的主角。</td></tr>
+    <tr><td><b>magic number / magic string</b></td><td>檔案開頭用來表明身分的固定位元組。看到它就知道是哪種格式，像是檔案的身分證。</td></tr>
+    <tr><td><b>AmiraMesh</b></td><td>Amira / Avizo 這套 3D 影像軟體的原生格式（副檔名 <code>.am</code>）。本案 20 個檔就是這種。</td></tr>
+    <tr><td><b>體素 (voxel)</b></td><td>3D 版的「像素」。本案每個體素代表 1 微米見方的空間。</td></tr>
+    <tr><td><b>zlib / deflate</b></td><td>一種通用壓縮方式。AmiraMesh 的 <code>HxZip</code> 就是用它壓縮影像資料。</td></tr>
+    <tr><td><b>ushort</b></td><td>16-bit 無號整數，每個體素佔 2 個位元組，理論值域 0–65535。<b>注意：檔頭寫 ushort 不代表真的用滿</b>——這一集的關鍵伏筆。</td></tr>
+    <tr><td><b>warp（對位）</b></td><td>把每顆神經元的影像變形對齊到同一個「標準腦」座標系，這樣不同個體才能互相比較。</td></tr>
+  </table>
+  </div>
+
+  <h3>B. Claude Code / Agentic AI 工具</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>名詞</th><th>白話解釋</th></tr>
+    <tr><td><b>Agentic AI</b></td><td>「會自己動手」的 AI——不只回答問題，還能讀檔、寫檔、執行指令，完成多步驟任務。</td></tr>
+    <tr><td><b>Claude Code</b></td><td>本案例用的 Agentic AI 工具。它能直接在你的電腦上讀寫檔案、跑程式。</td></tr>
+    <tr><td><b>十六進位傾印 (hex dump)</b></td><td>把檔案的每個位元組用十六進位印出來看。判讀未知格式的基本手段，本案用 <code>od</code> 指令。</td></tr>
+    <tr><td><b>RFC</b></td><td>網際網路的公開技術規格文件，有編號可查。本案引用 RFC 1950（zlib 格式規格）。</td></tr>
+    <tr><td><b>端到端驗證</b></td><td>不只檢查「看起來對」，而是真的把整條路走完確認結果正確。本案是真的把資料解壓出來驗尺寸。</td></tr>
+    <tr><td><b>可逆 / 不可逆</b></td><td>能不能還原。改寫原始資料是不可逆的，所以動手前要先備份。</td></tr>
+  </table>
+  </div>
+
+  <!-- ============ 快速入門 ============ -->
+  <h2 id="quickstart">判讀未知格式的 6 個核心觀念</h2>
+  <p>手上有一批打不開的檔案時，先記住這 6 件事：</p>
+  <ol>
+    <li><b>先判讀，再寫程式。</b>不知道是什麼就開始寫轉檔程式，等於用猜的蓋房子。這一集使用者第一句話就是「<b>先不要寫任何處理程式</b>」——這句話決定了整段品質。</li>
+    <li><b>檔案自己會說話。</b>大多數格式的開頭就寫著自己是誰。<code>file</code> 指令沒用時，直接把前幾百個位元組印出來看。</li>
+    <li><b>要求證據能追到位元組。</b>「我覺得這是 X 格式」和「offset 438 的兩個位元組是 <code>78 9c</code>，對應 RFC 1950 §2.2」是完全不同等級的回答。</li>
+    <li><b>查不到規格就說查不到。</b>不是每個格式都有公開規格。分清楚「有規格佐證」「靠社群文件」「純屬推論」，比假裝都很確定有用得多。</li>
+    <li><b>動原始資料前先備份。</b>研究資料常常是重跑不回來的。備份很便宜，重採樣很貴。</li>
+    <li><b>差異先列出來，不要急著抹平。</b>看起來「只是格式不一致」的東西，可能是資料來源不同的唯一線索——這一集最後就是這樣打臉的。</li>
+  </ol>
+  <div class="callout">💡 這一集完全沒有用到 git（版本控制），備份是用最土的方法（複製一份資料夾）。對初學者：先養成「動手前留退路」的習慣，工具用哪個都行。</div>
+
+  <!-- ============ PART 1 ============ -->
+  <h2 id="part1"><span class="pt">PART 1</span>完整對話時序</h2>
+  <p>以下是這次協作的每一輪，依實際發生順序排列。使用者總共只講了 7 句話。</p>
+
+  <h3 class="seg" id="s1"><span class="num">1</span>開場：先不要寫程式</h3>
+  <div class="msg b"><span class="who">🔵 使用者：</span><code>neuron_20/</code> 資料夾裡有 20 個我打不開的檔案。<b>先不要寫任何處理程式</b>，你先告訴我它們是什麼格式，以及你是怎麼判斷出來的。</div>
+  <p>這句話裡有三個指令，缺一不可：（1）判斷格式、（2）說明判斷方法、（3）<b>先不要動手寫程式</b>。第三點是 🟡 踩剎車——它擋掉了 AI 最常見的失敗模式：還沒搞懂資料就開始寫轉檔程式。</p>
+  <div class="ai"><span class="tag">AI 做了什麼</span>先 <code>ls</code> 看檔名與大小，再跑 <code>file</code> 指令——結果只回報 <code>data</code>，表示系統的格式資料庫裡沒有這個格式。於是改用最原始的方法：把檔案前 1200 個位元組直接印出來看。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-01"><div class="mhead"><span class="mno">M-01</span><span class="mtt">列出檔名與大小</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>取得 20 個檔的檔名與位元組數，還沒有讀任何內容。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>檔案大小、時間、權限存在檔案系統的 inode（Windows 上是 MFT 記錄）裡，跟檔案內容分開存放。所以問大小是 O(1) 的中繼資料查詢，不需要把檔案讀過一遍。這也是為什麼幾 GB 的檔案 ls 一樣是瞬間回應。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>from pathlib import Path
+for f in sorted(Path(&#x27;neuron_20&#x27;).glob(&#x27;*.am&#x27;)):
+    print(f.name, f.stat().st_size)   # st_size 來自 inode，不讀內容</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>檔名本身是線索但不是證據。副檔名 .am 只是宣稱（見 prelim.docx 1-1）；大小相近只能說明它們可能是同一類東西，不能拿來判定格式。</p></div></div><div class="mbox" id="M-02"><div class="mhead"><span class="mno">M-02</span><span class="mtt">跑 file 指令，得到 data</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>用作業系統內建的格式辨識工具問一次，結果是 data——意思是「不認得」。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>file 指令背後是 libmagic，它有一份 magic 資料庫：每一條規則說「在 offset X 有位元組序列 Y，就是格式 Z」。它做的是特徵比對，不是理解檔案。資料庫收了上千種格式，但 AmiraMesh 這種學術／商業軟體的原生格式不在裡面，所有規則都比不中，於是回落到最後一條：data（不明的二進位資料）。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>$ file neuron_20/*.am        # 回報 data 就是「我的資料庫裡沒有」
+$ file --mime-type x.am      # 只要 MIME 類型
+$ man 5 magic                # magic 規則的寫法，可以自己加一條</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>「file 說 data」不等於「這個檔壞了」，只等於「這台電腦的資料庫沒收錄」。反過來也一樣：file 認得的答案也可能是誤判——它只看了幾個位元組。把 file 當成第一個提示，不是結論。</p></div></div><div class="mbox" id="M-03"><div class="mhead"><span class="mno">M-03</span><span class="mtt">把前 1200 個位元組直接印出來</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>十六進位傾印（hex dump）：把檔案開頭的每個位元組同時用十六進位與可列印字元印出來。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>任何檔案都是位元組序列，每個位元組是 0–255 的整數。傾印工具做兩件事：把整數印成兩位十六進位（0–255 剛好對應 00–ff，一個位元組一定是兩個字），以及把落在可列印 ASCII 範圍（0x20–0x7e）的位元組同時印出對應字元、其餘印成點。人靠右邊那一欄一眼看出這段是文字還是亂碼——這就是「文字或二進位」最原始的判別法。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>$ od -A d -t x1z -N 1200 x.am     # -A d 位址用十進位，方便對照 offset
+$ xxd -l 1200 x.am                # 或用 xxd，輸出更好讀
+b = open(&#x27;x.am&#x27;,&#x27;rb&#x27;).read(1200)
+print(b.decode(&#x27;latin-1&#x27;))        # latin-1 不會丟例外，任何位元組都對得到字元</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>用 utf-8 解碼二進位檔會直接拋例外，看不到東西。判讀階段一律用 latin-1 或 errors=&#x27;replace&#x27;，先看見再說。另外別一次印整個檔——760 KB 的傾印沒有人讀得完，開頭幾百到幾千個位元組就夠了。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <p>結果檔案開頭是一段<b>純文字</b>檔頭：</p>
+  <pre><code># AmiraMesh BINARY-LITTLE-ENDIAN 2.1
+
+define Lattice 153 347 161
+
+Parameters {
+    Expression "(b)",
+    Content "153x347x161 ushort, uniform coordinates",
+    Filename "/disk/sourceData/data2014_a14/fru-F-900054/fru-F-900054_seg001_clear.am",
+    SaveInfo "AmiraMesh ZIP",
+    BoundingBox -4.80254 147.197 -340.636 5.36349 -127.945 32.0547,
+    CoordType "uniform"
+}
+
+Lattice { ushort Data } @1(HxZip,760523)
+
+# Data section follows
+@1
+&lt;二進位資料&gt;</code></pre>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-04"><div class="mhead"><span class="mno">M-04</span><span class="mtt">認出這是「純文字檔頭 + 二進位酬載」</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>看懂檔案的結構是：一段人類可讀的文字說明書，接著一個標記，然後是壓縮過的影像資料。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這是很常見的一種格式設計。文字檔頭的好處是自我描述：不需要任何專用工具，任何人拿記事本或 od 就能知道裡面裝什麼、多大、怎麼讀。代價是解析要靠字串處理、檔頭長度不固定。與它相對的是純二進位檔頭（固定欄位、固定位址，讀起來快但完全不可讀）。AmiraMesh 選了前者，本案能被判讀出來，一大半是因為這個設計決定。</p><p>本案的檔頭有三個關鍵宣告：</p><div class="tblwrap"><table><tr><th>宣告</th><th>意思</th><th>後面哪一步會用到</th></tr><tr><td># AmiraMesh BINARY-LITTLE-ENDIAN 2.1</td><td>格式與端序</td><td>M-26 解讀 ushort 時要知道端序</td></tr><tr><td>define Lattice 153 347 161</td><td>三個方向各有幾個體素</td><td>M-06 尺寸恆等式、M-12 體素尺寸</td></tr><tr><td>Lattice { ushort Data } @1(HxZip,760523)</td><td>型別、資料段編號、壓縮方式與壓縮後長度</td><td>M-22 核對長度、M-26 解讀型別</td></tr></table></div></div><div class="mpane" data-k="2" data-label="坑" hidden><p>檔頭寫的是宣稱，不是實測（prelim.docx 1-2）。這一集最後的反轉就出在這裡：20 個檔都宣稱 ushort，實際值域卻分兩群。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="ai"><span class="tag">AI 做了什麼</span>比對 20 個檔的第一行全部相同；再檢查 <code>@1</code> 之後的資料開頭是 <code>78 9c</code>（zlib 的招牌位元組）；最後真的解壓一次，得到 17,095,302 位元組，正好等於 <code>153 × 347 × 161 × 2</code>——維度與「每體素 2 位元組」完全吻合。判定完成。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-05"><div class="mhead"><span class="mno">M-05</span><span class="mtt">認出資料段開頭的 78 9c 是 zlib</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>在資料段起點取兩個位元組，判斷這是不是 zlib 壓縮串流。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>zlib 串流的前兩個位元組是固定結構的標頭（RFC 1950 §2.2），不是隨機的資料。它由 CMF 與 FLG 兩個位元組組成，而且規格要求 (CMF×256 + FLG) 必須被 31 整除——這是一個內建的檢查碼。所以看到 78 9c 不只是「看起來像」，而是可以驗算的：0x789c = 30876 = 31 × 996。隨便兩個位元組能通過這個檢查的機率只有 1/31。位元的完整拆解見 M-08。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>i = b.find(b&#x27;\n@1\n&#x27;) + 4          # 資料段起點：用標記找，不要硬編碼
+cmf, flg = b[i], b[i+1]
+assert cmf &amp; 0x0f == 8              # CM=8 → deflate
+assert (cmf*256 + flg) % 31 == 0    # RFC 1950 的 31 整除檢查</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>不要只比對「78 9c」這個組合。9c 編碼的是壓縮等級，換個等級就變成 78 01、78 5e、78 da——同樣是合法 zlib。穩健的判斷是「CM 等於 8」加上「31 整除」，而不是死記某一對位元組。</p></div></div><div class="mbox" id="M-06"><div class="mhead"><span class="mno">M-06</span><span class="mtt">真的解壓一次，用尺寸恆等式驗證</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把資料段丟進 zlib 解壓，量解壓後的位元組數，跟檔頭宣告的維度相乘比對。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這是整個判讀的收尾，也是端到端驗證的典型長相。恆等式是：</p><pre><code>解壓後位元組數  ==  d1 × d2 × d3 × (每個體素的位元組數)
+17,095,302     ==  153 × 347 × 161 × 2</code></pre><p>這條式子一次同時驗了四件獨立的事：資料段起點找對了（不然解不開）、這確實是 zlib（不然解不開）、檔頭宣告的維度是真的、以及 ushort 等於 2 個位元組。任何一項猜錯，等號都不會成立。用一個容易量的量去交叉檢查一串假設，是判讀未知格式最有效的手法。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>這條式子對三個維度的任何排列都成立——153×347×161 和 161×153×347 乘起來一樣大。所以它證明得了「維度是這三個數」，證明不了「哪個數對應哪個軸」。教學網頁「還沒做的事」講的就是這件事，細節見 M-27。驗證通過只代表假設沒被推翻，不代表它是唯一解。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="note">注意 AI 這裡<b>沒有違反「不要寫處理程式」</b>：它只做了判讀（看位元組、驗證一次解壓），沒有產生任何轉檔或處理輸出。「不要寫程式」限制的是產出，不是限制動腦。</div>
+
+  <h3 class="seg" id="s2"><span class="num">2</span>糾錯：證據要能追到位元組與規格</h3>
+  <div class="msg r"><span class="who">🔴 使用者：</span>把你的判斷依據列出來：檔頭的<b>哪幾個位元組</b>、對應到<b>規格書的哪一段</b>。查不到規格就直接說查不到。</div>
+  <p>這是整份教材最值得學的一句話。它做了兩件事：把「你怎麼知道」從模糊的敘述<b>逼成可查證的座標</b>；同時<b>預先解除了 AI 說「我不知道」的壓力</b>——「查不到就直接說查不到」等於告訴 AI：老實承認不會被扣分，唬爛才會。</p>
+  <div class="ai"><span class="tag">AI 做了什麼</span>做了完整的位元組傾印，列出每個欄位的精確 offset；接著上網找規格，找到的東西比預期少很多，於是把依據<b>分成三個可信度等級</b>誠實呈報。</div>
+  <div class="hexfig">
+  <table>
+    <tr><th>Offset</th><th>內容</th></tr>
+    <tr><td class="off">0–35</td><td># AmiraMesh BINARY-LITTLE-ENDIAN 2.1（magic string）</td></tr>
+    <tr><td class="off">39–64</td><td>define Lattice 153 347 161</td></tr>
+    <tr><td class="off">67–367</td><td>Parameters { … } 區塊</td></tr>
+    <tr><td class="off">370–409</td><td>Lattice { ushort Data } @1(HxZip,760523)</td></tr>
+    <tr><td class="off">412–433</td><td># Data section follows</td></tr>
+    <tr><td class="off">435–437</td><td>@1\n（資料段起始標記）</td></tr>
+    <tr class="mark"><td class="off">438–439</td><td class="hit">78 9c ← zlib stream header</td></tr>
+    <tr><td class="off">438–EOF</td><td>壓縮資料，760524 位元組</td></tr>
+  </table>
+  </div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-07"><div class="mhead"><span class="mno">M-07</span><span class="mtt">算出每個欄位的精確 offset</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把檔頭每一段文字對應到「從檔案開頭數起第幾個位元組」。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>offset 是量出來的，不是背下來的。做法是在位元組串裡搜尋子字串，回傳的索引就是 offset；子字串長度加上去就是結束位置。這件事值得做的理由不是精確，是可查證性：報告裡寫「offset 438–439 是 78 9c」，任何人都能自己 od 到那個位置去數，不必相信你。把主張釘在別人能重跑的座標上，是這一集第 ② 段真正的方法。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>i = b.find(b&#x27;define Lattice&#x27;)
+j = b.find(b&#x27;\n&#x27;, i)
+print(f&#x27;{i}-{j-1}&#x27;, b[i:j].decode())   # 起訖 offset 與內容一起印</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>教學網頁那張表的 438 是 fru-F-900054 這個檔的值，不是通則。實際量過 20 個檔，資料段起點分佈在 434–442——因為檔頭是純文字，檔名長度、座標位數不同，檔頭就不一樣長。<b>任何寫死 438 的程式，在另外 19 個檔上都是錯的。</b>位址一律用標記搜尋，不要硬編碼。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <p>然後是分級。<b>20 個檔案的判定裡，真正有正式規格可以引用的只有兩個位元組：</b></p>
+  <div class="grade">
+    <div class="row"><span class="lv ok">有正式規格</span><span class="txt"><b>offset 438–439 的 <code>78 9c</code></b>對應 <b>RFC 1950 §2.2</b>：<code>0x78</code> 表示 deflate 壓縮、32K 視窗；<code>0x9c</code> 表示無預設字典、預設壓縮等級；且 <code>0x789c = 30876 = 31 × 996</code>，符合規格要求的「必須被 31 整除」檢查碼。</span></div>
+    <div class="row"><span class="lv mid">只有社群文件</span><span class="txt"><b><code>define Lattice</code>、<code>BoundingBox</code>、<code>CoordType</code> 的語意</b>——來自 KTH 一位研究者的逆向筆記，該頁自己聲明「這不是規格」，而且完全沒有涵蓋壓縮的部分。</span></div>
+    <div class="row"><span class="lv no">查不到規格</span><span class="txt"><b>AmiraMesh 本身沒有公開規格書。</b>權威文件是 Amira/Avizo 使用手冊的附錄，屬商業軟體隨附文件、未公開發行。英國國家檔案館的格式登錄庫 PRONOM 有登錄此格式（fmt/920），但摘要頁未列出位元組簽章。</span></div>
+    <div class="row"><span class="lv no">純屬推論</span><span class="txt"><b><code>HxZip</code> = zlib、括號內數字 = 壓縮後長度、<code>ushort</code> = 每體素 2 位元組</b>——全部靠實測反推（招牌位元組、長度相減、解壓後尺寸相符），沒有任何規格背書。</span></div>
+  </div>
+  <div class="note">這一段的價值不在於「AI 查到了什麼」，而在於<b>它敢說有四分之三查不到</b>。如果使用者沒加那句「查不到就直接說查不到」，AI 很可能會把推論寫得跟規格一樣肯定。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-08"><div class="mhead"><span class="mno">M-08</span><span class="mtt">把 78 9c 的每一個位元解出來</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>依 RFC 1950 §2.2 把兩個位元組拆成五個欄位，逐項對照。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>二進位格式常把好幾個資訊擠進同一個位元組，用位元位置區分。取出來的工具只有兩個：遮罩（&amp; ）取特定幾位，位移（&gt;&gt;）把它們挪到最低位。</p><div class="tblwrap"><table><tr><th>欄位</th><th>怎麼取</th><th>本案的值</th><th>意思</th></tr><tr><td>CM</td><td>cmf &amp; 0x0f</td><td>8</td><td>壓縮方法 = deflate</td></tr><tr><td>CINFO</td><td>cmf &gt;&gt; 4</td><td>7</td><td>視窗大小 = 2^(7+8) = 32768 位元組</td></tr><tr><td>FCHECK</td><td>flg &amp; 0x1f</td><td>28</td><td>湊數用，使 (cmf*256+flg) 被 31 整除</td></tr><tr><td>FDICT</td><td>(flg &gt;&gt; 5) &amp; 1</td><td>0</td><td>沒有使用預設字典</td></tr><tr><td>FLEVEL</td><td>flg &gt;&gt; 6</td><td>2</td><td>壓縮等級 = 預設</td></tr></table></div><p>驗算：0x78 = 120，0x9c = 156，120 × 256 + 156 = 30876，30876 ÷ 31 = 996 整除。這就是教學網頁裡「有正式規格佐證的只有兩個位元組」那句話的全部內容——整份判讀裡，只有這兩個位元組能拿一份公開、有編號、任何人查得到的規格來背書。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>位元欄位的順序要照規格讀，不要憑直覺。同樣一個位元組，先遮罩再位移和先位移再遮罩結果可能不同。寫完一定要拿規格附的範例值對一次。</p></div></div><div class="mbox" id="M-09"><div class="mhead"><span class="mno">M-09</span><span class="mtt">把依據分成四個可信度等級</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把「我怎麼知道」的每一條依據，按照來源的可查證性分級呈報。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這不是程式，是方法論，但它是這一集最可移植的一招。四級的判準是「別人要花多少力氣才能推翻你」：</p><div class="tblwrap"><table><tr><th>等級</th><th>判準</th><th>本案的例子</th></tr><tr><td>有正式規格</td><td>公開、有編號、任何人查得到，且直接涵蓋這一點</td><td>78 9c → RFC 1950 §2.2</td></tr><tr><td>只有社群文件</td><td>有人寫下來但沒有權威地位，或作者自己聲明不是規格</td><td>define Lattice / BoundingBox 的語意</td></tr><tr><td>查不到規格</td><td>找過了，確實沒有公開文件</td><td>AmiraMesh 格式本身</td></tr><tr><td>純屬推論</td><td>靠實測反推，沒有任何文件背書</td><td>HxZip = zlib、括號內數字 = 壓縮後長度</td></tr></table></div><p>要點是：第三級和第四級不是失敗，是誠實的結論。一份判讀報告如果四級都寫成同樣肯定的語氣，讀的人就沒辦法判斷該相信到什麼程度，也沒辦法知道從哪裡開始查證。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>分級要在寫結論的時候做，不要事後補。事後補的時候人會傾向把自己推論出來的東西往上調一級。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+
+  <h3 class="seg" id="s3"><span class="num">3</span>請求動作：最小的程式</h3>
+  <div class="msg g"><span class="who">🟢 使用者：</span>寫一段<b>最小</b>的程式，<b>只做一件事</b>：讀出這 20 個檔案的維度、體素尺寸與資料型別，印成一張表（<code>table.docx</code>）。</div>
+  <p>「最小」「只做一件事」是很有效的用詞。沒有這兩個限制，AI 很容易順手多做——加個進度條、加個錯誤處理、順便畫個圖——結果變成一個你看不懂也不敢改的東西。</p>
+  <div class="ai"><span class="tag">AI 做了什麼</span>寫了 41 行的 <code>read_headers.py</code>。關鍵設計：<b>完全不解壓資料段</b>——維度、體素尺寸、型別三項資訊全都在純文字檔頭裡，只要三個 regex 就能取出。體素尺寸由 <code>(最大值 − 最小值) ÷ (格點數 − 1)</code> 算出。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-10"><div class="mhead"><span class="mno">M-10</span><span class="mtt">只讀前 8 KB，不解壓資料段</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>要的三項資訊（維度、體素尺寸、型別）全在純文字檔頭裡，所以只讀檔案開頭一小段。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>檔案是可以隨機存取的串流：開檔之後你可以只讀前 N 個位元組就關掉，作業系統不會把整個檔載進記憶體。20 個檔各讀 8 KB 總共 160 KB，跟解壓全部 20 個檔的 400 MB 差了三個數量級。「需要什麼就讀什麼」在資料量大的時候是決定性的差別。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>with open(f, &#x27;rb&#x27;) as fh:
+    head = fh.read(8192).decode(&#x27;latin-1&#x27;)   # 只讀 8 KB</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>8192 是有根據的猜測，不是規格保證。本案檔頭最長 442 位元組，8 KB 綽綽有餘，但換一批資料就未必。穩健的寫法是讀到看見資料段標記為止，或至少檢查「這 8 KB 裡有沒有找到 @1」，找不到就報錯而不是靜默給出錯的答案。</p></div></div><div class="mbox" id="M-11"><div class="mhead"><span class="mno">M-11</span><span class="mtt">用三個 regex 把值取出來</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>從檔頭文字裡抓出 define Lattice 的三個數、BoundingBox 的六個數、資料型別。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>正規表示式是描述字串樣式的小語言：\d+ 是一串數字，() 是「這段我要」，\s+ 是空白。比對引擎掃過文字，把符合樣式的片段連同括號裡的群組交回來。適合用在這種「格式固定、只要幾個值」的場合。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>import re
+dims = [int(x) for x in re.search(r&#x27;define Lattice (\d+) (\d+) (\d+)&#x27;, head).groups()]
+bb   = [float(x) for x in re.search(r&#x27;BoundingBox ([-\d.eE+ ]+),&#x27;, head).group(1).split()]
+typ  = re.search(r&#x27;Lattice \{ (\w+) Data \}&#x27;, head).group(1)</code></pre><p>為什麼不寫一個完整的 AmiraMesh 剖析器？因為需求只有三個值，而完整剖析器要處理巢狀括號、字串跳脫、各種資料型別，程式碼會多一個數量級，而且每一行都是你之後要維護、要懷疑的東西。這是教材第 ③ 段「最小、只做一件事」在技術層面的意義：<b>能力範圍小的程式，錯的方式也少</b>。</p></div><div class="mpane" data-k="3" data-label="坑" hidden><p>regex 比對失敗時 re.search 回傳 None，直接 .group() 會拋 AttributeError。在批次處理 20 個檔的場合，要嘛檢查 None 並印出是哪個檔，要嘛就讓它拋例外中斷——最糟的是用 try/except 吞掉，得到一張少了幾列的表卻不知道。</p></div></div><div class="mbox" id="M-12"><div class="mhead"><span class="mno">M-12</span><span class="mtt">由 BoundingBox 算出體素尺寸</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>檔頭沒有直接寫「一個體素多大」，要從涵蓋範圍與格點數推算。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>關鍵在分母是 n−1 還是 n，而這取決於 BoundingBox 量的是哪兩個點：</p><div class="tblwrap"><table><tr><th>取樣慣例</th><th>BoundingBox 的意思</th><th>體素尺寸</th><th>n=153 時</th></tr><tr><td>節點取樣（本案）</td><td>第一個與最後一個體素「中心」的座標</td><td>(max−min)/(n−1)</td><td>152/152 = 1.000</td></tr><tr><td>格子取樣</td><td>整個影像最外緣的座標</td><td>(max−min)/n</td><td>152/153 = 0.993</td></tr></table></div><p>兩者差 n/(n−1)，在 n=153 時是 0.65%——小到不會讓程式壞掉，大到會讓定量結果錯。本案怎麼判定是節點取樣？用 n−1 算出來三個軸都是 1.000000，用 n 算出來是三個不整齊的數字。<b>「假設 A 讓數字變乾淨、假設 B 不會」是很強的證據，但它是推論不是規格</b>——按 M-09 的分級，這條屬於第四級。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>steps = [(hi - lo) / (n - 1)
+         for (lo, hi), n in zip(zip(bb[0::2], bb[1::2]), dims)]</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>這是典型的差一格問題（off-by-one）。籬笆有 10 根柱子只有 9 段間隔——格點數與間隔數永遠差 1。寫這種式子時先問自己：我在數點，還是在數段？</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <p>結果：20 個檔案全部是 <code>ushort</code>、體素 1 × 1 × 1 微米，維度則每個檔都不一樣（從 153×347×161 到 842×346×214）。</p>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-13"><div class="mhead"><span class="mno">M-13</span><span class="mtt">把結果輸出成摘要表</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把 20 列結果寫成一份 Word 表格。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>重點不在 docx 這個格式，在於<b>表是程式產生的</b>。手工貼一次表格，上游數字一改它就過期，而且沒有人看得出來它過期了；產生器則是「原始資料 → 表」這條路徑本身被寫了下來，隨時可以重跑。這也是這一集三支程式的共同設計（見 M-24）。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>from docx import Document
+doc = Document(); t = doc.add_table(rows=1, cols=5); t.style = &#x27;Table Grid&#x27;
+for c, name in zip(t.rows[0].cells, [&#x27;檔名&#x27;,&#x27;維度&#x27;,&#x27;體素尺寸&#x27;,&#x27;型別&#x27;,&#x27;大小&#x27;]):
+    c.text = name
+for r in rows:
+    for c, v in zip(t.add_row().cells, r): c.text = str(v)
+doc.save(&#x27;table.docx&#x27;)</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>產生器要能重複執行且輸出一致。如果表裡放了執行時間、隨機排序、或字典的迭代順序，兩次跑出來的檔就會不一樣，之後想比對「有沒有變」時會很痛苦。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="callout">⚠️ 這裡有個伏筆：「資料型別 <code>ushort</code>」是<b>檔頭宣稱的</b>，不是實測的。這個區別在 <a href="#s8">第 ⑧ 段</a>會變得很重要。</div>
+
+  <h3 class="seg" id="s4"><span class="num">4</span>踩剎車：先列出來，不要修</h3>
+  <div class="msg b"><span class="who">🔵 使用者：</span>這 20 個檔案裡有沒有哪一個的欄位跟其他不一樣？如果有，<b>先不要修，列出來</b>。</div>
+  <p>又一次踩剎車，而且是很老練的一種：<b>把「發現問題」和「處理問題」拆成兩個回合</b>。這讓人保有決策權，也讓 AI 不會在你還沒看到問題時就把它改掉。</p>
+  <div class="ai"><span class="tag">AI 做了什麼</span>比對 20 個檔的檔頭結構與每個欄位值，共檢查 9 個項目。找到<b>唯一一項差異</b>：<code>Parameters</code> 區塊的欄位順序有兩種。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-14"><div class="mhead"><span class="mno">M-14</span><span class="mtt">把 20 個檔頭拉齊來比對</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把每個檔頭剖析成同樣結構的資料，再逐項比較 20 份之間哪裡不一樣。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>比對的前提是先結構化。字串對字串比一定全都不一樣（檔名不同），所以要先把每個檔頭變成一個 dict：{magic, dims, type, order, ...}，然後逐個鍵去比。實作上最順的是分群（等價類）：把 20 個檔按某個鍵的值分堆，堆數等於 1 就是「全部一致」，大於 1 就把每堆的成員列出來。這樣寫的好處是不必事先知道有幾種差異。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>from collections import defaultdict
+groups = defaultdict(list)
+for name, info in headers.items():
+    groups[info[&#x27;order&#x27;]].append(name)      # 換個鍵就能查別的項目
+if len(groups) &gt; 1:
+    for value, files in groups.items(): print(len(files), value, files)</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>今天重跑這一步會得到「20 個檔完全一致」——因為第 ⑤ 段已經把欄位順序統一掉了。<b>原始的兩種順序只存在於 neuron_20.backup/</b>。要重現第 ④ 段的結果，程式要指到備份資料夾。這件事本身就是第 ⑧ 段那一課的實證：抹平之後，沒有備份就真的看不到了。</p></div></div><div class="mbox" id="M-15"><div class="mhead"><span class="mno">M-15</span><span class="mtt">抓出「欄位順序」這種差異</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>發現 Parameters 區塊裡六個欄位的內容都一樣，但排列次序有兩種。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這一步能成立，是因為比較的對象選對了：把欄位取出來當成<b>序列</b>（有次序的清單）比，而不是當成<b>集合</b>（只管有沒有）。同一組欄位，當集合看兩群完全相同，當序列看就分成兩堆。選錯了資料結構，這個差異在稽核階段根本不會出現——而它後來被證明是全案唯一的關鍵線索。</p><div class="tblwrap"><table><tr><th>看法</th><th>資料結構</th><th>本案的結果</th></tr><tr><td>有哪些欄位</td><td>集合 set</td><td>兩群完全相同，看不出差異</td></tr><tr><td>欄位依什麼次序</td><td>序列 list / tuple</td><td>分成 15 : 5 兩群 ← 關鍵</td></tr><tr><td>欄位各是什麼值</td><td>字典 dict</td><td>兩群完全相同</td></tr></table></div></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>order = tuple(re.findall(r&#x27;^\s{4}(\w+)\s&#x27;, params_block, re.M))
+# tuple 可以當 dict 的鍵，直接丟進 M-14 的分群</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>稽核程式只找得到你叫它找的東西。這一集之所以抓得到，是因為有人想到要比次序；值域差異藏在壓縮資料裡，沒人想到要解壓來看，所以拖到第 ⑧ 段才發現。<b>寫稽核程式時，多列幾個「應該不重要」的項目，成本很低。</b></p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="tblwrap">
+  <table>
+    <tr><th>欄位順序</th><th class="num-cell">檔數</th><th>檔案</th></tr>
+    <tr><td><code>Expression, Content, Filename, SaveInfo, BoundingBox, CoordType</code></td><td class="num-cell">15</td><td>（多數）</td></tr>
+    <tr><td><code>Expression, Content, SaveInfo, BoundingBox, CoordType, Filename</code></td><td class="num-cell">5</td><td>TH-F-100051、Tdc2-F-000001、Trh-F-600017、VGlut-F-300388、VGlut-F-600670</td></tr>
+  </table>
+  </div>
+  <p>其餘 8 項全部一致：magic line、<code>Expression</code>、<code>SaveInfo</code>、<code>CoordType</code>、資料型別、<code>Content</code> 字串與維度自洽性、檔名對應、壓縮長度宣告。</p>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-16"><div class="mhead"><span class="mno">M-16</span><span class="mtt">自洽性檢查</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>檢查檔頭裡互相重複記載的資訊有沒有彼此矛盾。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>本案的檔頭把同一件事寫了兩次：Content 字串裡有「153x347x161 ushort」，define Lattice 那行也有三個數字；檔名欄位與實際檔名應該對得上；HxZip 括號裡的長度與實際資料段長度應該對得上。兩個獨立來源說同一件事，就可以互相驗證——這是不需要任何外部規格就能做的檢查，而且能抓到「檔案被人改過但只改了一半」這類問題。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>m = re.search(r&#x27;&quot;(\d+)x(\d+)x(\d+) (\w+)&#x27;, content_str)
+assert [int(x) for x in m.groups()[:3]] == dims
+assert m.group(4) == typ</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>自洽不等於正確。20 個檔的檔頭全部自洽，但它們宣稱的 ushort 跟實際值域還是對不上（第 ⑧ 段）。自洽性檢查抓得到「被改壞」，抓不到「一開始就寫得太寬」。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <h4>AI 在這裡犯了一個錯，並且自己抓出來</h4>
+  <div class="ai"><span class="tag">AI 做了什麼</span>第一版檢查把 19 個檔的體素尺寸標成「異常」。AI 自己察覺不對勁——因為前一輪才手算過三個檔都剛好是 1.0——回頭檢查發現是<b>自己的浮點容差設成 1e-6，比 <code>BoundingBox</code> 只印 6 位有效數字的精度還嚴</b>。實際最大偏差是 3.03e-06，屬於捨入誤差。AI 重寫檢查並主動說明這是誤報。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-17"><div class="mhead"><span class="mno">M-17</span><span class="mtt">浮點容差誤報：AI 犯的那個錯</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>第一版檢查把 19 個檔的體素尺寸標成異常，實際上是檢查程式自己的容差設太嚴。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>十進位小數大多沒辦法用二進位浮點精確表示，所以浮點運算幾乎永遠帶著微小誤差，<b>用 == 比較兩個算出來的浮點數是錯的做法</b>，要改成「差距小於某個容差」。問題是容差要設多大——這一步的教訓就在這裡：</p><pre><code>abs(step - 1.0) &lt; 1e-6      # AI 第一版：太嚴，19 個檔被判異常
+abs(step - 1.0) &lt; 1e-4      # 合理：比資料本身的精度寬鬆一級</code></pre><p>為什麼 1e-6 太嚴？因為誤差不是來自浮點運算，是來自資料本身：BoundingBox 在檔頭裡只印到 6 位有效數字（例如 -340.636），小數點後第 4 位就被截掉了。拿一個只有 6 位有效數字的輸入去要求 1e-6 的一致性，等於要求比輸入本身還精確的結果。實測 20 個檔的最大偏差是 3.0263e-06——比 1e-6 大，比 1e-4 小，所以在嚴容差下全部翻紅，在合理容差下全部通過。</p><p><b>容差的判準是「資料的精度」，不是「浮點數的精度」。</b>定容差之前先問：我的輸入有幾位有效數字？</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>這種誤報最危險的地方是它看起來很像真的發現。19 個檔都異常時，正確的直覺是先懷疑檢查程式，而不是先懷疑 19 個檔——<b>當「異常」的比例高到不像異常，通常是判準錯了。</b>AI 這次是靠「前一輪才手算過三個檔都剛好是 1.0」的矛盾察覺的，也就是靠一個獨立來源的舊結果去打臉新結果。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="note">🔍 <b>這是教材裡刻意保留的一段。</b>AI 會犯錯，重點是有沒有辦法自己發現、以及發不發現得了之後老不老實。這次的誤報如果沒抓出來，使用者會以為 19 個檔的體素尺寸都有問題。</div>
+
+  <h3 class="seg" id="s5"><span class="num">5</span>決策：統一欄位順序</h3>
+  <div class="msg p"><span class="who">🟣 使用者：</span>把欄位順序統一，然後重跑產生 <code>table.docx</code>。</div>
+  <div class="ai"><span class="tag">AI 做了什麼</span>動手之前先講了一句反對意見：<b>「這個差異沒有功能影響」</b>——AmiraMesh 的 <code>Parameters</code> 是鍵值結構不是位置結構，程式用欄位名比對，那 5 個檔原本就讀得正確；統一它換到的只是外觀一致。使用者已經下決定，所以 AI 照做，但<b>先複製一份 16 MB 的完整備份</b>再動手。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-18"><div class="mhead"><span class="mno">M-18</span><span class="mtt">動手前先複製一份完整備份</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把整個 neuron_20/ 複製成 neuron_20.backup/ 再開始改。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>改寫檔案是不可逆操作：寫入之後原本的位元組就不在磁碟上了。備份把不可逆變成可逆，代價是一份磁碟空間。這裡的成本比是壓倒性的——16 MB 對上「重新培養果蠅、標記、解剖、上共軛焦顯微鏡掃描」的數週工作。值得記住的判準是：<b>備份的成本 vs 重新取得資料的成本</b>，而不是「我覺得應該不會出錯」。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>$ cp -a neuron_20 neuron_20.backup     # -a 連時間戳與權限一起保留
+$ diff -r neuron_20 neuron_20.backup   # 動手前先確認備份是完整的</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>備份完要驗一次再動手，不然你可能備份到一半就開始改。另外備份是「留退路」不是「版本控制」——這一集完全沒用 git，但退路確實留住了，第 ⑧ 段就是靠它把線索找回來的。</p></div></div><div class="mbox" id="M-19"><div class="mhead"><span class="mno">M-19</span><span class="mtt">只重寫 Parameters 區塊</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把 5 個檔的檔頭重排，資料段一個位元組都不動。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>做法是讀-改-寫：整個檔讀進記憶體，切成「檔頭」與「資料段」兩塊，只重組檔頭那一塊，再把兩塊接起來寫回去。這裡有一個必須想清楚的問題：<b>檔頭長度改變了，資料段的絕對位址就跟著移動，這樣還讀得到嗎？</b>答案是可以，理由有兩個，而這兩個理由都要從格式本身找出來：</p><ol><li>資料段的位置是靠 @1 這個標記找的，不是靠絕對位址。標記往後移，搜尋一樣找得到。</li><li>檔頭裡 HxZip 括號內的 760523 是「壓縮資料的長度」，不是「資料從第幾個位元組開始」。長度不會因為檔頭變長而改變，所以那個數字仍然正確。</li></ol><p>如果格式當初設計成「檔頭第 8 個位元組記錄資料段的絕對位址」，這一步就會把檔案改壞——而且是那種解得開、看起來正常、實際上讀到錯位置的壞法。<b>動任何二進位檔之前，先問：這個檔裡有沒有東西記錄著別的東西的位址？</b></p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>b = path.read_bytes()
+i = b.find(b&#x27;\n@1\n&#x27;) + 4
+head, data = b[:i], b[i:]              # 資料段原封不動地帶著走
+new_head = rebuild_parameters(head)
+path.write_bytes(new_head + data)</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>read_bytes / write_bytes 這種寫法會把整個檔載進記憶體。16 MB 沒問題，幾 GB 的檔就要改成邊讀邊寫。另外寫回去之前先寫到暫存檔再改名，程式中途掛掉才不會留下半個檔——本案沒做這件事，因為有備份。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <p>然後是驗證。改寫原始研究資料，光「看起來沒壞」是不夠的：</p>
+  <div class="tblwrap">
+  <table>
+    <tr><th>檢查</th><th>結果</th></tr>
+    <tr><td>未改動的 15 檔 vs 備份</td><td>位元組完全相同</td></tr>
+    <tr><td>5 個重寫檔的<b>壓縮資料段</b> vs 備份</td><td>位元組完全相同（<code>@1</code> 之後一個位元組都沒動）</td></tr>
+    <tr><td>5 個重寫檔實際跑 zlib 解壓</td><td>成功，解出大小 = 維度相乘 × 2，相符</td></tr>
+    <tr><td>壓縮長度宣告 vs 實際</td><td>仍然一致</td></tr>
+    <tr><td>欄位順序種類</td><td>由 2 種降為 1 種</td></tr>
+  </table>
+  </div>
+  <div class="note">第 3 項是關鍵：<b>真的把資料解壓出來</b>，而不是只比對位元組。比對位元組只能證明「沒動到」，解壓才能證明「還能用」。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-20"><div class="mhead"><span class="mno">M-20</span><span class="mtt">位元組級比對</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>確認未改動的 15 個檔與備份完全相同，5 個改過的檔其資料段與備份完全相同。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>逐位元組比對回答的是「有沒有變」，而且是最強的答案：一個位元組都沒差。雜湊（md5/sha256）是同一件事的壓縮版——比對雜湊值等於比對內容，省了同時開兩份檔的記憶體，代價是理論上存在碰撞（實務上可忽略）。本案只比對資料段那一塊，而不是整個檔，因為檔頭本來就故意改了。<b>驗證要明確界定「哪一塊應該不變」</b>，否則不是漏驗就是誤報。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>import hashlib
+def data_hash(p):
+    b = p.read_bytes(); i = b.find(b&#x27;\n@1\n&#x27;) + 4
+    return hashlib.sha256(b[i:]).hexdigest()
+assert data_hash(new) == data_hash(backup)</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>比對通過只證明「沒動到」，不證明「還能用」——這是下一步的事。</p></div></div><div class="mbox" id="M-21"><div class="mhead"><span class="mno">M-21</span><span class="mtt">真的解壓一次做端到端驗證</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把 5 個改寫過的檔實際跑一次 zlib 解壓，並確認解出來的大小仍等於維度相乘乘以 2。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>位元組比對驗的是「我沒有破壞它」，解壓驗的是「它整條路走得通」。後者涵蓋前者驗不到的東西：資料段起點找對了、標記沒有被寫壞、檔頭與資料段的接縫沒有多一個或少一個位元組。<b>端到端驗證的定義是：用最終的使用方式跑一次，而不是檢查中間狀態。</b>換到別的場合就是——影片要真的播一次，資料庫備份要真的還原一次。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>端到端驗證比較貴（要解壓 400 MB），所以人會想省。省的代價是：所有「看起來沒問題」的檢查都通過，實際打開卻是壞的。折衷是抽樣端到端驗證，但至少要涵蓋所有被改動過的檔。</p></div></div><div class="mbox" id="M-22"><div class="mhead"><span class="mno">M-22</span><span class="mtt">核對長度宣告：760523 與 760524</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>檔頭宣告壓縮長度是 760523，從資料段起點數到檔尾是 760524，差 1。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>差的那 1 個位元組是檔尾的換行符號（0x0a）。也就是說兩邊在數不同的東西：檔頭數的是「zlib 串流本身有多長」，數到檔尾則是「串流加上結尾換行」。兩者都沒錯，錯的是把它們當成同一個量去比。<b>看到差 1，先問兩邊各自在數什麼，而不是先假設有一邊寫錯了。</b>這跟 M-12 的差一格是同一類問題的兩種面貌。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>declared = int(re.search(r&#x27;@1\(HxZip,(\d+)\)&#x27;, head).group(1))
+to_eof   = len(b) - start
+assert to_eof - declared in (0, 1)      # 允許結尾換行</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>實測 20 個檔全部是差 1，所以這是這批資料的通則，不是偶然。但它仍然是推論（M-09 第四級）——AmiraMesh 沒有公開規格說「結尾一定有換行」。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+
+  <h3 class="seg" id="s6"><span class="num">6</span>留下紀錄</h3>
+  <div class="msg g"><span class="who">🟢 使用者：</span>把剛才發生的<b>所有事</b>寫進 <code>report1-1.docx</code>，再寫一句話說明這個資料夾裡有什麼。</div>
+  <div class="ai"><span class="tag">AI 做了什麼</span>寫了 <code>make_report1_1.py</code> 產生六章報告，涵蓋格式判定（含可信度分級表）、摘要表產生、欄位稽核、正規化與驗證、資料夾現況、未驗證事項。<b>包含 AI 自己那次體素尺寸誤報</b>，以及「為什麼決定先備份」的理由。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-24"><div class="mhead"><span class="mno">M-24</span><span class="mtt">用程式產生報告，而不是手寫</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>六章的過程報告是一支程式產生的，不是打字打出來的。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>手寫文件是一次性產物：上游數字改了，文件不會跟著改，而且沒有人看得出來它過期了。產生器把「資料 → 文件」這條路徑本身寫下來，於是文件變成可重生的產物。代價是要多寫一支程式；換到的是三個月後重跑一次就知道數字還對不對。<b>判準：這份文件裡的數字會不會變？會變就寫產生器。</b></p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>產生器只有在真的重跑時才有價值。改了上游卻忘記重跑，跟手寫文件一樣會過期——所以產生器要放在跟資料同一個資料夾，而且文件頁尾要寫明它是誰產生的（這份 method.docx 自己也是這樣做的）。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="note">「所有事」包含 AI 自己出的錯。省略它會讓紀錄看起來比實際過程乾淨，而三個月後回頭看，你會希望當時有寫。</div>
+
+  <h3 class="seg" id="s7"><span class="num">7</span>做成教材</h3>
+  <div class="msg g"><span class="who">🟢 使用者：</span>把整段過程按照 EP01 的格式做成一份完整教材（EP1-1），先不要公開，也不要 commit and push，但是要給我一個我自己能看到成品的網頁網址。</div>
+  <div class="ai"><span class="tag">AI 做了什麼</span>抓下 EP01 的原始 HTML 分析版面結構（五色對話框、名詞速查表、四大 Part、影片區塊），照同一套視覺系統寫出你正在讀的這一頁，發布成<b>私有網頁</b>——有網址可看，但沒有公開、沒有進版控。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-25"><div class="mhead"><span class="mno">M-25</span><span class="mtt">產生單一檔案、無外部相依的教材頁</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把整段過程做成一頁 HTML：CSS 內嵌、沒有外部相依，雙擊就能開。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>自足檔案（self-contained）的意思是所有資源都在檔案裡面。好處是可以複製、可以離線讀、十年後還打得開；代價是檔案較大、無法多頁共用樣式。教材與報告這類要長期保存、要能寄給別人的東西，自足性通常比檔案大小重要。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>唯一的外部相依是影片的 YouTube 內嵌框，所以那一塊離線就沒有——教材頁自己在說明文字裡把這件事寫出來了，這是正確的處理：<b>做不到的部分要寫在文件裡，不是留給讀者自己踩。</b></p></div></div></div>
+<!-- METHOD:BOX:END -->
+
+  <h3 class="seg" id="s8"><span class="num">8</span>事後才發現的事：那個「純外觀差異」不是外觀差異</h3>
+  <p>製作這份教材時，AI 想確認一件事：檔頭寫的 <code>ushort</code> 理論值域是 0–65535，但實際資料真的用到那麼大嗎？於是把 20 個檔全部解壓，統計每個檔的最大值。</p>
+  <div class="statgrid">
+    <div class="stat"><div class="v">15</div><div class="k">個檔案最大值 = 4095（12-bit）</div></div>
+    <div class="stat"><div class="v">5</div><div class="k">個檔案最大值 = 255（8-bit）</div></div>
+    <div class="stat"><div class="v">100%</div><div class="k">與欄位順序異常的檔案重合</div></div>
+  </div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-26"><div class="mhead"><span class="mno">M-26</span><span class="mtt">把 20 個檔全部解壓，統計每個檔的最大值</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>解壓每個檔的資料段，把位元組流解讀成 16-bit 無號整數陣列，取最大值。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>解壓出來的是一長串位元組，要變成數字需要三個約定，全部來自檔頭：每個數字佔幾個位元組（ushort → 2）、有沒有正負號（unsigned）、以及兩個位元組誰排前面（BINARY-LITTLE-ENDIAN → 低位在前）。三個都對，位元組流才會被解讀成正確的數值。端序搞反的話 4095（0x0FFF）會被讀成 65295（0xFF0F）——不會出錯，只會給你錯的答案。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>import zlib, numpy as np
+raw = zlib.decompress(b[start:])
+a = np.frombuffer(raw, dtype=&#x27;&lt;u2&#x27;)    # &lt; 小端序, u 無號, 2 兩個位元組
+print(a.max(), a.min(), a.size)        # frombuffer 不複製資料，零成本</code></pre><p>實測 20 個檔的結果：15 個檔最大值 4095，5 個檔最大值 255，最小值全部是 0。那 5 個正是 TH-F-100051、Tdc2-F-000001、Trh-F-600017、VGlut-F-300388、VGlut-F-600670。</p></div><div class="mpane" data-k="3" data-label="坑" hidden><p>np.frombuffer 回傳的是唯讀視圖，不複製資料——這是它便宜的原因，但要寫入就得先 .copy()。另外一次只處理一個檔就好：20 個檔全部展開約 400 MB，沒必要同時留在記憶體裡。</p></div></div><div class="mbox" id="M-28"><div class="mhead"><span class="mno">M-28</span><span class="mtt">由最大值反推量化深度</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>從最大值 4095 判定這是 12-bit 資料，從 255 判定是 8-bit。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>n 位元無號整數的最大值是 2ⁿ − 1：255 = 2⁸ − 1，4095 = 2¹² − 1，65535 = 2¹⁶ − 1。看到資料最大值精準地停在這種數字上，最合理的解釋是原始取樣就只有那麼多階，之後被裝進更大的容器（ushort）。共軛焦顯微鏡的相機常見就是 8-bit 或 12-bit，而檔案格式為了對齊都用 16-bit 存。</p><p><b>但這是實測上界，不是證明。</b>嚴格說 4095 只代表「沒有任何體素超過 4095」，12-bit 是最合理的解釋，不是唯一可能——一批真正的 16-bit 資料如果剛好都不亮，也會停在某個值。要更確定可以看數值的分布是否只落在 12-bit 能表示的階上。按 M-09 的分級，這條屬於第四級：純屬推論，但推論得很強。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>這件事檔頭完全不會告訴你——20 個檔都寫 ushort。<b>唯一的取得方式是把資料解壓出來實際統計。</b>凡是「宣稱」與「實測」可能不一致的量，都要當成必須實測的量對待。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <p>那 5 個值域只到 255 的檔案，<b>正好就是第 ④ 段找出來的那 5 個欄位順序不同的檔案</b>。一個不多，一個不少。</p>
+  <div class="danger">🔴 <b>這推翻了第 ⑤ 段的判斷。</b>AI 當時說「欄位順序差異沒有功能影響、純屬外觀」——就<b>剖析程式</b>而言那句話是對的，但結論下錯了：欄位順序不是外觀差異，而是<b>兩條不同影像處理管線留下的指紋</b>。同一批來源、同一個工具，寫出不同欄位順序、也寫出不同的強度量化深度。<br><br>從 20 個檔裡挑中同樣 5 個的機率是 1/15504 ≈ 0.0065%。這不是巧合。</div>
+  <p>後果很直接：<b>統一欄位順序，等於把檔頭裡唯一能區分這兩群檔案的線索抹掉了。</b>值域差異藏在壓縮資料裡，不解壓看不到；欄位順序本來是唯一在檔頭層面就能看出來的標記。</p>
+  <div class="note">✅ 還好第 ⑤ 段有備份。<code>neuron_20.backup/</code> 裡完整保留著原始欄位順序，這條線索沒有真的消失。<b>「動原始資料前先備份」這個習慣，在這裡實際救了一次。</b></div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-29"><div class="mhead"><span class="mno">M-29</span><span class="mtt">兩群完全重合代表什麼</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>確認「值域只到 255 的 5 個檔」與「欄位順序不同的 5 個檔」是同一組，並估算這有多不尋常。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>從 20 個裡挑 5 個的方法數是組合數：</p><pre><code>C(20,5) = 20! / (5! × 15!) = 15504
+P(隨機挑中同樣那 5 個) = 1 / 15504 ≈ 6.45e-5 ≈ 0.0065%</code></pre><p>所以「兩組毫無關係卻剛好完全重合」的機率是萬分之 0.65。統計上這叫巧合太貴，合理的推論是兩者有共同成因——而共同成因確實找得到：同一條影像處理管線會同時決定寫檔時的欄位順序與相機的量化深度。<b>兩個看似無關的特徵完全共變，通常意味著背後有第三個變數。</b></p><p>分寸要說清楚：這是事後檢定（看到結果才去算機率），所以那個 0.0065% 是描述性的，不是嚴格的假設檢定 p 值——真要做假設檢定，該在看資料之前就決定要檢定什麼。本案的說服力主要來自機制上講得通，機率只是佐證。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>重合本身不告訴你因果方向。它沒有證明「欄位順序造成值域不同」，只證明兩者同源。實務上的結論也不是要去解釋順序，而是：<b>做強度比較之前，這 20 個檔不能當成同一批資料處理。</b></p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <p>為什麼這件事重要？如果之後要比較這 20 顆神經元的螢光強度，把 0–255 那群和 0–4095 那群直接放在一起比，等於拿不同刻度的尺量東西——低值域那群會系統性地被判定成「比較暗」。而<b>檔頭完全不會告訴你這件事</b>，它 20 個檔都寫 <code>ushort</code>。</p>
+
+  <!-- ============ PART 2 ============ -->
+  <h2 id="part2"><span class="pt">PART 2</span>最佳實踐清單</h2>
+  <p>把上面的經驗濃縮成一張可快速掃描的表。想看實例就點「對應段落」跳回去。</p>
+  <div class="tblwrap">
+  <table>
+    <tr><th>實踐</th><th>對應段落</th><th>為什麼重要</th></tr>
+    <tr><td>先判讀，禁止先寫程式</td><td><a href="#s1">①</a></td><td>不知道是什麼就動手，等於用猜的蓋房子。</td></tr>
+    <tr><td>要求證據追到位元組與規格編號</td><td><a href="#s2">②</a></td><td>「我覺得是」和「offset 438 是 78 9c」是兩種東西。</td></tr>
+    <tr><td>明講「查不到就說查不到」</td><td><a href="#s2">②</a></td><td>先解除壓力，AI 才不會把推論講得像事實。</td></tr>
+    <tr><td>要求最小、只做一件事</td><td><a href="#s3">③</a></td><td>沒有限制，AI 會順手多做出你看不懂的東西。</td></tr>
+    <tr><td>發現問題與處理問題分兩回合</td><td><a href="#s4">④</a></td><td>人保留決策權，也才有機會看見問題本身。</td></tr>
+    <tr><td>AI 該說出反對意見，再照你的決定做</td><td><a href="#s5">⑤</a></td><td>你需要知道代價，但決定權仍然在你。</td></tr>
+    <tr><td>動原始資料前先備份</td><td><a href="#s5">⑤</a>、<a href="#s8">⑧</a></td><td>本案實際救了一次——被抹掉的線索還原得回來。</td></tr>
+    <tr><td>端到端驗證，不只比對位元組</td><td><a href="#s5">⑤</a></td><td>比對只證明沒動到，解壓才證明還能用。</td></tr>
+    <tr><td>紀錄要包含自己犯的錯</td><td><a href="#s4">④</a>、<a href="#s6">⑥</a></td><td>乾淨的紀錄會騙到三個月後的你。</td></tr>
+    <tr><td>「沒有功能影響」不等於「沒有意義」</td><td><a href="#s8">⑧</a></td><td>格式差異可能是資料來源的唯一指紋。</td></tr>
+  </table>
+  </div>
+
+  <!-- ============ PART 3 ============ -->
+  <h2 id="part3"><span class="pt">PART 3</span>本次成果</h2>
+
+  <h3>數字總結</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>項目</th><th>內容</th></tr>
+    <tr><td>判讀檔案</td><td>20 個 AmiraMesh 影像檔（約 16 MB）</td></tr>
+    <tr><td>格式判定</td><td>AmiraMesh BINARY-LITTLE-ENDIAN 2.1，資料段 zlib 壓縮，<code>ushort</code>，體素 1 µm 等向</td></tr>
+    <tr><td>有正式規格佐證的部分</td><td>2 個位元組（RFC 1950 §2.2）——其餘全部標明為社群文件或推論</td></tr>
+    <tr><td>找到的檔頭差異</td><td>1 項（欄位順序，5 個檔）</td></tr>
+    <tr><td>事後發現的真正差異</td><td>強度值域分兩群：4095（15 檔）／255（5 檔），與上一列<b>完全重合</b></td></tr>
+    <tr><td>AI 自己抓出的誤報</td><td>1 次（浮點容差設太緊，誤判 19 檔體素異常）</td></tr>
+    <tr><td>使用者的指令數</td><td>7 句（其中 3 句是踩剎車或要求證據）</td></tr>
+    <tr><td>人寫的程式碼</td><td>0 行——全部由 AI 產出，人只負責出題、踩剎車與決策</td></tr>
+  </table>
+  </div>
+
+  <h3>產出的檔案</h3>
+  <pre><code>ep1-1/
+├── neuron_20/               # 20 個 AmiraMesh 影像檔（5 檔的檔頭已正規化）
+├── neuron_20.backup/        # ★ 正規化前的原始檔——第 ⑧ 段證明這份很重要
+├── read_headers.py          # 讀檔頭 → table.docx（41 行）
+├── normalize_headers.py     # 統一 Parameters 欄位順序（可重複執行）
+├── make_report1_1.py        # 產生過程報告
+├── table.docx               # 20 檔的維度／體素尺寸／資料型別摘要表
+├── report1-1.docx           # 六章過程報告
+└── Tutorial/
+    └── index.html           # 你正在讀的這一頁</code></pre>
+
+  <h3>三支程式在做什麼</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>程式</th><th>做什麼</th><th>設計重點</th></tr>
+    <tr><td><code>read_headers.py</code></td><td>讀 20 個檔頭，輸出摘要表</td><td>只讀前 8 KB 純文字，不解壓資料段</td></tr>
+    <tr><td><code>normalize_headers.py</code></td><td>統一欄位順序</td><td>只重寫 <code>Parameters</code> 區塊，並斷言資料段未變動</td></tr>
+    <tr><td><code>make_report1_1.py</code></td><td>產生過程報告</td><td>報告可重新生成，不是手寫的一次性文件</td></tr>
+  </table>
+  </div>
+
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-23"><div class="mhead"><span class="mno">M-23</span><span class="mtt">把改寫程式寫成可重複執行</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>同一支程式跑第二次不會出錯，也不會把已經整理好的檔再改壞。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這個性質叫冪等性（idempotent）：做一次和做很多次結果相同。做法是程式先判斷「目前是不是已經是目標狀態」，是就跳過。為什麼重要：批次處理常常會中斷（20 個檔跑到第 13 個時出錯），沒有冪等性的話你得先搞清楚哪些已經處理過；有冪等性就直接重跑整批。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>if current_order == TARGET_ORDER:
+    return &#x27;skip&#x27;          # 已經是目標狀態，不動它</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>冪等的相反不只是「重跑會出錯」，更糟的是「重跑會累積」——例如每跑一次就在檔頭多插一行。設計時問自己：跑第二次會發生什麼？</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <h3>還沒做的事</h3>
+  <ul>
+    <li><b>軸的對應順序未驗證。</b><code>define Lattice</code> 的三個數字與 <code>BoundingBox</code> 的六個數字是否依 x, y, z 對應，以及解壓後體素在記憶體中哪個軸變化最快，都還是沿用慣例的假設。已驗證的只有「三維相乘 × 2 = 解壓後大小」——這個式子對任何軸排列都成立，區分不出順序。要確認得實際切出影像來看。</li>
+    <li><b>值域差異尚未處理。</b>第 ⑧ 段只是<b>發現</b>兩群值域。要拿這 20 顆神經元做強度比較之前，得先決定怎麼正規化。</li>
+    <li><b>欄位順序要不要還原</b>還沒決定。備份完整，兩個方向都走得通。</li>
+  </ul>
+
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-27"><div class="mhead"><span class="mno">M-27</span><span class="mtt">reshape 成 3D 與軸順序問題</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把一維陣列排成 (153, 347, 161) 的立體影像——這一步教材明講「還沒驗證」。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>一維變三維要知道哪個軸在記憶體裡變化最快。兩種主要慣例：</p><div class="tblwrap"><table><tr><th>慣例</th><th>誰在用</th><th>reshape 寫法（x 最快）</th></tr><tr><td>C order（列優先）</td><td>C、Python/NumPy 預設</td><td>a.reshape(nz, ny, nx) → 索引 [z][y][x]</td></tr><tr><td>Fortran order（行優先）</td><td>Fortran、MATLAB、多數科學影像格式</td><td>a.reshape(nx, ny, nz, order=&#x27;F&#x27;)</td></tr></table></div><p>麻煩的是：<b>任何一種排法都不會報錯</b>，因為元素總數一樣。M-06 的尺寸恆等式對三個維度的任何排列都成立，所以它區分不出順序。唯一能確認的方法是把影像切片畫出來看——排錯的話會看到條紋狀的亂訊，而不是神經元。教材誠實地把這件事列在「還沒做的事」，沒有假裝已經驗過。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>這是「驗證通過 ≠ 唯一解」最具體的例子（prelim.docx 1-5）。一個檢查如果對所有候選答案都成立，它的資訊量是零——<b>設計驗證時要問：這個檢查能不能把錯的假設篩掉？</b></p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <!-- ============ PART 4 ============ -->
+  <h2 id="part4"><span class="pt">PART 4</span>9 個核心教訓</h2>
+  <p>看完整段真實過程，把精髓濃縮成這 9 條帶走——每條都對應你剛剛讀到的某個段落。</p>
+
+  <div class="lesson"><h4>① 先判讀，再動手——「先不要寫程式」是一句好指令</h4>
+  使用者第一句話就禁止 AI 寫任何處理程式。這擋掉了最常見的失敗模式：還沒搞懂資料格式就開始寫轉檔程式，寫出來的東西看似能跑，實際在瞎猜。<b>判讀階段和實作階段要分開。</b></div>
+
+  <div class="lesson"><h4>② 把「你怎麼知道」逼成可查證的座標</h4>
+  「檔頭的哪幾個位元組、對應規格書的哪一段」——這句話把回答從敘述層次拉到證據層次。AI 因此做了完整位元組傾印，也因此發現自己原本的說法有四分之三沒有規格依據。<b>你問問題的精確度，決定你得到答案的精確度。</b></div>
+
+  <div class="lesson"><h4>③ 先解除「不知道」的壓力，才問得到實話</h4>
+  「查不到規格就直接說查不到」是一句<b>授權</b>。有了它，AI 才會把依據分成「有規格／社群文件／純屬推論」四級誠實呈報，而不是把猜測寫得跟事實一樣肯定。這句話幾乎可以加在任何你要求 AI 查證的場合。</div>
+
+  <div class="lesson"><h4>④ 「最小」「只做一件事」是有效的限制詞</h4>
+  沒有這兩個詞，AI 很容易順手加功能，最後給你一個你看不懂也不敢改的程式。本案的 <code>read_headers.py</code> 只有 41 行，而且刻意<b>不解壓資料段</b>——因為要的三項資訊都在純文字檔頭裡。</div>
+
+  <div class="lesson"><h4>⑤ 把「發現問題」和「處理問題」拆成兩個回合</h4>
+  「如果有，先不要修，列出來」——這樣你才看得見問題本身，才輪得到你決定要不要動、怎麼動。如果讓 AI 一口氣發現並修掉，你會永遠不知道原本長什麼樣。</div>
+
+  <div class="lesson"><h4>⑥ AI 該先說反對意見，然後照你的決定做</h4>
+  使用者說要統一欄位順序時，AI 先講明「這沒有功能影響、只是外觀」，然後<b>照做</b>，但先備份。這是正確的分工：<b>AI 負責讓你知道代價，你負責決定。</b>（附帶一提，AI 那句「沒有功能影響」後來被證明是看走眼——見第 ⑨ 條。）</div>
+
+  <div class="lesson"><h4>⑦ 動原始資料前先備份，而且要端到端驗證</h4>
+  16 MB 的備份很便宜，重新採樣一批共軛焦影像很貴。驗證也不能只比對位元組——比對只能證明「沒動到」，<b>真的解壓出來</b>才能證明「還能用」。本案兩件事都做了，而第 ⑧ 段證明備份確實派上用場。</div>
+
+  <div class="lesson"><h4>⑧ 紀錄要包含自己犯的錯</h4>
+  AI 在稽核時把 19 個檔誤判為體素異常（自己的浮點容差設太緊），發現後主動更正，並把這次誤報寫進正式報告。<b>一份看起來完全順利的紀錄，通常是漏寫了什麼。</b></div>
+
+  <div class="lesson"><h4>⑨ 「沒有功能影響」不等於「沒有意義」——這一集最貴的一課</h4>
+  欄位順序差異對程式解析毫無影響，所以被當成外觀問題統一掉了。事後才發現：<b>那 5 個檔正好也是強度值域只到 255 的那 5 個</b>（機率 1/15504）。它不是外觀差異，是兩條處理管線的指紋。<b>當你發現一個「無害的不一致」，先問它為什麼存在，再決定要不要抹平。</b></div>
+
+  <!-- ============ 結語 ============ -->
+  <h2 id="closing">結語：給初學者的下一步</h2>
+  <p>如果這份文件你只想記住三句話：</p>
+  <ol>
+    <li><b>先判讀，再動手。</b>面對不熟的資料，第一句話就說「先不要寫程式，告訴我這是什麼、你怎麼判斷的」。</li>
+    <li><b>要證據，並先說「不知道也沒關係」。</b>要求能追到位元組、行號、規格編號；同時明講查不到就直說。</li>
+    <li><b>不一致的東西，先問為什麼存在。</b>你以為在整理格式，可能正在銷毀線索。動手前先備份。</li>
+  </ol>
+  <p>想動手試試看？最低成本的起點：找一個你手上打不開、或不確定內容的檔案，打開 Claude Code，把它指到那個資料夾，說一句「<b>先不要寫任何處理程式，先告訴我這是什麼格式、你怎麼判斷的</b>」——然後在它回答之後追問「哪幾個位元組？對應哪一段規格？查不到就說查不到」。光是這兩句話，你就已經在做這一集示範的全部事情了。</p>
+
+</div>
+
+<div class="foot">
+  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
+</div>
+
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+
+</body>
+</html>

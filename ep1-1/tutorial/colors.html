@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>對話框顏色說明｜EP1-1 判讀一個你打不開的檔案格式</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-1 判讀一個你打不開的檔案格式</a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">1 / 8　對話框顏色說明</span></div></div>
+<div class="wrap">
+<h2 id="colors">對話框顏色說明</h2>
+  <p>後面 <a href="part1.html#part1">Part 1</a> 會逐句重現使用者跟 AI 的對話。為了讓你一眼看出「這句話在做什麼」，所有使用者發言用五種顏色標示。這個分類本身就是重要觀念：<b>跟 AI 協作不是只會「叫它做事」，更重要的是在對的時機問問題、踩剎車、要證據</b>。</p>
+  <div class="msg g"><span class="who">🟢 使用者：</span>請求動作 — 叫 AI 去做一件事（「寫一段最小的程式」）。</div>
+  <div class="msg b"><span class="who">🔵 使用者：</span>問問題 — 詢問現況、判斷、細節（「這是什麼格式？」）。</div>
+  <div class="msg p"><span class="who">🟣 使用者：</span>關鍵決策 — 決定要不要動、往哪個方向動。</div>
+  <div class="msg y"><span class="who">🟡 使用者：</span>中斷 / 踩剎車 — 限制 AI 的行動範圍（「先不要寫程式」「先不要修」）。</div>
+  <div class="msg r"><span class="who">🔴 使用者：</span>設計回饋 / 糾錯 — 對 AI 的回答方式提出根本要求。</div>
+  <p class="note">小提醒：這一集裡<b>價值最高的兩句話都是 🟡 和 🔴</b>。使用者三次踩剎車、一次要求「證據要能追到位元組」，整個結果的品質幾乎都是被這幾句話決定的。</p>
+
+  <!-- ============ 名詞速查表 ============ -->
+  
+<div class="pnav"><a class="next" href="glossary.html"><span class="k">下一部分 →</span><span class="v">名詞速查表</span></a></div>
+</div>
+<div class="foot">
+  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
+</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+</body>
+</html>

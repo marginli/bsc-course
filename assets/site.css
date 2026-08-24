@@ -1,0 +1,75 @@
+:root{
+  --ink:#1b2733; --soft:#5a6b7b; --faint:#8b98a5;
+  --bg:#ffffff; --panel:#f7f8fa; --border:#e4e8ee;
+  --accent:#2563eb; --accent-soft:#eff4ff;
+  --maxw:920px; --radius:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,"Segoe UI","Noto Sans TC","Microsoft JhengHei","PingFang TC",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.85; font-size:16.5px; -webkit-font-smoothing:antialiased;
+  min-height:100vh; display:flex; flex-direction:column;   /* 內容少的時候頁尾才不會浮在半空中 */
+}
+.wrap{max-width:var(--maxw); width:100%; margin:0 auto; padding:0 22px 60px}
+header.hero{max-width:var(--maxw); width:100%; margin:0 auto; padding:54px 22px 8px}
+.eyebrow{color:var(--accent); font-weight:700; font-size:13px; letter-spacing:.08em; text-transform:uppercase; margin:0 0 10px}
+h1{font-size:33px; line-height:1.3; margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+.subtitle{font-size:18px; color:var(--soft); margin:0 0 6px}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:6px}
+
+.back{display:inline-block; font-size:14px; color:var(--soft); margin:0 0 14px}
+.back:hover{color:var(--accent)}
+
+/* 首頁的課程卡 */
+.courses{display:grid; gap:16px; margin:28px 0 0}
+.course{display:block; border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px;
+  background:var(--bg); color:var(--ink); transition:border-color .15s, box-shadow .15s, transform .15s}
+.course:hover{border-color:var(--accent); box-shadow:0 8px 26px rgba(16,24,40,.09); text-decoration:none; transform:translateY(-1px)}
+.course .ep{font-size:12.5px; font-weight:700; color:var(--accent); letter-spacing:.06em}
+.course .t{font-size:21px; font-weight:700; margin:2px 0 6px; line-height:1.35}
+.course .s{font-size:15px; color:var(--soft); margin:0}
+.course .m{font-size:13px; color:var(--faint); margin:10px 0 0; font-variant-numeric:tabular-nums}
+
+/* 課程頁的三個按鈕 */
+.parts{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin:30px 0 0}
+.part{display:flex; flex-direction:column; border:1px solid var(--border); border-radius:var(--radius);
+  padding:20px 22px; background:var(--panel); color:var(--ink); min-height:170px;
+  transition:border-color .15s, box-shadow .15s, transform .15s}
+.part:hover{border-color:var(--accent); background:var(--accent-soft); box-shadow:0 8px 26px rgba(16,24,40,.09); text-decoration:none; transform:translateY(-1px)}
+.part .k{font-size:12.5px; font-weight:700; color:var(--accent); letter-spacing:.06em; text-transform:uppercase}
+.part .t{font-size:20px; font-weight:700; margin:4px 0 8px}
+.part .d{font-size:14.5px; color:var(--soft); line-height:1.7; margin:0}
+.part .go{margin-top:auto; padding-top:12px; font-size:13.5px; font-weight:600; color:var(--accent)}
+.part.off{opacity:.55; pointer-events:none}
+.part.off .k,.part.off .go{color:var(--faint)}
+
+/* docx 轉出來的內文 */
+.doc h2{font-size:23px; margin:44px 0 8px; padding-top:14px; border-top:2px solid var(--border); line-height:1.35}
+.doc h3{font-size:18px; margin:30px 0 8px}
+.doc h4{font-size:16px; margin:22px 0 6px}
+.doc p{margin:12px 0}
+.doc p.lead{font-weight:600}
+.doc p.note{background:var(--accent-soft); border:1px solid #c7dbff; border-radius:8px;
+  padding:11px 15px; margin:16px 0; font-size:14.5px; color:var(--ink)}
+.doc p.note em{font-style:normal}
+.doc p.docfoot{margin:46px 0 0; padding-top:16px; border-top:1px solid var(--border);
+  color:var(--faint); font-size:13px; text-align:center}
+.doc ul,.doc ol{padding-left:24px}
+.doc li{margin:8px 0}
+.doc pre{background:#0f1622; color:#e6edf3; border-radius:10px; padding:14px 16px; overflow-x:auto; font-size:13.5px}
+.tblwrap{overflow-x:auto; margin:18px 0}
+table{border-collapse:collapse; width:100%; font-size:14.5px}
+th,td{border:1px solid var(--border); padding:9px 12px; text-align:left; vertical-align:top}
+th{background:var(--panel); font-weight:700}
+
+.foot{max-width:var(--maxw); width:100%; margin:auto auto 0; padding:22px 22px 34px;
+  color:var(--faint); font-size:13px; border-top:1px solid var(--border)}
+
+/* 注入到教材頁複本上的返回列 */
+.sitebar{position:sticky; top:0; z-index:99; background:rgba(255,255,255,.94);
+  backdrop-filter:blur(6px); border-bottom:1px solid var(--border); font-size:14px}
+.sitebar .in{max-width:920px; margin:0 auto; padding:9px 22px}

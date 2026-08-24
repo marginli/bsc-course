@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>判讀未知格式的 6 個核心觀念｜EP1-1 判讀一個你打不開的檔案格式</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-1 判讀一個你打不開的檔案格式</a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">3 / 8　判讀未知格式的 6 個核心觀念</span></div></div>
+<div class="wrap">
+<h2 id="quickstart">判讀未知格式的 6 個核心觀念</h2>
+  <p>手上有一批打不開的檔案時，先記住這 6 件事：</p>
+  <ol>
+    <li><b>先判讀，再寫程式。</b>不知道是什麼就開始寫轉檔程式，等於用猜的蓋房子。這一集使用者第一句話就是「<b>先不要寫任何處理程式</b>」——這句話決定了整段品質。</li>
+    <li><b>檔案自己會說話。</b>大多數格式的開頭就寫著自己是誰。<code>file</code> 指令沒用時，直接把前幾百個位元組印出來看。</li>
+    <li><b>要求證據能追到位元組。</b>「我覺得這是 X 格式」和「offset 438 的兩個位元組是 <code>78 9c</code>，對應 RFC 1950 §2.2」是完全不同等級的回答。</li>
+    <li><b>查不到規格就說查不到。</b>不是每個格式都有公開規格。分清楚「有規格佐證」「靠社群文件」「純屬推論」，比假裝都很確定有用得多。</li>
+    <li><b>動原始資料前先備份。</b>研究資料常常是重跑不回來的。備份很便宜，重採樣很貴。</li>
+    <li><b>差異先列出來，不要急著抹平。</b>看起來「只是格式不一致」的東西，可能是資料來源不同的唯一線索——這一集最後就是這樣打臉的。</li>
+  </ol>
+  <div class="callout">💡 這一集完全沒有用到 git（版本控制），備份是用最土的方法（複製一份資料夾）。對初學者：先養成「動手前留退路」的習慣，工具用哪個都行。</div>
+
+  <!-- ============ PART 1 ============ -->
+  
+<div class="pnav"><a class="prev" href="glossary.html"><span class="k">← 上一部分</span><span class="v">名詞速查表</span></a><a class="next" href="part1.html"><span class="k">下一部分 →</span><span class="v">PART 1 完整對話時序</span></a></div>
+</div>
+<div class="foot">
+  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
+</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+</body>
+</html>

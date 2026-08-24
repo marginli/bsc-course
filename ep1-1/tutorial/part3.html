@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>本次成果｜EP1-1 判讀一個你打不開的檔案格式</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-1 判讀一個你打不開的檔案格式</a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">6 / 8　本次成果</span></div></div>
+<div class="wrap">
+<h2 id="part3"><span class="pt">PART 3</span>本次成果</h2>
+
+  <h3>數字總結</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>項目</th><th>內容</th></tr>
+    <tr><td>判讀檔案</td><td>20 個 AmiraMesh 影像檔（約 16 MB）</td></tr>
+    <tr><td>格式判定</td><td>AmiraMesh BINARY-LITTLE-ENDIAN 2.1，資料段 zlib 壓縮，<code>ushort</code>，體素 1 µm 等向</td></tr>
+    <tr><td>有正式規格佐證的部分</td><td>2 個位元組（RFC 1950 §2.2）——其餘全部標明為社群文件或推論</td></tr>
+    <tr><td>找到的檔頭差異</td><td>1 項（欄位順序，5 個檔）</td></tr>
+    <tr><td>事後發現的真正差異</td><td>強度值域分兩群：4095（15 檔）／255（5 檔），與上一列<b>完全重合</b></td></tr>
+    <tr><td>AI 自己抓出的誤報</td><td>1 次（浮點容差設太緊，誤判 19 檔體素異常）</td></tr>
+    <tr><td>使用者的指令數</td><td>7 句（其中 3 句是踩剎車或要求證據）</td></tr>
+    <tr><td>人寫的程式碼</td><td>0 行——全部由 AI 產出，人只負責出題、踩剎車與決策</td></tr>
+  </table>
+  </div>
+
+  <h3>產出的檔案</h3>
+  <pre><code>ep1-1/
+├── neuron_20/               # 20 個 AmiraMesh 影像檔（5 檔的檔頭已正規化）
+├── neuron_20.backup/        # ★ 正規化前的原始檔——第 ⑧ 段證明這份很重要
+├── read_headers.py          # 讀檔頭 → table.docx（41 行）
+├── normalize_headers.py     # 統一 Parameters 欄位順序（可重複執行）
+├── make_report1_1.py        # 產生過程報告
+├── table.docx               # 20 檔的維度／體素尺寸／資料型別摘要表
+├── report1-1.docx           # 六章過程報告
+└── Tutorial/
+    └── index.html           # 你正在讀的這一頁</code></pre>
+
+  <h3>三支程式在做什麼</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>程式</th><th>做什麼</th><th>設計重點</th></tr>
+    <tr><td><code>read_headers.py</code></td><td>讀 20 個檔頭，輸出摘要表</td><td>只讀前 8 KB 純文字，不解壓資料段</td></tr>
+    <tr><td><code>normalize_headers.py</code></td><td>統一欄位順序</td><td>只重寫 <code>Parameters</code> 區塊，並斷言資料段未變動</td></tr>
+    <tr><td><code>make_report1_1.py</code></td><td>產生過程報告</td><td>報告可重新生成，不是手寫的一次性文件</td></tr>
+  </table>
+  </div>
+
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-23"><div class="mhead"><span class="mno">M-23</span><span class="mtt">把改寫程式寫成可重複執行</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>同一支程式跑第二次不會出錯，也不會把已經整理好的檔再改壞。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這個性質叫冪等性（idempotent）：做一次和做很多次結果相同。做法是程式先判斷「目前是不是已經是目標狀態」，是就跳過。為什麼重要：批次處理常常會中斷（20 個檔跑到第 13 個時出錯），沒有冪等性的話你得先搞清楚哪些已經處理過；有冪等性就直接重跑整批。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>if current_order == TARGET_ORDER:
+    return &#x27;skip&#x27;          # 已經是目標狀態，不動它</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>冪等的相反不只是「重跑會出錯」，更糟的是「重跑會累積」——例如每跑一次就在檔頭多插一行。設計時問自己：跑第二次會發生什麼？</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <h3>還沒做的事</h3>
+  <ul>
+    <li><b>軸的對應順序未驗證。</b><code>define Lattice</code> 的三個數字與 <code>BoundingBox</code> 的六個數字是否依 x, y, z 對應，以及解壓後體素在記憶體中哪個軸變化最快，都還是沿用慣例的假設。已驗證的只有「三維相乘 × 2 = 解壓後大小」——這個式子對任何軸排列都成立，區分不出順序。要確認得實際切出影像來看。</li>
+    <li><b>值域差異尚未處理。</b>第 ⑧ 段只是<b>發現</b>兩群值域。要拿這 20 顆神經元做強度比較之前，得先決定怎麼正規化。</li>
+    <li><b>欄位順序要不要還原</b>還沒決定。備份完整，兩個方向都走得通。</li>
+  </ul>
+
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-27"><div class="mhead"><span class="mno">M-27</span><span class="mtt">reshape 成 3D 與軸順序問題</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把一維陣列排成 (153, 347, 161) 的立體影像——這一步教材明講「還沒驗證」。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>一維變三維要知道哪個軸在記憶體裡變化最快。兩種主要慣例：</p><div class="tblwrap"><table><tr><th>慣例</th><th>誰在用</th><th>reshape 寫法（x 最快）</th></tr><tr><td>C order（列優先）</td><td>C、Python/NumPy 預設</td><td>a.reshape(nz, ny, nx) → 索引 [z][y][x]</td></tr><tr><td>Fortran order（行優先）</td><td>Fortran、MATLAB、多數科學影像格式</td><td>a.reshape(nx, ny, nz, order=&#x27;F&#x27;)</td></tr></table></div><p>麻煩的是：<b>任何一種排法都不會報錯</b>，因為元素總數一樣。M-06 的尺寸恆等式對三個維度的任何排列都成立，所以它區分不出順序。唯一能確認的方法是把影像切片畫出來看——排錯的話會看到條紋狀的亂訊，而不是神經元。教材誠實地把這件事列在「還沒做的事」，沒有假裝已經驗過。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>這是「驗證通過 ≠ 唯一解」最具體的例子（prelim.docx 1-5）。一個檢查如果對所有候選答案都成立，它的資訊量是零——<b>設計驗證時要問：這個檢查能不能把錯的假設篩掉？</b></p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <!-- ============ PART 4 ============ -->
+  
+<div class="pnav"><a class="prev" href="part2.html"><span class="k">← 上一部分</span><span class="v">PART 2 最佳實踐清單</span></a><a class="next" href="part4.html"><span class="k">下一部分 →</span><span class="v">PART 4 9 個核心教訓</span></a></div>
+</div>
+<div class="foot">
+  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
+</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+</body>
+</html>

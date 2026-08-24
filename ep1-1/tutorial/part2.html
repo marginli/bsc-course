@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>最佳實踐清單｜EP1-1 判讀一個你打不開的檔案格式</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-1 判讀一個你打不開的檔案格式</a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">5 / 8　最佳實踐清單</span></div></div>
+<div class="wrap">
+<h2 id="part2"><span class="pt">PART 2</span>最佳實踐清單</h2>
+  <p>把上面的經驗濃縮成一張可快速掃描的表。想看實例就點「對應段落」跳回去。</p>
+  <div class="tblwrap">
+  <table>
+    <tr><th>實踐</th><th>對應段落</th><th>為什麼重要</th></tr>
+    <tr><td>先判讀，禁止先寫程式</td><td><a href="part1.html#s1">①</a></td><td>不知道是什麼就動手，等於用猜的蓋房子。</td></tr>
+    <tr><td>要求證據追到位元組與規格編號</td><td><a href="part1.html#s2">②</a></td><td>「我覺得是」和「offset 438 是 78 9c」是兩種東西。</td></tr>
+    <tr><td>明講「查不到就說查不到」</td><td><a href="part1.html#s2">②</a></td><td>先解除壓力，AI 才不會把推論講得像事實。</td></tr>
+    <tr><td>要求最小、只做一件事</td><td><a href="part1.html#s3">③</a></td><td>沒有限制，AI 會順手多做出你看不懂的東西。</td></tr>
+    <tr><td>發現問題與處理問題分兩回合</td><td><a href="part1.html#s4">④</a></td><td>人保留決策權，也才有機會看見問題本身。</td></tr>
+    <tr><td>AI 該說出反對意見，再照你的決定做</td><td><a href="part1.html#s5">⑤</a></td><td>你需要知道代價，但決定權仍然在你。</td></tr>
+    <tr><td>動原始資料前先備份</td><td><a href="part1.html#s5">⑤</a>、<a href="part1.html#s8">⑧</a></td><td>本案實際救了一次——被抹掉的線索還原得回來。</td></tr>
+    <tr><td>端到端驗證，不只比對位元組</td><td><a href="part1.html#s5">⑤</a></td><td>比對只證明沒動到，解壓才證明還能用。</td></tr>
+    <tr><td>紀錄要包含自己犯的錯</td><td><a href="part1.html#s4">④</a>、<a href="part1.html#s6">⑥</a></td><td>乾淨的紀錄會騙到三個月後的你。</td></tr>
+    <tr><td>「沒有功能影響」不等於「沒有意義」</td><td><a href="part1.html#s8">⑧</a></td><td>格式差異可能是資料來源的唯一指紋。</td></tr>
+  </table>
+  </div>
+
+  <!-- ============ PART 3 ============ -->
+  
+<div class="pnav"><a class="prev" href="part1.html"><span class="k">← 上一部分</span><span class="v">PART 1 完整對話時序</span></a><a class="next" href="part3.html"><span class="k">下一部分 →</span><span class="v">PART 3 本次成果</span></a></div>
+</div>
+<div class="foot">
+  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
+</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+</body>
+</html>

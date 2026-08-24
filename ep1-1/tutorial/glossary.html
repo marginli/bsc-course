@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>名詞速查表｜EP1-1 判讀一個你打不開的檔案格式</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-1 判讀一個你打不開的檔案格式</a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">2 / 8　名詞速查表</span></div></div>
+<div class="wrap">
+<h2 id="glossary">名詞速查表</h2>
+  <p>看到不懂的詞先回來查。兩張表分別對應這個案例的兩個面向。</p>
+
+  <h3>A. 檔案格式 / 影像資料</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>名詞</th><th>白話解釋</th></tr>
+    <tr><td><b>檔頭 (header)</b></td><td>檔案最前面一段「說明書」，記載這個檔裡裝的是什麼、多大、怎麼讀。這一集的主角。</td></tr>
+    <tr><td><b>magic number / magic string</b></td><td>檔案開頭用來表明身分的固定位元組。看到它就知道是哪種格式，像是檔案的身分證。</td></tr>
+    <tr><td><b>AmiraMesh</b></td><td>Amira / Avizo 這套 3D 影像軟體的原生格式（副檔名 <code>.am</code>）。本案 20 個檔就是這種。</td></tr>
+    <tr><td><b>體素 (voxel)</b></td><td>3D 版的「像素」。本案每個體素代表 1 微米見方的空間。</td></tr>
+    <tr><td><b>zlib / deflate</b></td><td>一種通用壓縮方式。AmiraMesh 的 <code>HxZip</code> 就是用它壓縮影像資料。</td></tr>
+    <tr><td><b>ushort</b></td><td>16-bit 無號整數，每個體素佔 2 個位元組，理論值域 0–65535。<b>注意：檔頭寫 ushort 不代表真的用滿</b>——這一集的關鍵伏筆。</td></tr>
+    <tr><td><b>warp（對位）</b></td><td>把每顆神經元的影像變形對齊到同一個「標準腦」座標系，這樣不同個體才能互相比較。</td></tr>
+  </table>
+  </div>
+
+  <h3>B. Claude Code / Agentic AI 工具</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>名詞</th><th>白話解釋</th></tr>
+    <tr><td><b>Agentic AI</b></td><td>「會自己動手」的 AI——不只回答問題，還能讀檔、寫檔、執行指令，完成多步驟任務。</td></tr>
+    <tr><td><b>Claude Code</b></td><td>本案例用的 Agentic AI 工具。它能直接在你的電腦上讀寫檔案、跑程式。</td></tr>
+    <tr><td><b>十六進位傾印 (hex dump)</b></td><td>把檔案的每個位元組用十六進位印出來看。判讀未知格式的基本手段，本案用 <code>od</code> 指令。</td></tr>
+    <tr><td><b>RFC</b></td><td>網際網路的公開技術規格文件，有編號可查。本案引用 RFC 1950（zlib 格式規格）。</td></tr>
+    <tr><td><b>端到端驗證</b></td><td>不只檢查「看起來對」，而是真的把整條路走完確認結果正確。本案是真的把資料解壓出來驗尺寸。</td></tr>
+    <tr><td><b>可逆 / 不可逆</b></td><td>能不能還原。改寫原始資料是不可逆的，所以動手前要先備份。</td></tr>
+  </table>
+  </div>
+
+  <!-- ============ 快速入門 ============ -->
+  
+<div class="pnav"><a class="prev" href="colors.html"><span class="k">← 上一部分</span><span class="v">對話框顏色說明</span></a><a class="next" href="quickstart.html"><span class="k">下一部分 →</span><span class="v">判讀未知格式的 6 個核心觀念</span></a></div>
+</div>
+<div class="foot">
+  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
+</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+</body>
+</html>
