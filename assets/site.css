@@ -107,9 +107,29 @@ th{background:var(--panel); font-weight:700}
 .qa pre{background:#0f1622; color:#e6edf3; border-radius:10px; padding:14px 16px;
   overflow-x:auto; font-size:13.5px; line-height:1.7}
 .term{background:#0f1622; color:#e6edf3; border-radius:10px; padding:16px 18px;
-  overflow-x:auto; font-size:13px; line-height:1.65; margin:14px 0 6px;
-  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; white-space:pre}
+  font-size:13px; line-height:1.7; margin:14px 0 6px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.term .tline{white-space:pre-wrap; overflow-wrap:anywhere}
+.term .twelcome{border:1px solid #33445c; border-radius:8px; padding:10px 14px;
+  margin:12px 0; max-width:34em}
+.term .tstar{color:#d9a05b}
+.term .tpath{color:#9fb0c4}
+.term .tprompt{margin-top:12px; padding-left:1.4em; text-indent:-1.4em;
+  overflow-wrap:anywhere}
 .termcap{font-size:13px; color:var(--faint); margin:0 0 14px}
+
+/* 兩種讀法的第二個時間 */
+.rt2{color:var(--faint); font-weight:400}
+/* 自我檢查的參考答案：要點一下才展開，不然一滑就看到，等於沒檢查 */
+.doc details.ans{margin:14px 0 0; border:1px solid var(--border); border-radius:10px;
+  background:var(--panel); padding:0 16px}
+.doc details.ans>summary{cursor:pointer; padding:12px 0; font-weight:700; font-size:15px;
+  list-style:none}
+.doc details.ans>summary::-webkit-details-marker{display:none}
+.doc details.ans>summary::before{content:"▸ "; color:var(--accent)}
+.doc details.ans[open]>summary::before{content:"▾ "}
+.doc details.ans[open]>summary{border-bottom:1px solid var(--border)}
+.doc details.ans>ol{margin:12px 0 16px}
 
 /* ===== 前置知識／學習目標／實作 串成一條線 ===== */
 .docnav{display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between;

@@ -7,11 +7,26 @@
 <link rel="stylesheet" href="tutorial.css">
 </head>
 <body>
-<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 8 部分／共 8　結語：給初學者的下一步</span></div></div>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 8 部分／共 8　結語：給初學者的下一步</span></div></div>
 <div class="wrap">
 <p class="rt">約 1 分鐘</p>
 <h2 id="closing">結語：給初學者的下一步</h2>
-  <p>如果這份文件你只想記住三句話：</p>
+
+  <h3>先自己答一次：五題讀後檢查</h3>
+  <p>這五題對應〈學習目標〉的 T1–T5。<b>能用自己的話講出來，這一集就算讀完了</b>；答不出來的那題後面附了跳回去的連結。</p>
+  <div class="tblwrap">
+  <table>
+    <tr><th>#</th><th>問題</th><th>回去看</th></tr>
+    <tr><td>1</td><td>使用者這 7 句話裡，哪 3 句是踩剎車或要求證據？各擋掉了什麼？</td><td><a href="colors.html#colors">顏色說明</a></td></tr>
+    <tr><td>2</td><td>這次判讀裡「有正式規格佐證」的只有哪兩個<a class="gref" href="glossary.html#g-14" title="名詞速查表">位元組</a>？其餘三級各是什麼意思？</td><td><a href="s2.html#s2">第 ② 節</a></td></tr>
+    <tr><td>3</td><td>AI 那次把 19 個檔誤判成異常，是<b>靠什麼</b>發現自己錯的？</td><td><a href="s4.html#s4">第 ④ 節</a></td></tr>
+    <tr><td>4</td><td>「比<a class="gref" href="glossary.html#g-07" title="名詞速查表">對位</a>元組」和「真的解壓一次」，各自證明了什麼？為什麼兩個都要做？</td><td><a href="s5.html#s5">第 ⑤ 節</a></td></tr>
+    <tr><td>5</td><td>欄位順序被統一之後，被抹掉的是什麼線索？如果沒發現，接下來會得到什麼錯的結論？</td><td><a href="s8.html#s8">第 ⑧ 節</a></td></tr>
+  </table>
+  </div>
+  <p class="note">第 5 題如果只答得出「欄位順序被抹掉了」，那只答到一半——關鍵是<b>後果</b>：那 5 個檔的亮度值域只到 255、其餘 15 個到 4095，直接放在一起比強度，會系統性地得到「這 5 顆比較暗」，而那是假的。</p>
+
+  <h3>如果這份文件你只想記住三句話</h3>
   <ol>
     <li><b>先判讀，再動手。</b>面對不熟的資料，第一句話就說「先不要寫程式，告訴我這是什麼、你怎麼判斷的」。</li>
     <li><b>要證據，並先說「不知道也沒關係」。</b>要求能追到位元組、行號、規格編號；同時明講查不到就直說。</li>
@@ -22,9 +37,7 @@
 <div class="startbox"><b>想自己動手做一次？</b>上面那句「打開 Claude Code」之前還有幾步：怎麼取得它、要不要花錢、什麼是終端機、第一次打開長什麼樣——都寫在<a href="../../start.html">開始前你需要什麼</a>。</div>
 <div class="pnav"><a class="prev" href="part4.html"><span class="k">← 上一頁</span><span class="v">9 個核心教訓</span></a></div>
 </div>
-<div class="foot">
-  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
-</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-1</div>
 <!-- METHOD:JS:START -->
 <script>
 // 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。

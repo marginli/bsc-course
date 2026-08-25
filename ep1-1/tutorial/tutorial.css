@@ -103,6 +103,41 @@
 
   @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
+
+  /* ── 圖（2026-08-25 依大一新生試讀報告第二次的優先 4 新增） ── */
+  .fig{margin:22px 0; padding:0}
+  .fig img{display:block; max-width:100%; height:auto; border-radius:6px; background:#000}
+  .fig figcaption{font-size:14px; color:var(--soft); line-height:1.65; margin-top:10px}
+  .figmeta{color:var(--faint); font-size:13px}
+  .figside{display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap}
+  .figside img{width:153px; flex:none}
+  .figside figcaption{flex:1; min-width:240px; margin-top:0}
+  .figrow{display:flex; gap:18px; flex-wrap:wrap; align-items:flex-start}
+  .figitem{flex:1; min-width:150px}
+  .figitem .imgbox{height:200px; display:flex; align-items:center; justify-content:center;
+        background:#000; border-radius:6px; overflow:hidden}
+  .figitem .imgbox img{width:auto; height:100%; max-width:100%; object-fit:contain;
+        border-radius:0}
+  .figlab{margin:8px 0 2px; font-size:14px; font-weight:700}
+  .figlab.ok{color:#15803d}
+  .figlab.bad{color:#b91c1c}
+  .figsub{margin:0; font-size:13px; color:var(--soft)}
+  /* 檔案結構圖：用 flex 畫，不是圖檔 */
+  .fmap{display:flex; flex-wrap:wrap; align-items:stretch; border-radius:6px;
+        overflow:hidden; min-height:62px; font-size:12px; text-align:center}
+  .fseg{display:flex; flex-direction:column; justify-content:center; gap:2px;
+        padding:8px 6px; color:#fff; overflow:hidden; min-width:78px}
+  .fseg span{font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .fseg small{opacity:.78; font-size:11px; white-space:nowrap}
+  .fseg.h{background:#2563eb}
+  .fseg.m{background:#7c3aed}
+  .fseg.z{background:#c2410c}
+  .fseg.d{background:#1f2937}
+  /* 傾印畫面 */
+  .hexd{font-size:12px; line-height:1.55}
+  /* 同時屬於兩類的發言：外框是主色，內側再壓一條 🟡 */
+  .msg.y2{box-shadow:inset 4px 0 0 0 var(--amber)}
+
   /* METHOD:CSS:START */
   .mgroup{margin:14px 0 20px}
   .mglabel{font-size:11.5px; font-weight:700; letter-spacing:.08em; color:var(--faint);

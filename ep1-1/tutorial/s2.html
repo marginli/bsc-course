@@ -7,14 +7,14 @@
 <link rel="stylesheet" href="tutorial.css">
 </head>
 <body>
-<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 4 部分　第 2 節／共 8 節　糾錯：證據要能追到位元組與規格</span></div></div>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 4 部分　第 2 節／共 8 節　糾錯：證據要能追到位元組與規格</span></div></div>
 <div class="wrap seg">
-<p class="ctx">第 4 部分　<a href="s1.html">完整對話時序</a>　·　第 2 節／共 8 節　·　約 5 分鐘</p>
+<p class="ctx">第 4 部分　<a href="s1.html">完整對話時序</a>　·　第 2 節／共 8 節　·　約 6 分鐘（跳過操作原理約 3 分鐘）</p>
 <h3 class="seg" id="s2"><span class="num">2</span>糾錯：證據要能追到位元組與規格</h3>
 <div class="clegend"><span class="cll">使用者發言的五種顏色</span><span class="cl g">🟢 請求動作</span><span class="cl b">🔵 問問題</span><span class="cl p">🟣 關鍵決策</span><span class="cl y">🟡 中斷 / 踩剎車</span><span class="cl r">🔴 設計回饋 / 糾錯</span><a href="colors.html">完整說明 →</a></div>
-  <div class="msg r"><span class="who">🔴 使用者：</span>把你的判斷依據列出來：<a class="gref" href="glossary.html#g-01" title="名詞速查表">檔頭</a>的<b>哪幾個位元組</b>、對應到<b>規格書的哪一段</b>。查不到規格就直接說查不到。</div>
+  <div class="msg r"><span class="who">🔴 使用者：</span>把你的判斷依據列出來：<a class="gref" href="glossary.html#g-01" title="名詞速查表">檔頭</a>的<b>哪幾個<a class="gref" href="glossary.html#g-14" title="名詞速查表">位元組</a></b>、對應到<b>規格書的哪一段</b>。查不到規格就直接說查不到。</div>
   <p>這是整份教材最值得學的一句話。它做了兩件事：把「你怎麼知道」從模糊的敘述<b>逼成可查證的座標</b>；同時<b>預先解除了 AI 說「我不知道」的壓力</b>——「查不到就直接說查不到」等於告訴 AI：老實承認不會被扣分，唬爛才會。</p>
-  <div class="ai"><span class="tag">AI 做了什麼</span>做了完整的位元組傾印，列出每個欄位的精確 offset；接著上網找規格，找到的東西比預期少很多，於是把依據<b>分成三個可信度等級</b>誠實呈報。</div>
+  <div class="ai"><span class="tag">AI 做了什麼</span>做了完整的位元組傾印，列出每個欄位的精確 <a class="gref" href="glossary.html#g-18" title="名詞速查表">offset</a>；接著上網找規格，找到的東西比預期少很多，於是把依據<b>分成四個可信度等級</b>誠實呈報。</div>
   <div class="hexfig">
   <table>
     <tr><th>Offset</th><th>內容</th></tr>
@@ -25,12 +25,22 @@
     <tr><td class="off">412–433</td><td># Data section follows</td></tr>
     <tr><td class="off">435–437</td><td>@1\n（資料段起始標記）</td></tr>
     <tr class="mark"><td class="off">438–439</td><td class="hit">78 9c ← <a class="gref" href="glossary.html#g-05" title="名詞速查表">zlib</a> stream header</td></tr>
-    <tr><td class="off">438–EOF</td><td>壓縮資料，760524 位元組</td></tr>
+    <tr><td class="off">438–EOF</td><td><a class="gref" href="glossary.html#g-24" title="名詞速查表">壓縮</a>資料，760524 位元組</td></tr>
   </table>
   </div>
+  <figure class="fig">
+    <div class="fmap" role="img" aria-label="檔案結構圖：0 到 434 是純文字檔頭，435 到 437 是 @1 標記，438 到檔尾是 zlib 壓縮資料">
+      <div class="fseg h" style="flex:30"><span><a class="gref" href="glossary.html#g-16" title="名詞速查表">純文字</a>檔頭</span><small>0 – 434</small></div>
+      <div class="fseg m" style="flex:13"><span>@1 標記</span><small>435–437</small></div>
+      <div class="fseg z" style="flex:14"><span>78 9c</span><small>438–439</small></div>
+      <div class="fseg d" style="flex:43"><span>zlib 壓縮的影像資料</span><small>438 – 檔尾，760524 位元組</small></div>
+    </div>
+    <figcaption><b>整個檔案就長這樣。</b>前面 434 個位元組是人讀得懂的說明書，中間一個 <code>@1</code> 標記，後面全部是壓縮過的影像——也就是上面那張神經元圖。長度不成比例：實際上檔頭只佔整個檔的 0.06%。<br><span class="figmeta">這裡的 offset 是 <code>fru-F-900054</code> 這一個檔的值。20 個檔的資料段起點分佈在 434–442，因為檔頭是純文字、長度會變——所以程式要用標記去搜尋，不能把 438 寫死（見 <a class="mref" href="#M-07">M-07</a>）。</span></figcaption>
+  </figure>
+
 <!-- METHOD:BOX:START -->
-  <p class="mhint">下面的「操作原理」是給想自己動手寫程式的人看的，四個欄位預設收著；<b>整段跳過不影響後面的閱讀</b>。</p>
-<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-07"><div class="mhead"><span class="mno">M-07</span><span class="mtt">算出每個欄位的精確 offset</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把檔頭每一段文字對應到「從檔案開頭數起第幾個位元組」。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>offset 是量出來的，不是背下來的。做法是在位元組串裡搜尋子字串，回傳的索引就是 offset；子字串長度加上去就是結束位置。這件事值得做的理由不是精確，是可查證性：報告裡寫「offset 438–439 是 78 9c」，任何人都能自己 od 到那個位置去數，不必相信你。把主張釘在別人能重跑的座標上，是這一集第 ② 段真正的方法。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>i = b.find(b&#x27;define Lattice&#x27;)
+  <p class="mhint">「操作原理」（三到四個欄位，點一下展開）——不寫程式的話整段可以跳過。</p>
+<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-07"><div class="mhead"><span class="mno">M-07</span><span class="mtt">算出每個欄位的精確 offset</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把檔頭每一段文字對應到「從檔案開頭數起第幾個位元組」。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>offset 是量出來的，不是背下來的。做法是在位元組串裡搜尋子字串，回傳的索引就是 offset；子字串長度加上去就是結束位置。這件事值得做的理由不是精確，是可查證性：報告裡寫「offset 438–439 是 78 9c」，任何人都能自己 od 到那個位置去數，不必相信你。把主張釘在別人能重跑的座標上，是這一集第 ② 節真正的方法。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>i = b.find(b&#x27;define Lattice&#x27;)
 j = b.find(b&#x27;\n&#x27;, i)
 print(f&#x27;{i}-{j-1}&#x27;, b[i:j].decode())   # 起訖 offset 與內容一起印</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>教學網頁那張表的 438 是 fru-F-900054 這個檔的值，不是通則。實際量過 20 個檔，資料段起點分佈在 434–442——因為檔頭是純文字，檔名長度、座標位數不同，檔頭就不一樣長。<b>任何寫死 438 的程式，在另外 19 個檔上都是錯的。</b>位址一律用標記搜尋，不要硬編碼。</p></div></div></div>
 <!-- METHOD:BOX:END -->
@@ -43,15 +53,13 @@ print(f&#x27;{i}-{j-1}&#x27;, b[i:j].decode())   # 起訖 offset 與內容一起
   </div>
   <div class="note">這一段的價值不在於「AI 查到了什麼」，而在於<b>它敢說有四分之三查不到</b>。如果使用者沒加那句「查不到就直接說查不到」，AI 很可能會把推論寫得跟規格一樣肯定。</div>
 <!-- METHOD:BOX:START -->
-  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-08"><div class="mhead"><span class="mno">M-08</span><span class="mtt">把 78 9c 的每一個位元解出來</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>依 RFC 1950 §2.2 把兩個位元組拆成五個欄位，逐項對照。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>二進位格式常把好幾個資訊擠進同一個位元組，用位元位置區分。取出來的工具只有兩個：遮罩（&amp; ）取特定幾位，位移（&gt;&gt;）把它們挪到最低位。</p><div class="tblwrap"><table><tr><th>欄位</th><th>怎麼取</th><th>本案的值</th><th>意思</th></tr><tr><td>CM</td><td>cmf &amp; 0x0f</td><td>8</td><td>壓縮方法 = deflate</td></tr><tr><td>CINFO</td><td>cmf &gt;&gt; 4</td><td>7</td><td>視窗大小 = 2^(7+8) = 32768 位元組</td></tr><tr><td>FCHECK</td><td>flg &amp; 0x1f</td><td>28</td><td>湊數用，使 (cmf*256+flg) 被 31 整除</td></tr><tr><td>FDICT</td><td>(flg &gt;&gt; 5) &amp; 1</td><td>0</td><td>沒有使用預設字典</td></tr><tr><td>FLEVEL</td><td>flg &gt;&gt; 6</td><td>2</td><td>壓縮等級 = 預設</td></tr></table></div><p>驗算：0x78 = 120，0x9c = 156，120 × 256 + 156 = 30876，30876 ÷ 31 = 996 整除。這就是教學網頁裡「有正式規格佐證的只有兩個位元組」那句話的全部內容——整份判讀裡，只有這兩個位元組能拿一份公開、有編號、任何人查得到的規格來背書。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>位元欄位的順序要照規格讀，不要憑直覺。同樣一個位元組，先遮罩再位移和先位移再遮罩結果可能不同。寫完一定要拿規格附的範例值對一次。</p></div></div><div class="mbox" id="M-09"><div class="mhead"><span class="mno">M-09</span><span class="mtt">把依據分成四個可信度等級</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把「我怎麼知道」的每一條依據，按照來源的可查證性分級呈報。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這不是程式，是方法論，但它是這一集最可移植的一招。四級的判準是「別人要花多少力氣才能推翻你」：</p><div class="tblwrap"><table><tr><th>等級</th><th>判準</th><th>本案的例子</th></tr><tr><td>有正式規格</td><td>公開、有編號、任何人查得到，且直接涵蓋這一點</td><td>78 9c → RFC 1950 §2.2</td></tr><tr><td>只有社群文件</td><td>有人寫下來但沒有權威地位，或作者自己聲明不是規格</td><td>define Lattice / BoundingBox 的語意</td></tr><tr><td>查不到規格</td><td>找過了，確實沒有公開文件</td><td>AmiraMesh 格式本身</td></tr><tr><td>純屬推論</td><td>靠實測反推，沒有任何文件背書</td><td>HxZip = zlib、括號內數字 = 壓縮後長度</td></tr></table></div><p>要點是：第三級和第四級不是失敗，是誠實的結論。一份判讀報告如果四級都寫成同樣肯定的語氣，讀的人就沒辦法判斷該相信到什麼程度，也沒辦法知道從哪裡開始查證。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>分級要在寫結論的時候做，不要事後補。事後補的時候人會傾向把自己推論出來的東西往上調一級。</p></div></div></div>
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-08"><div class="mhead"><span class="mno">M-08</span><span class="mtt">把 78 9c 的每一個位元解出來</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>依 RFC 1950 §2.2 把兩個位元組拆成五個欄位，逐項對照。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>二進位格式常把好幾個資訊擠進同一個位元組，用位元位置區分。取出來的工具只有兩個：遮罩（&amp; ）取特定幾位，位移（&gt;&gt;）把它們挪到最低位。</p><div class="tblwrap"><table><tr><th>欄位</th><th>怎麼取</th><th>本案的值</th><th>意思</th></tr><tr><td>CM</td><td>cmf &amp; 0x0f</td><td>8</td><td>壓縮方法 = deflate</td></tr><tr><td>CINFO</td><td>cmf &gt;&gt; 4</td><td>7</td><td>視窗大小 = 2^(7+8) = 32768 位元組</td></tr><tr><td>FCHECK</td><td>flg &amp; 0x1f</td><td>28</td><td>湊數用，使 (cmf*256+flg) 被 31 整除</td></tr><tr><td>FDICT</td><td>(flg &gt;&gt; 5) &amp; 1</td><td>0</td><td>沒有使用預設字典</td></tr><tr><td>FLEVEL</td><td>flg &gt;&gt; 6</td><td>2</td><td>壓縮等級 = 預設</td></tr></table></div><p>驗算：0x78 = 120，0x9c = 156，120 × 256 + 156 = 30876，30876 ÷ 31 = 996 整除。這就是教學網頁裡「有正式規格佐證的只有兩個位元組」那句話的全部內容——整份判讀裡，只有這兩個位元組能拿一份公開、有編號、任何人查得到的規格來背書。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>位元欄位的順序要照規格讀，不要憑直覺。同樣一個位元組，先遮罩再位移和先位移再遮罩結果可能不同。寫完一定要拿規格附的範例值對一次。</p></div></div><div class="mbox" id="M-09"><div class="mhead"><span class="mno">M-09</span><span class="mtt">把依據分成四個可信度等級</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把「我怎麼知道」的每一條依據，按照來源的可查證性分級呈報。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這不是程式，是方法論，但它是這一集最可移植的一招。四級的判準是「別人要花多少力氣才能推翻你」：</p><div class="tblwrap"><table><tr><th>等級</th><th>判準</th><th>本案的例子</th></tr><tr><td>有正式規格</td><td>公開、有編號、任何人查得到，且直接涵蓋這一點</td><td>78 9c → RFC 1950 §2.2</td></tr><tr><td>只有社群文件</td><td>有人寫下來但沒有權威地位，或作者自己聲明不是規格</td><td>define Lattice / <a class="gref" href="glossary.html#g-19" title="名詞速查表">BoundingBox</a> 的語意</td></tr><tr><td>查不到規格</td><td>找過了，確實沒有公開文件</td><td>AmiraMesh 格式本身</td></tr><tr><td>純屬推論</td><td>靠實測反推，沒有任何文件背書</td><td>HxZip = zlib、括號內數字 = 壓縮後長度</td></tr></table></div><p>要點是：第三級和第四級不是失敗，是誠實的結論。一份判讀報告如果四級都寫成同樣肯定的語氣，讀的人就沒辦法判斷該相信到什麼程度，也沒辦法知道從哪裡開始查證。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>分級要在寫結論的時候做，不要事後補。事後補的時候人會傾向把自己推論出來的東西往上調一級。</p></div></div></div>
 <!-- METHOD:BOX:END -->
 
   
 <div class="pnav"><a class="prev" href="s1.html"><span class="k">← 上一頁</span><span class="v">開場：先不要寫程式</span></a><a class="next" href="s3.html"><span class="k">下一頁 →</span><span class="v">請求動作：最小的程式</span></a></div>
 </div>
-<div class="foot">
-  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
-</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-1</div>
 <!-- METHOD:JS:START -->
 <script>
 // 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。

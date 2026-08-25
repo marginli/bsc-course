@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="tutorial.css">
 </head>
 <body>
-<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 7 部分／共 8　9 個核心教訓</span></div></div>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 7 部分／共 8　9 個核心教訓</span></div></div>
 <div class="wrap">
 <p class="rt">約 2 分鐘</p>
 <h2 id="part4">9 個核心教訓</h2>
@@ -17,13 +17,13 @@
   使用者第一句話就禁止 AI 寫任何處理程式。這擋掉了最常見的失敗模式：還沒搞懂資料格式就開始寫轉檔程式，寫出來的東西看似能跑，實際在瞎猜。<b>判讀階段和實作階段要分開。</b></div>
 
   <div class="lesson"><h4>② 把「你怎麼知道」逼成可查證的座標</h4>
-  「<a class="gref" href="glossary.html#g-01" title="名詞速查表">檔頭</a>的哪幾個位元組、對應規格書的哪一段」——這句話把回答從敘述層次拉到證據層次。AI 因此做了完整位元組傾印，也因此發現自己原本的說法有四分之三沒有規格依據。<b>你問問題的精確度，決定你得到答案的精確度。</b></div>
+  「<a class="gref" href="glossary.html#g-01" title="名詞速查表">檔頭</a>的哪幾個<a class="gref" href="glossary.html#g-14" title="名詞速查表">位元組</a>、對應規格書的哪一段」——這句話把回答從敘述層次拉到證據層次。AI 因此做了完整位元組傾印，也因此發現自己原本的說法有四分之三沒有規格依據。<b>你問問題的精確度，決定你得到答案的精確度。</b></div>
 
   <div class="lesson"><h4>③ 先解除「不知道」的壓力，才問得到實話</h4>
   「查不到規格就直接說查不到」是一句<b>授權</b>。有了它，AI 才會把依據分成「有規格／社群文件／純屬推論」四級誠實呈報，而不是把猜測寫得跟事實一樣肯定。這句話幾乎可以加在任何你要求 AI 查證的場合。</div>
 
   <div class="lesson"><h4>④ 「最小」「只做一件事」是有效的限制詞</h4>
-  沒有這兩個詞，AI 很容易順手加功能，最後給你一個你看不懂也不敢改的程式。本案的 <code>read_headers.py</code> 只有 41 行，而且刻意<b>不解壓資料段</b>——因為要的三項資訊都在純文字檔頭裡。</div>
+  沒有這兩個詞，AI 很容易順手加功能，最後給你一個你看不懂也不敢改的程式。本案的 <code>read_headers.py</code> 只有 41 行，而且刻意<b>不解壓資料段</b>——因為要的三項資訊都在<a class="gref" href="glossary.html#g-16" title="名詞速查表">純文字</a>檔頭裡。</div>
 
   <div class="lesson"><h4>⑤ 把「發現問題」和「處理問題」拆成兩個回合</h4>
   「如果有，先不要修，列出來」——這樣你才看得見問題本身，才輪得到你決定要不要動、怎麼動。如果讓 AI 一口氣發現並修掉，你會永遠不知道原本長什麼樣。</div>
@@ -32,21 +32,19 @@
   使用者說要統一欄位順序時，AI 先講明「這沒有功能影響、只是外觀」，然後<b>照做</b>，但先備份。這是正確的分工：<b>AI 負責讓你知道代價，你負責決定。</b>（附帶一提，AI 那句「沒有功能影響」後來被證明是看走眼——見第 ⑨ 條。）</div>
 
   <div class="lesson"><h4>⑦ 動原始資料前先備份，而且要端到端驗證</h4>
-  16 MB 的備份很便宜，重新採樣一批共軛焦影像很貴。驗證也不能只比<a class="gref" href="glossary.html#g-07" title="名詞速查表">對位</a>元組——比對只能證明「沒動到」，<b>真的解壓出來</b>才能證明「還能用」。本案兩件事都做了，而第 ⑧ 段證明備份確實派上用場。</div>
+  16 MB 的備份很便宜，重新採樣一批共軛焦影像很貴。驗證也不能只比<a class="gref" href="glossary.html#g-07" title="名詞速查表">對位</a>元組——比對只能證明「沒動到」，<b>真的解壓出來</b>才能證明「還能用」。本案兩件事都做了，而第 ⑧ 節證明備份確實派上用場。</div>
 
   <div class="lesson"><h4>⑧ 紀錄要包含自己犯的錯</h4>
-  AI 在稽核時把 19 個檔誤判為<a class="gref" href="glossary.html#g-04" title="名詞速查表">體素</a>異常（自己的浮點容差設太緊），發現後主動更正，並把這次誤報寫進正式報告。<b>一份看起來完全順利的紀錄，通常是漏寫了什麼。</b></div>
+  AI 在稽核時把 19 個檔誤判為<a class="gref" href="glossary.html#g-04" title="名詞速查表">體素</a>異常（自己的浮點<a class="gref" href="glossary.html#g-32" title="名詞速查表">容差</a>設太緊），發現後主動更正，並把這次誤報寫進正式報告。<b>一份看起來完全順利的紀錄，通常是漏寫了什麼。</b></div>
 
   <div class="lesson"><h4>⑨ 「沒有功能影響」不等於「沒有意義」——這一集最貴的一課</h4>
-  欄位順序差異對程式解析毫無影響，所以被當成外觀問題統一掉了。事後才發現：<b>那 5 個檔正好也是強度值域只到 255 的那 5 個</b>（機率 1/15504）。它不是外觀差異，是兩條處理管線的指紋。<b>當你發現一個「無害的不一致」，先問它為什麼存在，再決定要不要抹平。</b></div>
+  欄位順序差異對程式解析毫無影響，所以被當成外觀問題統一掉了。事後才發現：<b>那 5 個檔正好也是強度值域只到 255 的那 5 個</b>（機率 1/15504）。它不是外觀差異，是兩條<a class="gref" href="glossary.html#g-27" title="名詞速查表">處理管線</a>的指紋。<b>當你發現一個「無害的不一致」，先問它為什麼存在，再決定要不要抹平。</b></div>
 
   <!-- ============ 結語 ============ -->
   
 <div class="pnav"><a class="prev" href="part3.html"><span class="k">← 上一頁</span><span class="v">本次成果</span></a><a class="next" href="closing.html"><span class="k">下一頁 →</span><span class="v">結語：給初學者的下一步</span></a></div>
 </div>
-<div class="foot">
-  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
-</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-1</div>
 <!-- METHOD:JS:START -->
 <script>
 // 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。

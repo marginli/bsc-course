@@ -7,25 +7,23 @@
 <link rel="stylesheet" href="tutorial.css">
 </head>
 <body>
-<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 4 部分　第 6 節／共 8 節　留下紀錄</span></div></div>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 4 部分　第 6 節／共 8 節　留下紀錄</span></div></div>
 <div class="wrap seg">
 <p class="ctx">第 4 部分　<a href="s1.html">完整對話時序</a>　·　第 6 節／共 8 節　·　約 1 分鐘</p>
 <h3 class="seg" id="s6"><span class="num">6</span>留下紀錄</h3>
 <div class="clegend"><span class="cll">使用者發言的五種顏色</span><span class="cl g">🟢 請求動作</span><span class="cl b">🔵 問問題</span><span class="cl p">🟣 關鍵決策</span><span class="cl y">🟡 中斷 / 踩剎車</span><span class="cl r">🔴 設計回饋 / 糾錯</span><a href="colors.html">完整說明 →</a></div>
   <div class="msg g"><span class="who">🟢 使用者：</span>把剛才發生的<b>所有事</b>寫進 <code>report1-1.docx</code>，再寫一句話說明這個資料夾裡有什麼。</div>
-  <div class="ai"><span class="tag">AI 做了什麼</span>寫了 <code>make_report1_1.py</code> 產生六章報告，涵蓋格式判定（含可信度分級表）、摘要表產生、欄位稽核、正規化與驗證、資料夾現況、未驗證事項。<b>包含 AI 自己那次<a class="gref" href="glossary.html#g-04" title="名詞速查表">體素</a>尺寸誤報</b>，以及「為什麼決定先備份」的理由。</div>
+  <div class="ai"><span class="tag">AI 做了什麼</span>寫了 <code>make_report1_1.py</code> 產生六章報告，涵蓋格式判定（含可信度分級表）、摘要表產生、欄位稽核、<a class="gref" href="glossary.html#g-28" title="名詞速查表">正規化</a>與驗證、資料夾現況、未驗證事項。<b>包含 AI 自己那次<a class="gref" href="glossary.html#g-04" title="名詞速查表">體素</a>尺寸誤報</b>，以及「為什麼決定先備份」的理由。</div>
 <!-- METHOD:BOX:START -->
-  <p class="mhint">下面的「操作原理」是給想自己動手寫程式的人看的，四個欄位預設收著；<b>整段跳過不影響後面的閱讀</b>。</p>
-<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-24"><div class="mhead"><span class="mno">M-24</span><span class="mtt">用程式產生報告，而不是手寫</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>六章的過程報告是一支程式產生的，不是打字打出來的。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>手寫文件是一次性產物：上游數字改了，文件不會跟著改，而且沒有人看得出來它過期了。產生器把「資料 → 文件」這條路徑本身寫下來，於是文件變成可重生的產物。代價是要多寫一支程式；換到的是三個月後重跑一次就知道數字還對不對。<b>判準：這份文件裡的數字會不會變？會變就寫產生器。</b></p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>產生器只有在真的重跑時才有價值。改了上游卻忘記重跑，跟手寫文件一樣會過期——所以產生器要放在跟資料同一個資料夾，而且文件頁尾要寫明它是誰產生的（這份 method.docx 自己也是這樣做的）。</p></div></div></div>
+  <p class="mhint">「操作原理」（三個欄位，點一下展開）——不寫程式的話整段可以跳過。</p>
+<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-24"><div class="mhead"><span class="mno">M-24</span><span class="mtt">用程式產生報告，而不是手寫</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>六章的過程報告是一支程式產生的，不是打字打出來的。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>手寫文件是一次性產物：上游數字改了，文件不會跟著改，而且沒有人看得出來它過期了。產生器把「資料 → 文件」這條<a class="gref" href="glossary.html#g-34" title="名詞速查表">路徑</a>本身寫下來，於是文件變成可重生的產物。代價是要多寫一支程式；換到的是三個月後重跑一次就知道數字還對不對。<b>判準：這份文件裡的數字會不會變？會變就寫產生器。</b></p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>產生器只有在真的重跑時才有價值。改了上游卻忘記重跑，跟手寫文件一樣會過期——所以產生器要放在跟資料同一個資料夾，而且文件頁尾要寫明它是誰產生的（你正在看的這一整排「操作原理」也是這樣來的——它們不是手寫在教材頁裡的，而是由 make_method<a class="gref" href="glossary.html#g-36" title="名詞速查表">.py</a> 產生、再注入進來的）。</p></div></div></div>
 <!-- METHOD:BOX:END -->
   <div class="note">「所有事」包含 AI 自己出的錯。省略它會讓紀錄看起來比實際過程乾淨，而三個月後回頭看，你會希望當時有寫。</div>
 
   
 <div class="pnav"><a class="prev" href="s5.html"><span class="k">← 上一頁</span><span class="v">決策：統一欄位順序</span></a><a class="next" href="s7.html"><span class="k">下一頁 →</span><span class="v">做成教材</span></a></div>
 </div>
-<div class="foot">
-  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
-</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-1</div>
 <!-- METHOD:JS:START -->
 <script>
 // 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。

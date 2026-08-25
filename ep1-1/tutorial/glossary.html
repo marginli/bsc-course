@@ -7,9 +7,9 @@
 <link rel="stylesheet" href="tutorial.css">
 </head>
 <body>
-<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">名詞速查</span><span class="sep">·</span><span class="here">第 2 部分／共 8　名詞速查表</span></div></div>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">名詞速查</span><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 2 部分／共 8　名詞速查表</span></div></div>
 <div class="wrap">
-<p class="rt">約 2 分鐘</p>
+<p class="rt">約 3 分鐘</p>
 <h2 id="glossary">名詞速查表</h2>
   <p>看到不懂的詞先回來查。兩張表分別對應這個案例的兩個面向。</p>
 
@@ -42,11 +42,42 @@
 
   <!-- ============ 快速入門 ============ -->
   
+
+  <h3>C. 判讀與計算的基本名詞</h3>
+  <p>這一批原本只寫在〈前置知識〉裡，完整說明在<a href="../prelim.html">〈前置知識〉</a>。教材內文第一次出現時也會自動連回這裡。</p>
+  <div class="tblwrap">
+  <table>
+    <tr><th>名詞</th><th>白話解釋</th></tr>
+    <tr><td id="g-14"><b>位元組 (byte)</b></td><td>檔案的基本格子，可放 0–255</td></tr>
+    <tr><td id="g-15"><b>維度 153×347×161</b></td><td>三個方向各有幾個體素</td></tr>
+    <tr><td id="g-16"><b>純文字 / 二進位</b></td><td>記事本打開是人話 / 是亂碼</td></tr>
+    <tr><td id="g-17"><b>微米 (µm)</b></td><td>千分之一公釐；頭髮直徑約 70 µm</td></tr>
+    <tr><td id="g-18"><b>offset</b></td><td>從檔案開頭數起的第幾個位元組</td></tr>
+    <tr><td id="g-19"><b>BoundingBox</b></td><td>影像在真實空間涵蓋的範圍，六個座標</td></tr>
+    <tr><td id="g-20"><b>十六進位</b></td><td>0–9 加 A–F；兩位＝一個位元組</td></tr>
+    <tr><td id="g-21"><b>CoordType uniform</b></td><td>宣告格子是等距的</td></tr>
+    <tr><td id="g-22"><b>端序 (endian)</b></td><td>多位元組數字誰排前面的約定</td></tr>
+    <tr><td id="g-23"><b>共軛焦顯微鏡</b></td><td>一層層掃描、疊成 3D 影像</td></tr>
+    <tr><td id="g-24"><b>壓縮</b></td><td>不解壓就看不到裡面的數字</td></tr>
+    <tr><td id="g-25"><b>螢光強度</b></td><td>體素的亮度數字，用來做定量比較</td></tr>
+    <tr><td id="g-26"><b>bit depth</b></td><td>每點用幾位元存亮度（見 1-2）</td></tr>
+    <tr><td id="g-27"><b>處理管線 (pipeline)</b></td><td>從拍攝到存檔那一連串固定步驟</td></tr>
+    <tr><td id="g-28"><b>正規化</b></td><td>換算到同一把尺上才能比較</td></tr>
+    <tr><td id="g-29"><b>分割 (segmentation)</b></td><td>把目標神經元從整張影像挑出來</td></tr>
+    <tr><td id="g-30"><b>鍵值 / 位置結構</b></td><td>靠名字找 / 靠順序找（見 1-4）</td></tr>
+    <tr><td id="g-31"><b>幻覺 (hallucination)</b></td><td>AI 猜測時語氣和知道時一樣自信</td></tr>
+    <tr><td id="g-32"><b>容差</b></td><td>比較小數時允許的誤差；太緊會誤報</td></tr>
+    <tr><td id="g-33"><b>回合</b></td><td>你說一句、AI 做一輪並回報</td></tr>
+    <tr><td id="g-34"><b>路徑 (path)</b></td><td>檔案的地址，用斜線串起資料夾</td></tr>
+    <tr><td id="g-35"><b>可重複執行</b></td><td>跑幾次結果都一樣，跑兩次也不會壞</td></tr>
+    <tr><td id="g-36"><b>.py</b></td><td>用 Python 寫的程式檔</td></tr>
+    <tr><td id="g-37"><b>git / commit / push</b></td><td>版控工具／存進歷史／上傳到網路</td></tr>
+  </table>
+  </div>
+
 <div class="pnav"><a class="prev" href="colors.html"><span class="k">← 上一頁</span><span class="v">對話框顏色說明</span></a><a class="next" href="quickstart.html"><span class="k">下一頁 →</span><span class="v">判讀未知格式的 6 個核心觀念</span></a></div>
 </div>
-<div class="foot">
-  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
-</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-1</div>
 <!-- METHOD:JS:START -->
 <script>
 // 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
