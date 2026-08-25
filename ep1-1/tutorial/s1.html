@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>開場：先不要寫程式｜EP1-1 判讀一個你打不開的檔案格式</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 4 部分　第 1 節／共 8 節　開場：先不要寫程式</span></div></div>
+<div class="wrap seg">
+<p class="ctx" id="part1">第 4 部分　<a href="s1.html">完整對話時序</a>　·　第 1 節／共 8 節　·　約 8 分鐘</p>
+
+  <p>以下是這次協作的每一輪，依實際發生順序排列。使用者總共只講了 7 句話。</p>
+
+  <h3 class="seg" id="s1"><span class="num">1</span>開場：先不要寫程式</h3>
+<div class="clegend"><span class="cll">使用者發言的五種顏色</span><span class="cl g">🟢 請求動作</span><span class="cl b">🔵 問問題</span><span class="cl p">🟣 關鍵決策</span><span class="cl y">🟡 中斷 / 踩剎車</span><span class="cl r">🔴 設計回饋 / 糾錯</span><a href="colors.html">完整說明 →</a></div>
+  <div class="msg b"><span class="who">🔵 使用者：</span><code>neuron_20/</code> 資料夾裡有 20 個我打不開的檔案。<b>先不要寫任何處理程式</b>，你先告訴我它們是什麼格式，以及你是怎麼判斷出來的。</div>
+  <p>這句話裡有三個指令，缺一不可：（1）判斷格式、（2）說明判斷方法、（3）<b>先不要動手寫程式</b>。第三點是 🟡 踩剎車——它擋掉了 AI 最常見的失敗模式：還沒搞懂資料就開始寫轉檔程式。</p>
+  <div class="ai"><span class="tag">AI 做了什麼</span>先 <code>ls</code> 看檔名與大小，再跑 <code>file</code> 指令——結果只回報 <code>data</code>，表示系統的格式資料庫裡沒有這個格式。於是改用最原始的方法：把檔案前 1200 個位元組直接印出來看。</div>
+<!-- METHOD:BOX:START -->
+  <p class="mhint">下面的「操作原理」是給想自己動手寫程式的人看的，四個欄位預設收著；<b>整段跳過不影響後面的閱讀</b>。</p>
+<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-01"><div class="mhead"><span class="mno">M-01</span><span class="mtt">列出檔名與大小</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>取得 20 個檔的檔名與位元組數，還沒有讀任何內容。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>檔案大小、時間、權限存在檔案系統的 inode（Windows 上是 MFT 記錄）裡，跟檔案內容分開存放。所以問大小是 O(1) 的中繼資料查詢，不需要把檔案讀過一遍。這也是為什麼幾 GB 的檔案 ls 一樣是瞬間回應。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>from pathlib import Path
+for f in sorted(Path(&#x27;neuron_20&#x27;).glob(&#x27;*.am&#x27;)):
+    print(f.name, f.stat().st_size)   # st_size 來自 inode，不讀內容</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>檔名本身是線索但不是證據。副檔名 .am 只是宣稱（見 <a href="../prelim.html#n1-1">〈前置知識〉1-1</a>）；大小相近只能說明它們可能是同一類東西，不能拿來判定格式。</p></div></div><div class="mbox" id="M-02"><div class="mhead"><span class="mno">M-02</span><span class="mtt">跑 file 指令，得到 data</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>用作業系統內建的格式辨識工具問一次，結果是 data——意思是「不認得」。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>file 指令背後是 libmagic，它有一份 magic 資料庫：每一條規則說「在 offset X 有位元組序列 Y，就是格式 Z」。它做的是特徵比對，不是理解檔案。資料庫收了上千種格式，但 <a class="gref" href="glossary.html#g-03" title="名詞速查表">AmiraMesh</a> 這種學術／商業軟體的原生格式不在裡面，所有規則都比不中，於是回落到最後一條：data（不明的二進位資料）。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>$ file neuron_20/*.am        # 回報 data 就是「我的資料庫裡沒有」
+$ file --mime-type x.am      # 只要 MIME 類型
+$ man 5 magic                # magic 規則的寫法，可以自己加一條</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>「file 說 data」不等於「這個檔壞了」，只等於「這台電腦的資料庫沒收錄」。反過來也一樣：file 認得的答案也可能是誤判——它只看了幾個位元組。把 file 當成第一個提示，不是結論。</p></div></div><div class="mbox" id="M-03"><div class="mhead"><span class="mno">M-03</span><span class="mtt">把前 1200 個位元組直接印出來</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>十六進位傾印（<a class="gref" href="glossary.html#g-10" title="名詞速查表">hex dump</a>）：把檔案開頭的每個位元組同時用十六進位與可列印字元印出來。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>任何檔案都是位元組序列，每個位元組是 0–255 的整數。傾印工具做兩件事：把整數印成兩位十六進位（0–255 剛好對應 00–ff，一個位元組一定是兩個字），以及把落在可列印 ASCII 範圍（0x20–0x7e）的位元組同時印出對應字元、其餘印成點。人靠右邊那一欄一眼看出這段是文字還是亂碼——這就是「文字或二進位」最原始的判別法。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>$ od -A d -t x1z -N 1200 x.am     # -A d 位址用十進位，方便對照 offset
+$ xxd -l 1200 x.am                # 或用 xxd，輸出更好讀
+b = open(&#x27;x.am&#x27;,&#x27;rb&#x27;).read(1200)
+print(b.decode(&#x27;latin-1&#x27;))        # latin-1 不會丟例外，任何位元組都對得到字元</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>用 utf-8 解碼二進位檔會直接拋例外，看不到東西。判讀階段一律用 latin-1 或 errors=&#x27;replace&#x27;，先看見再說。另外別一次印整個檔——760 KB 的傾印沒有人讀得完，開頭幾百到幾千個位元組就夠了。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <p>結果檔案開頭是一段<b>純文字</b><a class="gref" href="glossary.html#g-01" title="名詞速查表">檔頭</a>：</p>
+  <div class="prewrap"><pre><code># AmiraMesh BINARY-LITTLE-ENDIAN 2.1
+
+define Lattice 153 347 161
+
+Parameters {
+    Expression "(b)",
+    Content "153x347x161 ushort, uniform coordinates",
+    Filename "/disk/sourceData/data2014_a14/fru-F-900054/fru-F-900054_seg001_clear.am",
+    SaveInfo "AmiraMesh ZIP",
+    BoundingBox -4.80254 147.197 -340.636 5.36349 -127.945 32.0547,
+    CoordType "uniform"
+}
+
+Lattice { ushort Data } @1(HxZip,760523)
+
+# Data section follows
+@1
+&lt;二進位資料&gt;</code></pre><span class="prehint">← 可左右滑動 →</span></div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-04"><div class="mhead"><span class="mno">M-04</span><span class="mtt">認出這是「純文字檔頭 + 二進位酬載」</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>看懂檔案的結構是：一段人類可讀的文字說明書，接著一個標記，然後是壓縮過的影像資料。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這是很常見的一種格式設計。文字檔頭的好處是自我描述：不需要任何專用工具，任何人拿記事本或 od 就能知道裡面裝什麼、多大、怎麼讀。代價是解析要靠字串處理、檔頭長度不固定。與它相對的是純二進位檔頭（固定欄位、固定位址，讀起來快但完全不可讀）。AmiraMesh 選了前者，本案能被判讀出來，一大半是因為這個設計決定。</p><p>本案的檔頭有三個關鍵宣告：</p><div class="tblwrap"><table><tr><th>宣告</th><th>意思</th><th>後面哪一步會用到</th></tr><tr><td># AmiraMesh BINARY-LITTLE-ENDIAN 2.1</td><td>格式與端序</td><td><a class="mref" href="s8.html#M-26">M-26</a> 解讀 <a class="gref" href="glossary.html#g-06" title="名詞速查表">ushort</a> 時要知道端序</td></tr><tr><td>define Lattice 153 347 161</td><td>三個方向各有幾個<a class="gref" href="glossary.html#g-04" title="名詞速查表">體素</a></td><td><a class="mref" href="#M-06">M-06</a> 尺寸恆等式、<a class="mref" href="s3.html#M-12">M-12</a> 體素尺寸</td></tr><tr><td>Lattice { ushort Data } @1(HxZip,760523)</td><td>型別、資料段編號、壓縮方式與壓縮後長度</td><td><a class="mref" href="s5.html#M-22">M-22</a> 核對長度、<a class="mref" href="s8.html#M-26">M-26</a> 解讀型別</td></tr></table></div></div><div class="mpane" data-k="2" data-label="坑" hidden><p>檔頭寫的是宣稱，不是實測（見 <a href="../prelim.html#n1-2">〈前置知識〉1-2</a>）。這一集最後的反轉就出在這裡：20 個檔都宣稱 ushort，實際值域卻分兩群。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="ai"><span class="tag">AI 做了什麼</span>比對 20 個檔的第一行全部相同；再檢查 <code>@1</code> 之後的資料開頭是 <code>78 9c</code>（<a class="gref" href="glossary.html#g-05" title="名詞速查表">zlib</a> 的招牌位元組）；最後真的解壓一次，得到 17,095,302 位元組，正好等於 <code>153 × 347 × 161 × 2</code>——維度與「每體素 2 位元組」完全吻合。判定完成。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-05"><div class="mhead"><span class="mno">M-05</span><span class="mtt">認出資料段開頭的 78 9c 是 zlib</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>在資料段起點取兩個位元組，判斷這是不是 zlib 壓縮串流。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>zlib 串流的前兩個位元組是固定結構的標頭（<a class="gref" href="glossary.html#g-11" title="名詞速查表">RFC</a> 1950 §2.2），不是隨機的資料。它由 CMF 與 FLG 兩個位元組組成，而且規格要求 (CMF×256 + FLG) 必須被 31 整除——這是一個內建的檢查碼。所以看到 78 9c 不只是「看起來像」，而是可以驗算的：0x789c = 30876 = 31 × 996。隨便兩個位元組能通過這個檢查的機率只有 1/31。位元的完整拆解見 <a class="mref" href="s2.html#M-08">M-08</a>。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>i = b.find(b&#x27;\n@1\n&#x27;) + 4          # 資料段起點：用標記找，不要硬編碼
+cmf, flg = b[i], b[i+1]
+assert cmf &amp; 0x0f == 8              # CM=8 → deflate
+assert (cmf*256 + flg) % 31 == 0    # RFC 1950 的 31 整除檢查</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>不要只比對「78 9c」這個組合。9c 編碼的是壓縮等級，換個等級就變成 78 01、78 5e、78 da——同樣是合法 zlib。穩健的判斷是「CM 等於 8」加上「31 整除」，而不是死記某一<a class="gref" href="glossary.html#g-07" title="名詞速查表">對位</a>元組。</p></div></div><div class="mbox" id="M-06"><div class="mhead"><span class="mno">M-06</span><span class="mtt">真的解壓一次，用尺寸恆等式驗證</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把資料段丟進 zlib 解壓，量解壓後的位元組數，跟檔頭宣告的維度相乘比對。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這是整個判讀的收尾，也是<a class="gref" href="glossary.html#g-12" title="名詞速查表">端到端驗證</a>的典型長相。恆等式是：</p><div class="prewrap"><pre><code>解壓後位元組數  ==  d1 × d2 × d3 × (每個體素的位元組數)
+17,095,302     ==  153 × 347 × 161 × 2</code></pre><span class="prehint">← 可左右滑動 →</span></div><p>這條式子一次同時驗了四件獨立的事：資料段起點找對了（不然解不開）、這確實是 zlib（不然解不開）、檔頭宣告的維度是真的、以及 ushort 等於 2 個位元組。任何一項猜錯，等號都不會成立。用一個容易量的量去交叉檢查一串假設，是判讀未知格式最有效的手法。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>這條式子對三個維度的任何排列都成立——153×347×161 和 161×153×347 乘起來一樣大。所以它證明得了「維度是這三個數」，證明不了「哪個數對應哪個軸」。教學網頁「還沒做的事」講的就是這件事，細節見 <a class="mref" href="part3.html#M-27">M-27</a>。驗證通過只代表假設沒被推翻，不代表它是唯一解。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="note">注意 AI 這裡<b>沒有違反「不要寫處理程式」</b>：它只做了判讀（看位元組、驗證一次解壓），沒有產生任何轉檔或處理輸出。「不要寫程式」限制的是產出，不是限制動腦。</div>
+
+  
+<div class="pnav"><a class="prev" href="quickstart.html"><span class="k">← 上一頁</span><span class="v">判讀未知格式的 6 個核心觀念</span></a><a class="next" href="s2.html"><span class="k">下一頁 →</span><span class="v">糾錯：證據要能追到位元組與規格</span></a></div>
+</div>
+<div class="foot">
+  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
+</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

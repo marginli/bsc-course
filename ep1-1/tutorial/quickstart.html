@@ -7,14 +7,15 @@
 <link rel="stylesheet" href="tutorial.css">
 </head>
 <body>
-<div class="tbar"><div class="in"><a href="../">← EP1-1 判讀一個你打不開的檔案格式</a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">3 / 8　判讀未知格式的 6 個核心觀念</span></div></div>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 3 部分／共 8　判讀未知格式的 6 個核心觀念</span></div></div>
 <div class="wrap">
+<p class="rt">約 1 分鐘</p>
 <h2 id="quickstart">判讀未知格式的 6 個核心觀念</h2>
   <p>手上有一批打不開的檔案時，先記住這 6 件事：</p>
   <ol>
     <li><b>先判讀，再寫程式。</b>不知道是什麼就開始寫轉檔程式，等於用猜的蓋房子。這一集使用者第一句話就是「<b>先不要寫任何處理程式</b>」——這句話決定了整段品質。</li>
     <li><b>檔案自己會說話。</b>大多數格式的開頭就寫著自己是誰。<code>file</code> 指令沒用時，直接把前幾百個位元組印出來看。</li>
-    <li><b>要求證據能追到位元組。</b>「我覺得這是 X 格式」和「offset 438 的兩個位元組是 <code>78 9c</code>，對應 RFC 1950 §2.2」是完全不同等級的回答。</li>
+    <li><b>要求證據能追到位元組。</b>「我覺得這是 X 格式」和「offset 438 的兩個位元組是 <code>78 9c</code>，對應 <a class="gref" href="glossary.html#g-11" title="名詞速查表">RFC</a> 1950 §2.2」是完全不同等級的回答。</li>
     <li><b>查不到規格就說查不到。</b>不是每個格式都有公開規格。分清楚「有規格佐證」「靠社群文件」「純屬推論」，比假裝都很確定有用得多。</li>
     <li><b>動原始資料前先備份。</b>研究資料常常是重跑不回來的。備份很便宜，重採樣很貴。</li>
     <li><b>差異先列出來，不要急著抹平。</b>看起來「只是格式不一致」的東西，可能是資料來源不同的唯一線索——這一集最後就是這樣打臉的。</li>
@@ -23,7 +24,7 @@
 
   <!-- ============ PART 1 ============ -->
   
-<div class="pnav"><a class="prev" href="glossary.html"><span class="k">← 上一部分</span><span class="v">名詞速查表</span></a><a class="next" href="part1.html"><span class="k">下一部分 →</span><span class="v">PART 1 完整對話時序</span></a></div>
+<div class="pnav"><a class="prev" href="glossary.html"><span class="k">← 上一頁</span><span class="v">名詞速查表</span></a><a class="next" href="s1.html"><span class="k">下一頁 →</span><span class="v">開場：先不要寫程式</span></a></div>
 </div>
 <div class="foot">
   本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
@@ -54,5 +55,21 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <!-- METHOD:JS:END -->
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
 </body>
 </html>

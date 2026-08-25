@@ -146,9 +146,46 @@
   display:flex; flex-wrap:wrap; gap:6px 16px; align-items:baseline}
 .tbar .sep{color:var(--faint)}
 .tbar .here{color:var(--soft)}
+/* 麵包屑多了「名詞速查」，手機上不能因此變成三行——課名收起來就好 */
+@media(max-width:620px){.tbar .ttl{display:none}}
 
-/* 每一頁的第一個 h2 是頁面標題，不需要原本那條「跟上一段分隔」的上框線 */
-.wrap>h2:first-child{margin-top:20px; padding-top:0; border-top:none}
+/* 每一頁的第一個標題是頁面標題，不需要原本那條「跟上一段分隔」的上框線 */
+.wrap>h2:first-child,.wrap>.rt+h2{margin-top:20px; padding-top:0; border-top:none}
+/* 切成一節一頁之後，那一節的 h3 就是這一頁的標題 */
+.wrap.seg>h3.seg{font-size:23px; margin-top:22px}
+
+/* 這一頁大概要讀多久 */
+.rt{margin:18px 0 0; font-size:13px; color:var(--faint)}
+.ctx{margin:18px 0 0; font-size:13px; color:var(--faint)}
+.ctx a{color:var(--faint); text-decoration:underline}
+
+/* 迷你顏色圖例：從第 4 部分直接開始讀的人，不會知道五個顏色是什麼意思 */
+.clegend{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px;
+  margin:16px 0 4px; padding:10px 14px; border:1px solid var(--border);
+  border-radius:10px; background:var(--panel); font-size:13px}
+.clegend .cll{color:var(--faint); font-weight:700; margin-right:2px}
+.clegend .cl{padding:2px 9px; border-radius:999px; white-space:nowrap}
+.clegend .cl.g{background:rgba(34,197,94,.13); border:1px solid rgba(34,197,94,.35)}
+.clegend .cl.b{background:rgba(59,130,246,.13); border:1px solid rgba(59,130,246,.35)}
+.clegend .cl.p{background:rgba(168,85,247,.14); border:1px solid rgba(168,85,247,.35)}
+.clegend .cl.y{background:rgba(245,158,11,.16); border:1px solid rgba(245,158,11,.38)}
+.clegend .cl.r{background:rgba(239,68,68,.13); border:1px solid rgba(239,68,68,.35)}
+.clegend a{margin-left:auto; white-space:nowrap}
+
+/* 「操作原理」那一整段可以跳過 */
+.mhint{margin:14px 0 -6px; font-size:13px; color:var(--faint)}
+
+/* 名詞速查表的連結：看得出來可以點，但不要搶走內文的注意力 */
+a.gref{color:inherit; text-decoration:underline; text-decoration-style:dotted;
+  text-decoration-color:var(--faint); text-underline-offset:3px}
+a.gref:hover{color:var(--accent); text-decoration-color:var(--accent)}
+a.mref{font-variant-numeric:tabular-nums; white-space:nowrap}
+
+/* 程式碼區塊在窄螢幕上會橫向捲動，要講出來——不然看起來像被切掉了 */
+.prewrap{position:relative}
+.prehint{display:none}
+.prewrap.canscroll .prehint{display:block; margin:-6px 0 12px; font-size:12px;
+  color:var(--faint); text-align:right}
 
 /* 目錄頁的影片只是導覽，不要吃掉整個第一屏 */
 .hubvid{margin:30px 0 0}
@@ -166,6 +203,24 @@
 .pcard .d{font-size:14.5px; color:var(--soft); line-height:1.7; margin:0}
 .pcard .m{margin-top:auto; padding-top:11px; font-size:12.5px; color:var(--faint)}
 
+/* 被切成好幾節的部分，在目錄頁上收成一組，不要跟其他部分混成一排 */
+.pgroup{grid-column:1/-1; margin:6px 0; border:1px solid var(--border);
+  border-left:4px solid var(--accent);
+  border-radius:var(--radius); padding:18px 20px 20px; background:#fff}
+.pgroup .pghead{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px}
+.pgroup .pghead .n{font-size:12px; font-weight:700; color:var(--accent); letter-spacing:.06em}
+.pgroup .pghead .t{font-size:18.5px; font-weight:700}
+.pgroup .pghead .m{margin-left:auto; font-size:12.5px; color:var(--faint)}
+.pgroup .pgdesc{margin:8px 0 0; font-size:14.5px; color:var(--soft); line-height:1.7}
+.plist.sub{grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:10px; margin:16px 0 0}
+.plist.sub .pcard{padding:13px 15px; background:#fff}
+.plist.sub .pcard .t{font-size:15.5px; margin:3px 0 0}
+.plist.sub .pcard .m{padding-top:8px; font-size:12px}
+@media(max-width:620px){
+  .pgroup{padding:16px 14px}
+  .pgroup .pghead .m{margin-left:0; flex-basis:100%}
+}
+
 .pnav{display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between;
   margin:56px 0 0; padding-top:20px; border-top:2px solid var(--border)}
 .pnav a{display:block; max-width:47%; font-size:14.5px}
@@ -173,5 +228,9 @@
 .pnav .k{display:block; font-size:12px; color:var(--faint); font-weight:700; letter-spacing:.05em}
 .pnav .v{font-weight:600}
 @media(max-width:620px){.pnav a{max-width:100%}}
+
+/* 「打開 Claude Code」之前還有幾步，全站原本沒有一個地方講 */
+.startbox{margin:30px 0 0; padding:14px 18px; border:1px dashed var(--border);
+  border-radius:10px; background:var(--panel); font-size:14.5px; line-height:1.8}
 
 .allnote{margin:34px 0 0; font-size:14px; color:var(--soft)}

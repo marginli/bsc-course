@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>決策：統一欄位順序｜EP1-1 判讀一個你打不開的檔案格式</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 4 部分　第 5 節／共 8 節　決策：統一欄位順序</span></div></div>
+<div class="wrap seg">
+<p class="ctx">第 4 部分　<a href="s1.html">完整對話時序</a>　·　第 5 節／共 8 節　·　約 6 分鐘</p>
+<h3 class="seg" id="s5"><span class="num">5</span>決策：統一欄位順序</h3>
+<div class="clegend"><span class="cll">使用者發言的五種顏色</span><span class="cl g">🟢 請求動作</span><span class="cl b">🔵 問問題</span><span class="cl p">🟣 關鍵決策</span><span class="cl y">🟡 中斷 / 踩剎車</span><span class="cl r">🔴 設計回饋 / 糾錯</span><a href="colors.html">完整說明 →</a></div>
+  <div class="msg p"><span class="who">🟣 使用者：</span>把欄位順序統一，然後重跑產生 <code>table.docx</code>。</div>
+  <div class="ai"><span class="tag">AI 做了什麼</span>動手之前先講了一句反對意見：<b>「這個差異沒有功能影響」</b>——<a class="gref" href="glossary.html#g-03" title="名詞速查表">AmiraMesh</a> 的 <code>Parameters</code> 是鍵值結構不是位置結構，程式用欄位名比對，那 5 個檔原本就讀得正確；統一它換到的只是外觀一致。使用者已經下決定，所以 AI 照做，但<b>先複製一份 16 MB 的完整備份</b>再動手。</div>
+<!-- METHOD:BOX:START -->
+  <p class="mhint">下面的「操作原理」是給想自己動手寫程式的人看的，四個欄位預設收著；<b>整段跳過不影響後面的閱讀</b>。</p>
+<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-18"><div class="mhead"><span class="mno">M-18</span><span class="mtt">動手前先複製一份完整備份</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把整個 neuron_20/ 複製成 neuron_20.backup/ 再開始改。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>改寫檔案是<a class="gref" href="glossary.html#g-13" title="名詞速查表">不可逆</a>操作：寫入之後原本的位元組就不在磁碟上了。備份把不可逆變成可逆，代價是一份磁碟空間。這裡的成本比是壓倒性的——16 MB 對上「重新培養果蠅、標記、解剖、上共軛焦顯微鏡掃描」的數週工作。值得記住的判準是：<b>備份的成本 vs 重新取得資料的成本</b>，而不是「我覺得應該不會出錯」。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>$ cp -a neuron_20 neuron_20.backup     # -a 連時間戳與權限一起保留
+$ diff -r neuron_20 neuron_20.backup   # 動手前先確認備份是完整的</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>備份完要驗一次再動手，不然你可能備份到一半就開始改。另外備份是「留退路」不是「版本控制」——這一集完全沒用 git，但退路確實留住了，第 ⑧ 段就是靠它把線索找回來的。</p></div></div><div class="mbox" id="M-19"><div class="mhead"><span class="mno">M-19</span><span class="mtt">只重寫 Parameters 區塊</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把 5 個檔的<a class="gref" href="glossary.html#g-01" title="名詞速查表">檔頭</a>重排，資料段一個位元組都不動。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>做法是讀-改-寫：整個檔讀進記憶體，切成「檔頭」與「資料段」兩塊，只重組檔頭那一塊，再把兩塊接起來寫回去。這裡有一個必須想清楚的問題：<b>檔頭長度改變了，資料段的絕<a class="gref" href="glossary.html#g-07" title="名詞速查表">對位</a>址就跟著移動，這樣還讀得到嗎？</b>答案是可以，理由有兩個，而這兩個理由都要從格式本身找出來：</p><ol><li>資料段的位置是靠 @1 這個標記找的，不是靠絕對位址。標記往後移，搜尋一樣找得到。</li><li>檔頭裡 HxZip 括號內的 760523 是「壓縮資料的長度」，不是「資料從第幾個位元組開始」。長度不會因為檔頭變長而改變，所以那個數字仍然正確。</li></ol><p>如果格式當初設計成「檔頭第 8 個位元組記錄資料段的絕對位址」，這一步就會把檔案改壞——而且是那種解得開、看起來正常、實際上讀到錯位置的壞法。<b>動任何二進位檔之前，先問：這個檔裡有沒有東西記錄著別的東西的位址？</b></p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>b = path.read_bytes()
+i = b.find(b&#x27;\n@1\n&#x27;) + 4
+head, data = b[:i], b[i:]              # 資料段原封不動地帶著走
+new_head = rebuild_parameters(head)
+path.write_bytes(new_head + data)</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>read_bytes / write_bytes 這種寫法會把整個檔載進記憶體。16 MB 沒問題，幾 GB 的檔就要改成邊讀邊寫。另外寫回去之前先寫到暫存檔再改名，程式中途掛掉才不會留下半個檔——本案沒做這件事，因為有備份。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <p>然後是驗證。改寫原始研究資料，光「看起來沒壞」是不夠的：</p>
+  <div class="tblwrap">
+  <table>
+    <tr><th>檢查</th><th>結果</th></tr>
+    <tr><td>未改動的 15 檔 vs 備份</td><td>位元組完全相同</td></tr>
+    <tr><td>5 個重寫檔的<b>壓縮資料段</b> vs 備份</td><td>位元組完全相同（<code>@1</code> 之後一個位元組都沒動）</td></tr>
+    <tr><td>5 個重寫檔實際跑 <a class="gref" href="glossary.html#g-05" title="名詞速查表">zlib</a> 解壓</td><td>成功，解出大小 = 維度相乘 × 2，相符</td></tr>
+    <tr><td>壓縮長度宣告 vs 實際</td><td>仍然一致</td></tr>
+    <tr><td>欄位順序種類</td><td>由 2 種降為 1 種</td></tr>
+  </table>
+  </div>
+  <div class="note">第 3 項是關鍵：<b>真的把資料解壓出來</b>，而不是只比對位元組。比對位元組只能證明「沒動到」，解壓才能證明「還能用」。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-20"><div class="mhead"><span class="mno">M-20</span><span class="mtt">位元組級比對</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>確認未改動的 15 個檔與備份完全相同，5 個改過的檔其資料段與備份完全相同。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>逐位元組比對回答的是「有沒有變」，而且是最強的答案：一個位元組都沒差。雜湊（md5/sha256）是同一件事的壓縮版——比對雜湊值等於比對內容，省了同時開兩份檔的記憶體，代價是理論上存在碰撞（實務上可忽略）。本案只比對資料段那一塊，而不是整個檔，因為檔頭本來就故意改了。<b>驗證要明確界定「哪一塊應該不變」</b>，否則不是漏驗就是誤報。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>import hashlib
+def data_hash(p):
+    b = p.read_bytes(); i = b.find(b&#x27;\n@1\n&#x27;) + 4
+    return hashlib.sha256(b[i:]).hexdigest()
+assert data_hash(new) == data_hash(backup)</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>比對通過只證明「沒動到」，不證明「還能用」——這是下一步的事。</p></div></div><div class="mbox" id="M-21"><div class="mhead"><span class="mno">M-21</span><span class="mtt">真的解壓一次做端到端驗證</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把 5 個改寫過的檔實際跑一次 zlib 解壓，並確認解出來的大小仍等於維度相乘乘以 2。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>位元組比對驗的是「我沒有破壞它」，解壓驗的是「它整條路走得通」。後者涵蓋前者驗不到的東西：資料段起點找對了、標記沒有被寫壞、檔頭與資料段的接縫沒有多一個或少一個位元組。<b><a class="gref" href="glossary.html#g-12" title="名詞速查表">端到端驗證</a>的定義是：用最終的使用方式跑一次，而不是檢查中間狀態。</b>換到別的場合就是——影片要真的播一次，資料庫備份要真的還原一次。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>端到端驗證比較貴（要解壓 400 MB），所以人會想省。省的代價是：所有「看起來沒問題」的檢查都通過，實際打開卻是壞的。折衷是抽樣端到端驗證，但至少要涵蓋所有被改動過的檔。</p></div></div><div class="mbox" id="M-22"><div class="mhead"><span class="mno">M-22</span><span class="mtt">核對長度宣告：760523 與 760524</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>檔頭宣告壓縮長度是 760523，從資料段起點數到檔尾是 760524，差 1。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>差的那 1 個位元組是檔尾的換行符號（0x0a）。也就是說兩邊在數不同的東西：檔頭數的是「zlib 串流本身有多長」，數到檔尾則是「串流加上結尾換行」。兩者都沒錯，錯的是把它們當成同一個量去比。<b>看到差 1，先問兩邊各自在數什麼，而不是先假設有一邊寫錯了。</b>這跟 <a class="mref" href="s3.html#M-12">M-12</a> 的差一格是同一類問題的兩種面貌。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>declared = int(re.search(r&#x27;@1\(HxZip,(\d+)\)&#x27;, head).group(1))
+to_eof   = len(b) - start
+assert to_eof - declared in (0, 1)      # 允許結尾換行</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>實測 20 個檔全部是差 1，所以這是這批資料的通則，不是偶然。但它仍然是推論（<a class="mref" href="s2.html#M-09">M-09</a> 第四級）——AmiraMesh 沒有公開規格說「結尾一定有換行」。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+
+  
+<div class="pnav"><a class="prev" href="s4.html"><span class="k">← 上一頁</span><span class="v">踩剎車：先列出來，不要修</span></a><a class="next" href="s6.html"><span class="k">下一頁 →</span><span class="v">留下紀錄</span></a></div>
+</div>
+<div class="foot">
+  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
+</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

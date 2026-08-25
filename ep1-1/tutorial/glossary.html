@@ -7,8 +7,9 @@
 <link rel="stylesheet" href="tutorial.css">
 </head>
 <body>
-<div class="tbar"><div class="in"><a href="../">← EP1-1 判讀一個你打不開的檔案格式</a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">2 / 8　名詞速查表</span></div></div>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">名詞速查</span><span class="sep">·</span><span class="here">第 2 部分／共 8　名詞速查表</span></div></div>
 <div class="wrap">
+<p class="rt">約 2 分鐘</p>
 <h2 id="glossary">名詞速查表</h2>
   <p>看到不懂的詞先回來查。兩張表分別對應這個案例的兩個面向。</p>
 
@@ -16,13 +17,13 @@
   <div class="tblwrap">
   <table>
     <tr><th>名詞</th><th>白話解釋</th></tr>
-    <tr><td><b>檔頭 (header)</b></td><td>檔案最前面一段「說明書」，記載這個檔裡裝的是什麼、多大、怎麼讀。這一集的主角。</td></tr>
-    <tr><td><b>magic number / magic string</b></td><td>檔案開頭用來表明身分的固定位元組。看到它就知道是哪種格式，像是檔案的身分證。</td></tr>
-    <tr><td><b>AmiraMesh</b></td><td>Amira / Avizo 這套 3D 影像軟體的原生格式（副檔名 <code>.am</code>）。本案 20 個檔就是這種。</td></tr>
-    <tr><td><b>體素 (voxel)</b></td><td>3D 版的「像素」。本案每個體素代表 1 微米見方的空間。</td></tr>
-    <tr><td><b>zlib / deflate</b></td><td>一種通用壓縮方式。AmiraMesh 的 <code>HxZip</code> 就是用它壓縮影像資料。</td></tr>
-    <tr><td><b>ushort</b></td><td>16-bit 無號整數，每個體素佔 2 個位元組，理論值域 0–65535。<b>注意：檔頭寫 ushort 不代表真的用滿</b>——這一集的關鍵伏筆。</td></tr>
-    <tr><td><b>warp（對位）</b></td><td>把每顆神經元的影像變形對齊到同一個「標準腦」座標系，這樣不同個體才能互相比較。</td></tr>
+    <tr><td id="g-01"><b>檔頭 (header)</b></td><td>檔案最前面一段「說明書」，記載這個檔裡裝的是什麼、多大、怎麼讀。這一集的主角。</td></tr>
+    <tr><td id="g-02"><b>magic number / magic string</b></td><td>檔案開頭用來表明身分的固定位元組。看到它就知道是哪種格式，像是檔案的身分證。</td></tr>
+    <tr><td id="g-03"><b>AmiraMesh</b></td><td>Amira / Avizo 這套 3D 影像軟體的原生格式（副檔名 <code>.am</code>）。本案 20 個檔就是這種。</td></tr>
+    <tr><td id="g-04"><b>體素 (voxel)</b></td><td>3D 版的「像素」。本案每個體素代表 1 微米見方的空間。</td></tr>
+    <tr><td id="g-05"><b>zlib / deflate</b></td><td>一種通用壓縮方式。AmiraMesh 的 <code>HxZip</code> 就是用它壓縮影像資料。</td></tr>
+    <tr><td id="g-06"><b>ushort</b></td><td>16-bit 無號整數，每個體素佔 2 個位元組，理論值域 0–65535。<b>注意：檔頭寫 ushort 不代表真的用滿</b>——這一集的關鍵伏筆。</td></tr>
+    <tr><td id="g-07"><b>warp（對位）</b></td><td>把每顆神經元的影像變形對齊到同一個「標準腦」座標系，這樣不同個體才能互相比較。</td></tr>
   </table>
   </div>
 
@@ -30,18 +31,18 @@
   <div class="tblwrap">
   <table>
     <tr><th>名詞</th><th>白話解釋</th></tr>
-    <tr><td><b>Agentic AI</b></td><td>「會自己動手」的 AI——不只回答問題，還能讀檔、寫檔、執行指令，完成多步驟任務。</td></tr>
-    <tr><td><b>Claude Code</b></td><td>本案例用的 Agentic AI 工具。它能直接在你的電腦上讀寫檔案、跑程式。</td></tr>
-    <tr><td><b>十六進位傾印 (hex dump)</b></td><td>把檔案的每個位元組用十六進位印出來看。判讀未知格式的基本手段，本案用 <code>od</code> 指令。</td></tr>
-    <tr><td><b>RFC</b></td><td>網際網路的公開技術規格文件，有編號可查。本案引用 RFC 1950（zlib 格式規格）。</td></tr>
-    <tr><td><b>端到端驗證</b></td><td>不只檢查「看起來對」，而是真的把整條路走完確認結果正確。本案是真的把資料解壓出來驗尺寸。</td></tr>
-    <tr><td><b>可逆 / 不可逆</b></td><td>能不能還原。改寫原始資料是不可逆的，所以動手前要先備份。</td></tr>
+    <tr><td id="g-08"><b>Agentic AI</b></td><td>「會自己動手」的 AI——不只回答問題，還能讀檔、寫檔、執行指令，完成多步驟任務。</td></tr>
+    <tr><td id="g-09"><b>Claude Code</b></td><td>本案例用的 Agentic AI 工具。它能直接在你的電腦上讀寫檔案、跑程式。</td></tr>
+    <tr><td id="g-10"><b>十六進位傾印 (hex dump)</b></td><td>把檔案的每個位元組用十六進位印出來看。判讀未知格式的基本手段，本案用 <code>od</code> 指令。</td></tr>
+    <tr><td id="g-11"><b>RFC</b></td><td>網際網路的公開技術規格文件，有編號可查。本案引用 RFC 1950（zlib 格式規格）。</td></tr>
+    <tr><td id="g-12"><b>端到端驗證</b></td><td>不只檢查「看起來對」，而是真的把整條路走完確認結果正確。本案是真的把資料解壓出來驗尺寸。</td></tr>
+    <tr><td id="g-13"><b>可逆 / 不可逆</b></td><td>能不能還原。改寫原始資料是不可逆的，所以動手前要先備份。</td></tr>
   </table>
   </div>
 
   <!-- ============ 快速入門 ============ -->
   
-<div class="pnav"><a class="prev" href="colors.html"><span class="k">← 上一部分</span><span class="v">對話框顏色說明</span></a><a class="next" href="quickstart.html"><span class="k">下一部分 →</span><span class="v">判讀未知格式的 6 個核心觀念</span></a></div>
+<div class="pnav"><a class="prev" href="colors.html"><span class="k">← 上一頁</span><span class="v">對話框顏色說明</span></a><a class="next" href="quickstart.html"><span class="k">下一頁 →</span><span class="v">判讀未知格式的 6 個核心觀念</span></a></div>
 </div>
 <div class="foot">
   本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
@@ -72,5 +73,21 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <!-- METHOD:JS:END -->
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
 </body>
 </html>

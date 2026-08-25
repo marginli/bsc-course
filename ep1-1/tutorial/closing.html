@@ -7,8 +7,9 @@
 <link rel="stylesheet" href="tutorial.css">
 </head>
 <body>
-<div class="tbar"><div class="in"><a href="../">← EP1-1 判讀一個你打不開的檔案格式</a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">8 / 8　結語：給初學者的下一步</span></div></div>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 8 部分／共 8　結語：給初學者的下一步</span></div></div>
 <div class="wrap">
+<p class="rt">約 1 分鐘</p>
 <h2 id="closing">結語：給初學者的下一步</h2>
   <p>如果這份文件你只想記住三句話：</p>
   <ol>
@@ -16,9 +17,10 @@
     <li><b>要證據，並先說「不知道也沒關係」。</b>要求能追到位元組、行號、規格編號；同時明講查不到就直說。</li>
     <li><b>不一致的東西，先問為什麼存在。</b>你以為在整理格式，可能正在銷毀線索。動手前先備份。</li>
   </ol>
-  <p>想動手試試看？最低成本的起點：找一個你手上打不開、或不確定內容的檔案，打開 Claude Code，把它指到那個資料夾，說一句「<b>先不要寫任何處理程式，先告訴我這是什麼格式、你怎麼判斷的</b>」——然後在它回答之後追問「哪幾個位元組？對應哪一段規格？查不到就說查不到」。光是這兩句話，你就已經在做這一集示範的全部事情了。</p>
+  <p>想動手試試看？最低成本的起點：找一個你手上打不開、或不確定內容的檔案，打開 <a class="gref" href="glossary.html#g-09" title="名詞速查表">Claude Code</a>，把它指到那個資料夾，說一句「<b>先不要寫任何處理程式，先告訴我這是什麼格式、你怎麼判斷的</b>」——然後在它回答之後追問「哪幾個位元組？對應哪一段規格？查不到就說查不到」。光是這兩句話，你就已經在做這一集示範的全部事情了。</p>
 
-<div class="pnav"><a class="prev" href="part4.html"><span class="k">← 上一部分</span><span class="v">PART 4 9 個核心教訓</span></a></div>
+<div class="startbox"><b>想自己動手做一次？</b>上面那句「打開 Claude Code」之前還有幾步：怎麼取得它、要不要花錢、什麼是終端機、第一次打開長什麼樣——都寫在<a href="../../start.html">開始前你需要什麼</a>。</div>
+<div class="pnav"><a class="prev" href="part4.html"><span class="k">← 上一頁</span><span class="v">9 個核心教訓</span></a></div>
 </div>
 <div class="foot">
   本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
@@ -49,5 +51,21 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <!-- METHOD:JS:END -->
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
 </body>
 </html>

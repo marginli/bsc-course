@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>踩剎車：先列出來，不要修｜EP1-1 判讀一個你打不開的檔案格式</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 4 部分　第 4 節／共 8 節　踩剎車：先列出來，不要修</span></div></div>
+<div class="wrap seg">
+<p class="ctx">第 4 部分　<a href="s1.html">完整對話時序</a>　·　第 4 節／共 8 節　·　約 6 分鐘</p>
+<h3 class="seg" id="s4"><span class="num">4</span>踩剎車：先列出來，不要修</h3>
+<div class="clegend"><span class="cll">使用者發言的五種顏色</span><span class="cl g">🟢 請求動作</span><span class="cl b">🔵 問問題</span><span class="cl p">🟣 關鍵決策</span><span class="cl y">🟡 中斷 / 踩剎車</span><span class="cl r">🔴 設計回饋 / 糾錯</span><a href="colors.html">完整說明 →</a></div>
+  <div class="msg b"><span class="who">🔵 使用者：</span>這 20 個檔案裡有沒有哪一個的欄位跟其他不一樣？如果有，<b>先不要修，列出來</b>。</div>
+  <p>又一次踩剎車，而且是很老練的一種：<b>把「發現問題」和「處理問題」拆成兩個回合</b>。這讓人保有決策權，也讓 AI 不會在你還沒看到問題時就把它改掉。</p>
+  <div class="ai"><span class="tag">AI 做了什麼</span>比對 20 個檔的<a class="gref" href="glossary.html#g-01" title="名詞速查表">檔頭</a>結構與每個欄位值，共檢查 9 個項目。找到<b>唯一一項差異</b>：<code>Parameters</code> 區塊的欄位順序有兩種。</div>
+<!-- METHOD:BOX:START -->
+  <p class="mhint">下面的「操作原理」是給想自己動手寫程式的人看的，四個欄位預設收著；<b>整段跳過不影響後面的閱讀</b>。</p>
+<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-14"><div class="mhead"><span class="mno">M-14</span><span class="mtt">把 20 個檔頭拉齊來比對</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把每個檔頭剖析成同樣結構的資料，再逐項比較 20 份之間哪裡不一樣。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>比對的前提是先結構化。字串對字串比一定全都不一樣（檔名不同），所以要先把每個檔頭變成一個 dict：{magic, dims, type, order, ...}，然後逐個鍵去比。實作上最順的是分群（等價類）：把 20 個檔按某個鍵的值分堆，堆數等於 1 就是「全部一致」，大於 1 就把每堆的成員列出來。這樣寫的好處是不必事先知道有幾種差異。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>from collections import defaultdict
+groups = defaultdict(list)
+for name, info in headers.items():
+    groups[info[&#x27;order&#x27;]].append(name)      # 換個鍵就能查別的項目
+if len(groups) &gt; 1:
+    for value, files in groups.items(): print(len(files), value, files)</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>今天重跑這一步會得到「20 個檔完全一致」——因為第 ⑤ 段已經把欄位順序統一掉了。<b>原始的兩種順序只存在於 neuron_20.backup/</b>。要重現第 ④ 段的結果，程式要指到備份資料夾。這件事本身就是第 ⑧ 段那一課的實證：抹平之後，沒有備份就真的看不到了。</p></div></div><div class="mbox" id="M-15"><div class="mhead"><span class="mno">M-15</span><span class="mtt">抓出「欄位順序」這種差異</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>發現 Parameters 區塊裡六個欄位的內容都一樣，但排列次序有兩種。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這一步能成立，是因為比較的對象選對了：把欄位取出來當成<b>序列</b>（有次序的清單）比，而不是當成<b>集合</b>（只管有沒有）。同一組欄位，當集合看兩群完全相同，當序列看就分成兩堆。選錯了資料結構，這個差異在稽核階段根本不會出現——而它後來被證明是全案唯一的關鍵線索。</p><div class="tblwrap"><table><tr><th>看法</th><th>資料結構</th><th>本案的結果</th></tr><tr><td>有哪些欄位</td><td>集合 set</td><td>兩群完全相同，看不出差異</td></tr><tr><td>欄位依什麼次序</td><td>序列 list / tuple</td><td>分成 15 : 5 兩群 ← 關鍵</td></tr><tr><td>欄位各是什麼值</td><td>字典 dict</td><td>兩群完全相同</td></tr></table></div></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>order = tuple(re.findall(r&#x27;^\s{4}(\w+)\s&#x27;, params_block, re.M))
+# tuple 可以當 dict 的鍵，直接丟進 M-14 的分群</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>稽核程式只找得到你叫它找的東西。這一集之所以抓得到，是因為有人想到要比次序；值域差異藏在壓縮資料裡，沒人想到要解壓來看，所以拖到第 ⑧ 段才發現。<b>寫稽核程式時，多列幾個「應該不重要」的項目，成本很低。</b></p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="tblwrap">
+  <table>
+    <tr><th>欄位順序</th><th class="num-cell">檔數</th><th>檔案</th></tr>
+    <tr><td><code>Expression, Content, Filename, SaveInfo, BoundingBox, CoordType</code></td><td class="num-cell">15</td><td>（多數）</td></tr>
+    <tr><td><code>Expression, Content, SaveInfo, BoundingBox, CoordType, Filename</code></td><td class="num-cell">5</td><td>TH-F-100051、Tdc2-F-000001、Trh-F-600017、VGlut-F-300388、VGlut-F-600670</td></tr>
+  </table>
+  </div>
+  <p>其餘 8 項全部一致：magic line、<code>Expression</code>、<code>SaveInfo</code>、<code>CoordType</code>、資料型別、<code>Content</code> 字串與維度自洽性、檔名對應、壓縮長度宣告。</p>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-16"><div class="mhead"><span class="mno">M-16</span><span class="mtt">自洽性檢查</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>檢查檔頭裡互相重複記載的資訊有沒有彼此矛盾。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>本案的檔頭把同一件事寫了兩次：Content 字串裡有「153x347x161 <a class="gref" href="glossary.html#g-06" title="名詞速查表">ushort</a>」，define Lattice 那行也有三個數字；檔名欄位與實際檔名應該對得上；HxZip 括號裡的長度與實際資料段長度應該對得上。兩個獨立來源說同一件事，就可以互相驗證——這是不需要任何外部規格就能做的檢查，而且能抓到「檔案被人改過但只改了一半」這類問題。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>m = re.search(r&#x27;&quot;(\d+)x(\d+)x(\d+) (\w+)&#x27;, content_str)
+assert [int(x) for x in m.groups()[:3]] == dims
+assert m.group(4) == typ</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>自洽不等於正確。20 個檔的檔頭全部自洽，但它們宣稱的 ushort 跟實際值域還是對不上（第 ⑧ 段）。自洽性檢查抓得到「被改壞」，抓不到「一開始就寫得太寬」。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <h4>AI 在這裡犯了一個錯，並且自己抓出來</h4>
+  <div class="ai"><span class="tag">AI 做了什麼</span>第一版檢查把 19 個檔的<a class="gref" href="glossary.html#g-04" title="名詞速查表">體素</a>尺寸標成「異常」。AI 自己察覺不對勁——因為前一輪才手算過三個檔都剛好是 1.0——回頭檢查發現是<b>自己的浮點容差設成 1e-6，比 <code>BoundingBox</code> 只印 6 位有效數字的精度還嚴</b>。實際最大偏差是 3.03e-06，屬於捨入誤差。AI 重寫檢查並主動說明這是誤報。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-17"><div class="mhead"><span class="mno">M-17</span><span class="mtt">浮點容差誤報：AI 犯的那個錯</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>第一版檢查把 19 個檔的體素尺寸標成異常，實際上是檢查程式自己的容差設太嚴。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>十進位小數大多沒辦法用二進位浮點精確表示，所以浮點運算幾乎永遠帶著微小誤差，<b>用 == 比較兩個算出來的浮點數是錯的做法</b>，要改成「差距小於某個容差」。問題是容差要設多大——這一步的教訓就在這裡：</p><div class="prewrap"><pre><code>abs(step - 1.0) &lt; 1e-6      # AI 第一版：太嚴，19 個檔被判異常
+abs(step - 1.0) &lt; 1e-4      # 合理：比資料本身的精度寬鬆一級</code></pre><span class="prehint">← 可左右滑動 →</span></div><p>為什麼 1e-6 太嚴？因為誤差不是來自浮點運算，是來自資料本身：BoundingBox 在檔頭裡只印到 6 位有效數字（例如 -340.636），小數點後第 4 位就被截掉了。拿一個只有 6 位有效數字的輸入去要求 1e-6 的一致性，等於要求比輸入本身還精確的結果。實測 20 個檔的最大偏差是 3.0263e-06——比 1e-6 大，比 1e-4 小，所以在嚴容差下全部翻紅，在合理容差下全部通過。</p><p><b>容差的判準是「資料的精度」，不是「浮點數的精度」。</b>定容差之前先問：我的輸入有幾位有效數字？</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>這種誤報最危險的地方是它看起來很像真的發現。19 個檔都異常時，正確的直覺是先懷疑檢查程式，而不是先懷疑 19 個檔——<b>當「異常」的比例高到不像異常，通常是判準錯了。</b>AI 這次是靠「前一輪才手算過三個檔都剛好是 1.0」的矛盾察覺的，也就是靠一個獨立來源的舊結果去打臉新結果。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="note">🔍 <b>這是教材裡刻意保留的一段。</b>AI 會犯錯，重點是有沒有辦法自己發現、以及發不發現得了之後老不老實。這次的誤報如果沒抓出來，使用者會以為 19 個檔的體素尺寸都有問題。</div>
+
+  
+<div class="pnav"><a class="prev" href="s3.html"><span class="k">← 上一頁</span><span class="v">請求動作：最小的程式</span></a><a class="next" href="s5.html"><span class="k">下一頁 →</span><span class="v">決策：統一欄位順序</span></a></div>
+</div>
+<div class="foot">
+  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
+</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

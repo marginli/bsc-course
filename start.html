@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>開始前你需要什麼｜BSC with Agentic AI Tutorial</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="hero">
+  <a class="back" href="./">← 所有課程</a>
+  <p class="eyebrow">動手做之前</p>
+  <h1>開始前你需要什麼</h1>
+  <p class="subtitle">想跟著自己動手做一次，這一頁把「打開 Claude Code」之前的每一步講完。只是讀教材的話，這一頁可以跳過。</p>
+</header>
+<div class="wrap">
+  <div class="doc qa">
+<h2>Claude Code 是什麼？是網站嗎？</h2>
+<p>它是<b>裝在你自己電腦上的一個程式</b>（Anthropic 出的），不是網站。打開之後，你在一個叫「終端機」的視窗裡用中文跟它講話；它可以直接讀你電腦上的檔案、寫出新檔案、執行程式。</p>
+<p>這一集裡 AI 做的每一件事——列出檔名、印出前 1200 個位元組、寫一支解壓程式——都是在這個介面裡發生的。你自己一行程式都沒寫。</p>
+<h2>什麼是終端機？我沒用過。</h2>
+<p>終端機（terminal；Windows 上叫 PowerShell 或「命令提示字元」）是一個<b>只能打字、不能點的視窗</b>：你打一行字按 Enter，電腦回你幾行字。</p>
+<p>你不需要先學會終端機指令。只要會兩件事就夠了：把它打開，以及用 <code>cd 資料夾路徑</code> 換到你的資料夾。其餘的都可以直接叫 Claude Code 做。</p>
+<p>怎麼打開：macOS 按 ⌘＋空白鍵搜尋「終端機」；Windows 在開始功能表搜尋 「PowerShell」；Linux 多半是 Ctrl＋Alt＋T。</p>
+<h2>要用哪種電腦？</h2>
+<p>macOS、Linux，或 Windows（Windows 建議搭配 WSL，也就是 Windows 內建的 Linux 環境）。</p>
+<p>一般文書用的筆電就夠了，<b>不需要顯示卡</b>。這一集處理的 20 個檔加起來不到 20 MB。</p>
+<h2>要花錢嗎？</h2>
+<p>要。Claude Code 需要一個 Claude 帳號，而且要<b>付費</b>——可以用 Claude 的付費訂閱方案，也可以改成用 API 額度按用量計費。免費帳號目前不能用 Claude Code。</p>
+<p>方案內容與價格會變動，<b>請以官方頁面為準</b>：<a href="https://claude.com/pricing" target="_blank" rel="noopener">claude.com/pricing</a>。如果你在學校或單位裡，先問問看有沒有現成的帳號可以用。</p>
+<h2>去哪裡下載？怎麼安裝？</h2>
+<p>官方安裝說明在 <a href="https://docs.claude.com/en/docs/claude-code" target="_blank" rel="noopener">docs.claude.com/en/docs/claude-code</a>，<b>安裝方式會變，以那一頁為準</b>。寫這一頁的時候（2026 年 8 月）是在終端機貼一行指令：</p>
+<pre><code>macOS / Linux / WSL：
+    curl -fsSL https://claude.ai/install.sh | bash
+
+Windows（PowerShell）：
+    irm https://claude.ai/install.ps1 | iex</code></pre>
+<p>裝完之後，在終端機打 <code>claude</code> 按 Enter，它就會啟動；第一次啟動會請你用瀏覽器登入 Claude 帳號。</p>
+<h2>第一次打開長什麼樣？</h2>
+<p>先用 <code>cd</code> 換到你要處理的那個資料夾，再打 <code>claude</code>。「把它指到那個資料夾」講的就是這件事——Claude Code 看得到的範圍，就是你啟動它時所在的那個資料夾。</p>
+<div class="term">$ cd ~/Downloads/我打不開的資料夾
+$ claude
+
+ ╭──────────────────────────────────────────────╮
+ │  ✻ Welcome to Claude Code                    │
+ │    /home/you/Downloads/我打不開的資料夾       │
+ ╰──────────────────────────────────────────────╯
+
+&gt; 這個資料夾裡有 20 個我打不開的檔案。先不要寫任何處理程式，
+  你先告訴我它們是什麼格式，以及你是怎麼判斷出來的。</div>
+<p class="termcap">↑ 示意畫面，不是實際截圖——版本不同，歡迎詞的框線與文字會不一樣。</p>
+<p>沒有選單、沒有按鈕，就是一個等你打字的 <code>&gt;</code>。上面那句話，就是這一集的使用者打的第一句話。</p>
+<h2>我手上沒有「打不開的檔案」，拿什麼練習？</h2>
+<p>任何你不確定內容的檔案都可以：相機記憶卡裡的 RAW 檔、儀器輸出的 .dat、別人給你但打不開的附件、甚至一個你自己也忘了是什麼的舊檔。</p>
+<p>重點不在檔案多特別，在於你有沒有照著這一集的順序問：先判讀，再動手。</p>
+<h2>有什麼要小心的？</h2>
+<p>Claude Code <b>會真的改你的電腦上的檔案</b>。動任何重要資料之前，先複製一份備份放在別的地方——這一集第 4 部分第 5 節做的就是這件事，而且它是整段裡最便宜、最划算的一個動作。</p>
+<p>另外：AI 在猜測的時候，語氣和它知道的時候一模一樣。所以每一個結論都要追問「哪幾個位元組？哪一份規格？查不到就說查不到」。</p>
+  </div>
+</div>
+<div class="foot">安裝方式、方案與價格都會變動——每一段講的是「寫這一頁的時候」的狀況，
+請以官方頁面為準。</div>
+</body>
+</html>

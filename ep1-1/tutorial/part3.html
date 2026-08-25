@@ -7,18 +7,19 @@
 <link rel="stylesheet" href="tutorial.css">
 </head>
 <body>
-<div class="tbar"><div class="in"><a href="../">← EP1-1 判讀一個你打不開的檔案格式</a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">6 / 8　本次成果</span></div></div>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 6 部分／共 8　本次成果</span></div></div>
 <div class="wrap">
-<h2 id="part3"><span class="pt">PART 3</span>本次成果</h2>
+<p class="rt">約 4 分鐘</p>
+<h2 id="part3">本次成果</h2>
 
   <h3>數字總結</h3>
   <div class="tblwrap">
   <table>
     <tr><th>項目</th><th>內容</th></tr>
-    <tr><td>判讀檔案</td><td>20 個 AmiraMesh 影像檔（約 16 MB）</td></tr>
-    <tr><td>格式判定</td><td>AmiraMesh BINARY-LITTLE-ENDIAN 2.1，資料段 zlib 壓縮，<code>ushort</code>，體素 1 µm 等向</td></tr>
-    <tr><td>有正式規格佐證的部分</td><td>2 個位元組（RFC 1950 §2.2）——其餘全部標明為社群文件或推論</td></tr>
-    <tr><td>找到的檔頭差異</td><td>1 項（欄位順序，5 個檔）</td></tr>
+    <tr><td>判讀檔案</td><td>20 個 <a class="gref" href="glossary.html#g-03" title="名詞速查表">AmiraMesh</a> 影像檔（約 16 MB）</td></tr>
+    <tr><td>格式判定</td><td>AmiraMesh BINARY-LITTLE-ENDIAN 2.1，資料段 <a class="gref" href="glossary.html#g-05" title="名詞速查表">zlib</a> 壓縮，<code>ushort</code>，<a class="gref" href="glossary.html#g-04" title="名詞速查表">體素</a> 1 µm 等向</td></tr>
+    <tr><td>有正式規格佐證的部分</td><td>2 個位元組（<a class="gref" href="glossary.html#g-11" title="名詞速查表">RFC</a> 1950 §2.2）——其餘全部標明為社群文件或推論</td></tr>
+    <tr><td>找到的<a class="gref" href="glossary.html#g-01" title="名詞速查表">檔頭</a>差異</td><td>1 項（欄位順序，5 個檔）</td></tr>
     <tr><td>事後發現的真正差異</td><td>強度值域分兩群：4095（15 檔）／255（5 檔），與上一列<b>完全重合</b></td></tr>
     <tr><td>AI 自己抓出的誤報</td><td>1 次（浮點容差設太緊，誤判 19 檔體素異常）</td></tr>
     <tr><td>使用者的指令數</td><td>7 句（其中 3 句是踩剎車或要求證據）</td></tr>
@@ -27,7 +28,7 @@
   </div>
 
   <h3>產出的檔案</h3>
-  <pre><code>ep1-1/
+  <div class="prewrap"><pre><code>ep1-1/
 ├── neuron_20/               # 20 個 AmiraMesh 影像檔（5 檔的檔頭已正規化）
 ├── neuron_20.backup/        # ★ 正規化前的原始檔——第 ⑧ 段證明這份很重要
 ├── read_headers.py          # 讀檔頭 → table.docx（41 行）
@@ -36,7 +37,7 @@
 ├── table.docx               # 20 檔的維度／體素尺寸／資料型別摘要表
 ├── report1-1.docx           # 六章過程報告
 └── Tutorial/
-    └── index.html           # 你正在讀的這一頁</code></pre>
+    └── index.html           # 你正在讀的這一頁</code></pre><span class="prehint">← 可左右滑動 →</span></div>
 
   <h3>三支程式在做什麼</h3>
   <div class="tblwrap">
@@ -49,8 +50,9 @@
   </div>
 
 <!-- METHOD:BOX:START -->
-  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-23"><div class="mhead"><span class="mno">M-23</span><span class="mtt">把改寫程式寫成可重複執行</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>同一支程式跑第二次不會出錯，也不會把已經整理好的檔再改壞。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這個性質叫冪等性（idempotent）：做一次和做很多次結果相同。做法是程式先判斷「目前是不是已經是目標狀態」，是就跳過。為什麼重要：批次處理常常會中斷（20 個檔跑到第 13 個時出錯），沒有冪等性的話你得先搞清楚哪些已經處理過；有冪等性就直接重跑整批。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><pre><code>if current_order == TARGET_ORDER:
-    return &#x27;skip&#x27;          # 已經是目標狀態，不動它</code></pre></div><div class="mpane" data-k="3" data-label="坑" hidden><p>冪等的相反不只是「重跑會出錯」，更糟的是「重跑會累積」——例如每跑一次就在檔頭多插一行。設計時問自己：跑第二次會發生什麼？</p></div></div></div>
+  <p class="mhint">下面的「操作原理」是給想自己動手寫程式的人看的，四個欄位預設收著；<b>整段跳過不影響後面的閱讀</b>。</p>
+<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-23"><div class="mhead"><span class="mno">M-23</span><span class="mtt">把改寫程式寫成可重複執行</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>同一支程式跑第二次不會出錯，也不會把已經整理好的檔再改壞。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>這個性質叫冪等性（idempotent）：做一次和做很多次結果相同。做法是程式先判斷「目前是不是已經是目標狀態」，是就跳過。為什麼重要：批次處理常常會中斷（20 個檔跑到第 13 個時出錯），沒有冪等性的話你得先搞清楚哪些已經處理過；有冪等性就直接重跑整批。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>if current_order == TARGET_ORDER:
+    return &#x27;skip&#x27;          # 已經是目標狀態，不動它</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>冪等的相反不只是「重跑會出錯」，更糟的是「重跑會累積」——例如每跑一次就在檔頭多插一行。設計時問自己：跑第二次會發生什麼？</p></div></div></div>
 <!-- METHOD:BOX:END -->
   <h3>還沒做的事</h3>
   <ul>
@@ -60,11 +62,11 @@
   </ul>
 
 <!-- METHOD:BOX:START -->
-  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-27"><div class="mhead"><span class="mno">M-27</span><span class="mtt">reshape 成 3D 與軸順序問題</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把一維陣列排成 (153, 347, 161) 的立體影像——這一步教材明講「還沒驗證」。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>一維變三維要知道哪個軸在記憶體裡變化最快。兩種主要慣例：</p><div class="tblwrap"><table><tr><th>慣例</th><th>誰在用</th><th>reshape 寫法（x 最快）</th></tr><tr><td>C order（列優先）</td><td>C、Python/NumPy 預設</td><td>a.reshape(nz, ny, nx) → 索引 [z][y][x]</td></tr><tr><td>Fortran order（行優先）</td><td>Fortran、MATLAB、多數科學影像格式</td><td>a.reshape(nx, ny, nz, order=&#x27;F&#x27;)</td></tr></table></div><p>麻煩的是：<b>任何一種排法都不會報錯</b>，因為元素總數一樣。M-06 的尺寸恆等式對三個維度的任何排列都成立，所以它區分不出順序。唯一能確認的方法是把影像切片畫出來看——排錯的話會看到條紋狀的亂訊，而不是神經元。教材誠實地把這件事列在「還沒做的事」，沒有假裝已經驗過。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>這是「驗證通過 ≠ 唯一解」最具體的例子（prelim.docx 1-5）。一個檢查如果對所有候選答案都成立，它的資訊量是零——<b>設計驗證時要問：這個檢查能不能把錯的假設篩掉？</b></p></div></div></div>
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-27"><div class="mhead"><span class="mno">M-27</span><span class="mtt">reshape 成 3D 與軸順序問題</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>把一維陣列排成 (153, 347, 161) 的立體影像——這一步教材明講「還沒驗證」。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>一維變三維要知道哪個軸在記憶體裡變化最快。兩種主要慣例：</p><div class="tblwrap"><table><tr><th>慣例</th><th>誰在用</th><th>reshape 寫法（x 最快）</th></tr><tr><td>C order（列優先）</td><td>C、Python/NumPy 預設</td><td>a.reshape(nz, ny, nx) → 索引 [z][y][x]</td></tr><tr><td>Fortran order（行優先）</td><td>Fortran、MATLAB、多數科學影像格式</td><td>a.reshape(nx, ny, nz, order=&#x27;F&#x27;)</td></tr></table></div><p>麻煩的是：<b>任何一種排法都不會報錯</b>，因為元素總數一樣。<a class="mref" href="s1.html#M-06">M-06</a> 的尺寸恆等式對三個維度的任何排列都成立，所以它區分不出順序。唯一能確認的方法是把影像切片畫出來看——排錯的話會看到條紋狀的亂訊，而不是神經元。教材誠實地把這件事列在「還沒做的事」，沒有假裝已經驗過。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>這是「驗證通過 ≠ 唯一解」最具體的例子（見 <a href="../prelim.html#n1-5">〈前置知識〉1-5</a>）。一個檢查如果對所有候選答案都成立，它的資訊量是零——<b>設計驗證時要問：這個檢查能不能把錯的假設篩掉？</b></p></div></div></div>
 <!-- METHOD:BOX:END -->
   <!-- ============ PART 4 ============ -->
   
-<div class="pnav"><a class="prev" href="part2.html"><span class="k">← 上一部分</span><span class="v">PART 2 最佳實踐清單</span></a><a class="next" href="part4.html"><span class="k">下一部分 →</span><span class="v">PART 4 9 個核心教訓</span></a></div>
+<div class="pnav"><a class="prev" href="part2.html"><span class="k">← 上一頁</span><span class="v">最佳實踐清單</span></a><a class="next" href="part4.html"><span class="k">下一頁 →</span><span class="v">9 個核心教訓</span></a></div>
 </div>
 <div class="foot">
   本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
@@ -95,5 +97,21 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <!-- METHOD:JS:END -->
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
 </body>
 </html>

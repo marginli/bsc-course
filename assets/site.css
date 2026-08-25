@@ -73,3 +73,53 @@ th{background:var(--panel); font-weight:700}
 .sitebar{position:sticky; top:0; z-index:99; background:rgba(255,255,255,.94);
   backdrop-filter:blur(6px); border-bottom:1px solid var(--border); font-size:14px}
 .sitebar .in{max-width:920px; margin:0 auto; padding:9px 22px}
+
+/* ===== 首頁的「這是什麼、給誰看」 ===== */
+.intro{margin:26px 0 0; border:1px solid var(--border); border-radius:var(--radius);
+  background:var(--panel); padding:18px 22px}
+.intro dl{margin:0; display:grid; grid-template-columns:auto 1fr; gap:6px 16px; align-items:baseline}
+.intro dt{font-weight:700; font-size:14.5px; color:var(--accent); white-space:nowrap}
+.intro dd{margin:0; font-size:15px; color:var(--soft); line-height:1.75}
+@media(max-width:560px){
+  .intro dl{grid-template-columns:1fr; gap:2px}
+  .intro dd{margin:0 0 10px}
+}
+.gloss{margin:16px 0 0; font-size:13.5px; color:var(--faint); line-height:1.8}
+.gloss b{color:var(--soft)}
+
+/* ===== 課程頁：影片入口與「開始前你需要什麼」 ===== */
+.order{margin:24px 0 0; font-size:15px; color:var(--soft)}
+.vidcta{display:inline-flex; align-items:center; gap:9px; margin:14px 0 0;
+  border:1px solid var(--accent); border-radius:999px; padding:9px 20px;
+  font-size:15px; font-weight:600; background:var(--accent-soft)}
+.vidcta:hover{background:var(--accent); color:#fff; text-decoration:none}
+.startline{margin:26px 0 0; padding:13px 17px; border:1px dashed var(--border);
+  border-radius:10px; background:var(--panel); font-size:14.5px; color:var(--soft)}
+
+/* ===== 開始前你需要什麼 ===== */
+.qa{margin:30px 0 0}
+.qa h2{font-size:20px; margin:34px 0 6px; padding-top:18px; border-top:1px solid var(--border)}
+.qa h2:first-child{border-top:none; padding-top:0; margin-top:0}
+.qa p{margin:10px 0; font-size:15.5px}
+.qa code{background:var(--panel); border:1px solid var(--border); border-radius:5px;
+  padding:1px 6px; font-size:14px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.qa pre code,.doc pre code{background:none; border:none; color:inherit; padding:0}
+.qa pre{background:#0f1622; color:#e6edf3; border-radius:10px; padding:14px 16px;
+  overflow-x:auto; font-size:13.5px; line-height:1.7}
+.term{background:#0f1622; color:#e6edf3; border-radius:10px; padding:16px 18px;
+  overflow-x:auto; font-size:13px; line-height:1.65; margin:14px 0 6px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; white-space:pre}
+.termcap{font-size:13px; color:var(--faint); margin:0 0 14px}
+
+/* ===== 前置知識／學習目標／實作 串成一條線 ===== */
+.docnav{display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between;
+  margin:52px 0 0; padding-top:20px; border-top:2px solid var(--border)}
+.docnav a{display:block; max-width:47%; font-size:14.5px}
+.docnav a.next{text-align:right; margin-left:auto}
+.docnav .k{display:block; font-size:12px; color:var(--faint); font-weight:700; letter-spacing:.05em}
+.docnav .v{font-weight:600}
+@media(max-width:620px){.docnav a{max-width:100%}}
+
+/* 每一頁預估要讀多久 */
+.rt{display:inline-block; margin:0 0 4px; font-size:13px; color:var(--faint)}
+.part .rt,.course .rt{color:var(--faint)}

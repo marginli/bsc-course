@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>事後才發現的事：那個「純外觀差異」不是外觀差異｜EP1-1 判讀一個你打不開的檔案格式</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-1<span class="ttl">　判讀一個你打不開的檔案格式</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><span class="here">第 4 部分　第 8 節／共 8 節　事後才發現的事：那個「純外觀差異」不是外觀差異</span></div></div>
+<div class="wrap seg">
+<p class="ctx">第 4 部分　<a href="s1.html">完整對話時序</a>　·　第 8 節／共 8 節　·　約 5 分鐘</p>
+<h3 class="seg" id="s8"><span class="num">8</span>事後才發現的事：那個「純外觀差異」不是外觀差異</h3>
+  <p>製作這份教材時，AI 想確認一件事：<a class="gref" href="glossary.html#g-01" title="名詞速查表">檔頭</a>寫的 <code>ushort</code> 理論值域是 0–65535，但實際資料真的用到那麼大嗎？於是把 20 個檔全部解壓，統計每個檔的最大值。</p>
+  <div class="statgrid">
+    <div class="stat"><div class="v">15</div><div class="k">個檔案最大值 = 4095（12-bit）</div></div>
+    <div class="stat"><div class="v">5</div><div class="k">個檔案最大值 = 255（8-bit）</div></div>
+    <div class="stat"><div class="v">100%</div><div class="k">與欄位順序異常的檔案重合</div></div>
+  </div>
+<!-- METHOD:BOX:START -->
+  <p class="mhint">下面的「操作原理」是給想自己動手寫程式的人看的，四個欄位預設收著；<b>整段跳過不影響後面的閱讀</b>。</p>
+<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-26"><div class="mhead"><span class="mno">M-26</span><span class="mtt">把 20 個檔全部解壓，統計每個檔的最大值</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>解壓每個檔的資料段，把位元組流解讀成 16-bit 無號整數陣列，取最大值。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>解壓出來的是一長串位元組，要變成數字需要三個約定，全部來自檔頭：每個數字佔幾個位元組（<a class="gref" href="glossary.html#g-06" title="名詞速查表">ushort</a> → 2）、有沒有正負號（unsigned）、以及兩個位元組誰排前面（BINARY-LITTLE-ENDIAN → 低位在前）。三個都對，位元組流才會被解讀成正確的數值。端序搞反的話 4095（0x0FFF）會被讀成 65295（0xFF0F）——不會出錯，只會給你錯的答案。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>import zlib, numpy as np
+raw = zlib.decompress(b[start:])
+a = np.frombuffer(raw, dtype=&#x27;&lt;u2&#x27;)    # &lt; 小端序, u 無號, 2 兩個位元組
+print(a.max(), a.min(), a.size)        # frombuffer 不複製資料，零成本</code></pre><span class="prehint">← 可左右滑動 →</span></div><p>實測 20 個檔的結果：15 個檔最大值 4095，5 個檔最大值 255，最小值全部是 0。那 5 個正是 TH-F-100051、Tdc2-F-000001、Trh-F-600017、VGlut-F-300388、VGlut-F-600670。</p></div><div class="mpane" data-k="3" data-label="坑" hidden><p>np.frombuffer 回傳的是唯讀視圖，不複製資料——這是它便宜的原因，但要寫入就得先 .copy()。另外一次只處理一個檔就好：20 個檔全部展開約 400 MB，沒必要同時留在記憶體裡。</p></div></div><div class="mbox" id="M-28"><div class="mhead"><span class="mno">M-28</span><span class="mtt">由最大值反推量化深度</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>從最大值 4095 判定這是 12-bit 資料，從 255 判定是 8-bit。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>n 位元無號整數的最大值是 2ⁿ − 1：255 = 2⁸ − 1，4095 = 2¹² − 1，65535 = 2¹⁶ − 1。看到資料最大值精準地停在這種數字上，最合理的解釋是原始取樣就只有那麼多階，之後被裝進更大的容器（ushort）。共軛焦顯微鏡的相機常見就是 8-bit 或 12-bit，而檔案格式為了對齊都用 16-bit 存。</p><p><b>但這是實測上界，不是證明。</b>嚴格說 4095 只代表「沒有任何<a class="gref" href="glossary.html#g-04" title="名詞速查表">體素</a>超過 4095」，12-bit 是最合理的解釋，不是唯一可能——一批真正的 16-bit 資料如果剛好都不亮，也會停在某個值。要更確定可以看數值的分布是否只落在 12-bit 能表示的階上。按 <a class="mref" href="s2.html#M-09">M-09</a> 的分級，這條屬於第四級：純屬推論，但推論得很強。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>這件事檔頭完全不會告訴你——20 個檔都寫 ushort。<b>唯一的取得方式是把資料解壓出來實際統計。</b>凡是「宣稱」與「實測」可能不一致的量，都要當成必須實測的量對待。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <p>那 5 個值域只到 255 的檔案，<b>正好就是第 ④ 段找出來的那 5 個欄位順序不同的檔案</b>。一個不多，一個不少。</p>
+  <div class="danger">🔴 <b>這推翻了第 ⑤ 段的判斷。</b>AI 當時說「欄位順序差異沒有功能影響、純屬外觀」——就<b>剖析程式</b>而言那句話是對的，但結論下錯了：欄位順序不是外觀差異，而是<b>兩條不同影像處理管線留下的指紋</b>。同一批來源、同一個工具，寫出不同欄位順序、也寫出不同的強度量化深度。<br><br>從 20 個檔裡挑中同樣 5 個的機率是 1/15504 ≈ 0.0065%。這不是巧合。</div>
+  <p>後果很直接：<b>統一欄位順序，等於把檔頭裡唯一能區分這兩群檔案的線索抹掉了。</b>值域差異藏在壓縮資料裡，不解壓看不到；欄位順序本來是唯一在檔頭層面就能看出來的標記。</p>
+  <div class="note">✅ 還好第 ⑤ 段有備份。<code>neuron_20.backup/</code> 裡完整保留著原始欄位順序，這條線索沒有真的消失。<b>「動原始資料前先備份」這個習慣，在這裡實際救了一次。</b></div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-29"><div class="mhead"><span class="mno">M-29</span><span class="mtt">兩群完全重合代表什麼</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>確認「值域只到 255 的 5 個檔」與「欄位順序不同的 5 個檔」是同一組，並估算這有多不尋常。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>從 20 個裡挑 5 個的方法數是組合數：</p><div class="prewrap"><pre><code>C(20,5) = 20! / (5! × 15!) = 15504
+P(隨機挑中同樣那 5 個) = 1 / 15504 ≈ 6.45e-5 ≈ 0.0065%</code></pre><span class="prehint">← 可左右滑動 →</span></div><p>所以「兩組毫無關係卻剛好完全重合」的機率是萬分之 0.65。統計上這叫巧合太貴，合理的推論是兩者有共同成因——而共同成因確實找得到：同一條影像處理管線會同時決定寫檔時的欄位順序與相機的量化深度。<b>兩個看似無關的特徵完全共變，通常意味著背後有第三個變數。</b></p><p>分寸要說清楚：這是事後檢定（看到結果才去算機率），所以那個 0.0065% 是描述性的，不是嚴格的假設檢定 p 值——真要做假設檢定，該在看資料之前就決定要檢定什麼。本案的說服力主要來自機制上講得通，機率只是佐證。</p></div><div class="mpane" data-k="2" data-label="坑" hidden><p>重合本身不告訴你因果方向。它沒有證明「欄位順序造成值域不同」，只證明兩者同源。實務上的結論也不是要去解釋順序，而是：<b>做強度比較之前，這 20 個檔不能當成同一批資料處理。</b></p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <p>為什麼這件事重要？如果之後要比較這 20 顆神經元的螢光強度，把 0–255 那群和 0–4095 那群直接放在一起比，等於拿不同刻度的尺量東西——低值域那群會系統性地被判定成「比較暗」。而<b>檔頭完全不會告訴你這件事</b>，它 20 個檔都寫 <code>ushort</code>。</p>
+
+  <!-- ============ PART 2 ============ -->
+  
+<div class="pnav"><a class="prev" href="s7.html"><span class="k">← 上一頁</span><span class="v">做成教材</span></a><a class="next" href="part2.html"><span class="k">下一頁 →</span><span class="v">最佳實踐清單</span></a></div>
+</div>
+<div class="foot">
+  本教學由 Claude Code 依一次真實協作自動產生。文中所有位元組 offset、數值與統計皆為實際執行結果，未經修飾；AI 在過程中犯的錯誤與事後推翻的結論一併保留。｜BSC with Agentic AI Tutorial · EP1-1
+</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

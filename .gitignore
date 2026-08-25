@@ -2,3 +2,6 @@ _build/
 __pycache__/
 *.pyc
 .DS_Store
+
+# 內部文件，不發布（大一新生試讀報告）
+college_review.docx
