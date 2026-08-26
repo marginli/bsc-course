@@ -194,6 +194,8 @@
 
 /* 每一頁的第一個標題是頁面標題，不需要原本那條「跟上一段分隔」的上框線 */
 .wrap>h2:first-child,.wrap>.rt+h2{margin-top:20px; padding-top:0; border-top:none}
+/* 目錄頁最上面那張引導圖之後才是標題，所以第一個 h2 的上框線也要拿掉 */
+.wrap>.lead+h2{margin-top:20px; padding-top:0; border-top:none}
 /* 切成一節一頁之後，那一節的 h3 就是這一頁的標題 */
 .wrap.seg>h3.seg{font-size:23px; margin-top:22px}
 
@@ -277,6 +279,17 @@ a.mref{font-variant-numeric:tabular-nums; white-space:nowrap}
   border-radius:10px; background:var(--panel); font-size:14.5px; line-height:1.8}
 
 .allnote{margin:34px 0 0; font-size:14px; color:var(--soft)}
+
+/* 三個頁面各自開頭的引導圖。深底是為了讓螢光影像看起來像在顯微鏡下，
+   而不是浮在白紙上；圖說跟教材裡的 figure.fig 用同一套顏色。 */
+.lead{margin:0 0 30px; background:#0f1622; border-radius:var(--radius); padding:14px; overflow:hidden}
+/* 高度上限由 build_lead() 依圖片長寬比逐張算出來（--lh），寫在 figure 的 style 上：
+   直立的圖不設限會佔掉整個畫面，寬扁的圖設太緊又會被關進小框、左右留一大片黑。 */
+.lead img{width:100%; height:auto; max-height:var(--lh,340px); object-fit:contain; display:block; border-radius:6px}
+.lead figcaption{font-size:13.5px; color:#8b98a5; margin-top:12px; padding:0 4px; line-height:1.65}
+.lead figcaption b{color:#e6edf3}
+.lead figcaption code{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.14); color:#c9d4e0}
+@media(max-width:620px){.lead{padding:10px} .lead img{max-height:min(var(--lh,340px),260px)}}
 
 </style>
 </head>

@@ -1,3 +1,14 @@
+/* 三個頁面各自開頭的引導圖。深底是為了讓螢光影像看起來像在顯微鏡下，
+   而不是浮在白紙上；圖說跟教材裡的 figure.fig 用同一套顏色。 */
+.lead{margin:0 0 30px; background:#0f1622; border-radius:var(--radius); padding:14px; overflow:hidden}
+/* 高度上限由 build_lead() 依圖片長寬比逐張算出來（--lh），寫在 figure 的 style 上：
+   直立的圖不設限會佔掉整個畫面，寬扁的圖設太緊又會被關進小框、左右留一大片黑。 */
+.lead img{width:100%; height:auto; max-height:var(--lh,340px); object-fit:contain; display:block; border-radius:6px}
+.lead figcaption{font-size:13.5px; color:#8b98a5; margin-top:12px; padding:0 4px; line-height:1.65}
+.lead figcaption b{color:#e6edf3}
+.lead figcaption code{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.14); color:#c9d4e0}
+@media(max-width:620px){.lead{padding:10px} .lead img{max-height:min(var(--lh,340px),260px)}}
+
 :root{
   --ink:#1b2733; --soft:#5a6b7b; --faint:#8b98a5;
   --bg:#ffffff; --panel:#f7f8fa; --border:#e4e8ee;
@@ -33,6 +44,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radi
 .course .t{font-size:21px; font-weight:700; margin:2px 0 6px; line-height:1.35}
 .course .s{font-size:15px; color:var(--soft); margin:0}
 .course .m{font-size:13px; color:var(--faint); margin:10px 0 0; font-variant-numeric:tabular-nums}
+
 
 /* 課程頁的三個按鈕 */
 .parts{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin:30px 0 0}
