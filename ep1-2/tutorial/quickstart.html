@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>畫科學影像的 6 個核心觀念｜EP1-2 畫出來的圖，能信到什麼程度</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-2<span class="ttl">　畫出來的圖，能信到什麼程度</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 3 部分／共 8　畫科學影像的 6 個核心觀念</span></div></div>
+<div class="wrap">
+<p class="rt">約 1 分鐘</p>
+<h2 id="quickstart">畫科學影像的 6 個核心觀念</h2>
+  <p>要把研究資料畫成圖給人看時，先記住這 6 件事：</p>
+  <ol>
+    <li><b>先畫一個，不要先畫全部。</b>一張圖畫錯很便宜，二十張畫錯還要重看一遍。這一集使用者第一句話的最後四個字就是「<b>先只畫一顆</b>」。</li>
+    <li><b>比例尺沒統一，圖就是假的。</b>各自縮放填滿版面是最容易騙人的畫法——小的東西會被放大成跟大的一樣。</li>
+    <li><b>亮度是選擇，不是資料。</b>同一批資料換個<a class="gref" href="glossary.html#g-06" title="名詞速查表">窗位</a>可以從「一片黑」變成「很清楚」。所以圖上要寫清楚用了什麼窗位。</li>
+    <li><b>一張<a class="gref" href="glossary.html#g-02" title="名詞速查表">投影</a>不是形狀，是「形狀 × 觀看方向」。</b>換個角度，同一個東西可以看起來完全不同——這一集會用數字證明。</li>
+    <li><b>找一個<a class="gref" href="glossary.html#g-11" title="名詞速查表">已知的正確答案</a>來對。</b>沒有對照，錯的圖看起來一樣漂亮。</li>
+    <li><b>畫完要回頭質疑自己畫出來的圖。</b>「有沒有哪一個不對勁」應該是流程的一部分，不是額外的要求。</li>
+  </ol>
+  <div class="callout">💡 這一集完全沒有用到 matplotlib——因為這台機器上它是壞的。整條處理鏈只依賴 numpy、<a class="gref" href="glossary.html#g-14" title="名詞速查表">Pillow</a> 與 SciPy。<b>工具壞掉不是停工的理由</b>，先確認還有什麼可用的。</div>
+
+  <!-- ============ PART 1 ============ -->
+  
+<div class="pnav"><a class="prev" href="glossary.html"><span class="k">← 上一頁</span><span class="v">名詞速查表</span></a><a class="next" href="part1.html"><span class="k">下一頁 →</span><span class="v">完整對話時序</span></a></div>
+</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-2</div>
+
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

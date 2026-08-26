@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>最佳實踐清單｜EP1-2 畫出來的圖，能信到什麼程度</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-2<span class="ttl">　畫出來的圖，能信到什麼程度</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 5 部分／共 8　最佳實踐清單</span></div></div>
+<div class="wrap">
+<p class="rt">約 1 分鐘</p>
+<h2 id="part2">最佳實踐清單</h2>
+  <p>把這一集的做法整理成可以直接套用的清單。左欄是做法，右欄是這一集哪裡用到。</p>
+  <div class="tblwrap">
+  <table>
+    <tr><th>做法</th><th>對應段落</th></tr>
+    <tr><td><b>先做一個，確認後再批次</b>——把批次工作變成可檢查的單一結果</td><td><a href="part1.html#s1">① 先只畫一顆</a></td></tr>
+    <tr><td><b>動手前先掃資料</b>——尺寸、尺度、值域先摸清楚，決策才有依據</td><td><a href="part1.html#s1">①</a> 掃 20 檔得知<a class="gref" href="glossary.html#g-01" title="名詞速查表">體素</a>等向、寬度差 5.5 倍</td></tr>
+    <tr><td><b>問 AI 用了什麼演算法</b>，不要只看輸出好不好看</td><td><a href="part1.html#s2">② 你用的是哪一種投影</a></td></tr>
+    <tr><td><b>圖不對先懷疑顯示設定</b>，再懷疑資料</td><td><a href="part1.html#s2">②</a> <a class="gref" href="glossary.html#g-04" title="名詞速查表">mean</a> 全黑其實是<a class="gref" href="glossary.html#g-06" title="名詞速查表">窗位</a>選錯</td></tr>
+    <tr><td><b>找一個<a class="gref" href="glossary.html#g-11" title="名詞速查表">已知的正確答案</a>來對</b>——沒有對照，錯的圖一樣漂亮</td><td><a href="part1.html#s3">③</a> 0° 必須等於正視圖，抓到取整 bug</td></tr>
+    <tr><td><b>並排比較一定要共用比例尺</b>，並在圖上寫清楚</td><td><a href="part1.html#s4">④ 20 顆圖版</a></td></tr>
+    <tr><td><b>把「看起來怪」逼成可查的量</b></td><td><a href="part1.html#s5">⑤</a> <a class="gref" href="glossary.html#g-07" title="名詞速查表">連通元件</a>、局部半徑、強度對比</td></tr>
+    <tr><td><b>換一個量法驗證同一個結論</b>——<a class="gref" href="glossary.html#g-32" title="名詞速查表">質心</a> vs 最近距離，結論相反</td><td><a href="part1.html#s5">⑤</a> 推翻「另一顆細胞」</td></tr>
+    <tr><td><b>猜測要拿資料驗，驗不過要說</b></td><td><a href="part1.html#s5">⑤</a> 「255 組比較破碎」被否定</td></tr>
+    <tr><td><b>文件用<a class="gref" href="glossary.html#g-13" title="名詞速查表">產生器</a>產出，數字執行時重算</b></td><td><a href="part1.html#s6">⑥ 寫進報告</a></td></tr>
+    <tr><td><b>把自己的錯寫進交付物，而且要能重驗</b></td><td><a href="part1.html#s6">⑥</a> bug 表每次重跑</td></tr>
+    <tr><td><b>不確定就說不確定</b>（解剖方向未核對、Trh-F-300000 未定論）</td><td><a href="part1.html#s1">①</a>、<a href="part1.html#s5">⑤</a></td></tr>
+  </table>
+  </div>
+
+  <!-- ============ PART 3 ============ -->
+  
+<div class="pnav"><a class="prev" href="part1.html"><span class="k">← 上一頁</span><span class="v">完整對話時序</span></a><a class="next" href="part3.html"><span class="k">下一頁 →</span><span class="v">本次成果</span></a></div>
+</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-2</div>
+
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

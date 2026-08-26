@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>名詞速查表｜EP1-2 畫出來的圖，能信到什麼程度</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-2<span class="ttl">　畫出來的圖，能信到什麼程度</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><span class="here">名詞速查</span><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 2 部分／共 8　名詞速查表</span></div></div>
+<div class="wrap">
+<p class="rt">約 3 分鐘</p>
+<h2 id="glossary">名詞速查表</h2>
+  <p>看到不懂的詞先回來查。兩張表分別對應這個案例的兩個面向。</p>
+
+  <h3>A. 影像與投影</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>名詞</th><th>白話解釋</th></tr>
+    <tr><td id="g-01"><b>體素 (voxel)</b></td><td>3D 版的「像素」。本案每個體素代表 1 微米見方的空間，且三個方向等長（等向）。</td></tr>
+    <tr><td id="g-02"><b>投影 (projection)</b></td><td>把 3D 壓成 2D。沿著一個方向「看穿」整個立體，每條視線上的許多體素被合併成一個像素。</td></tr>
+    <tr><td id="g-03"><b>最大值投影 (MIP)</b></td><td>每條視線只取<b>最亮的那一個</b>體素。神經科學最常用，因為細突起不會被平均掉。</td></tr>
+    <tr><td id="g-04"><b>平均投影 (mean)</b></td><td>每條視線<b>加總後除以深度</b>。得到的是「厚度／密度圖」，數值會被裁切範圍影響。</td></tr>
+    <tr><td id="g-05"><b>三視圖</b></td><td>正視、側視、俯視三個互相垂直的投影。工程製圖的標準排法，三面板互相對齊。</td></tr>
+    <tr><td id="g-06"><b>窗位 (window) / gamma</b></td><td>把資料數值對應到螢幕亮度的兩個旋鈕。<b>它們是顯示選擇，不是資料</b>——這一集 AI 就在這裡摔了一跤。</td></tr>
+    <tr><td id="g-07"><b>連通元件 (connected component)</b></td><td>3D 上「連在一起」的一塊。一顆神經元理論上應該是一塊；碎成很多塊就有問題。</td></tr>
+    <tr><td id="g-08"><b>距離變換 (distance transform)</b></td><td>算每個訊號體素離背景多遠，等於「這條神經在這裡有多粗」。</td></tr>
+  </table>
+  </div>
+
+  <h3>B. 工作方法 / 工具</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>名詞</th><th>白話解釋</th></tr>
+    <tr><td id="g-09"><b>Agentic AI</b></td><td>「會自己動手」的 AI——不只回答問題，還能讀檔、寫檔、執行程式，完成多步驟任務。</td></tr>
+    <tr><td id="g-10"><b>Claude Code</b></td><td>本案例用的 Agentic AI 工具，直接在你的電腦上讀寫檔案、跑程式。</td></tr>
+    <tr><td id="g-11"><b>已知的正確答案 (ground truth)</b></td><td>一個你事先就知道答案的測試。這一集有兩個 bug 是靠它抓到的。</td></tr>
+    <tr><td id="g-12"><b>正規化 (normalization)</b></td><td>把不同來源的數值拉到可比較的尺度。做錯方向就會製造假差異。</td></tr>
+    <tr><td id="g-13"><b>產生器 (generator)</b></td><td>用程式產生文件，而不是手寫。上游改了就重跑，數字不會過期。</td></tr>
+    <tr><td id="g-14"><b>numpy / Pillow / SciPy</b></td><td>Python 的數值、影像、科學運算套件。這台機器的 matplotlib 是壞的，所以整條鏈只靠這三個。</td></tr>
+  </table>
+  </div>
+
+  <!-- ============ 快速入門 ============ -->
+  
+
+  <h3>C. 判讀與計算的基本名詞</h3>
+  <p>這一批原本只寫在〈前置知識〉裡，完整說明在<a href="../prelim.html">〈前置知識〉</a>。教材內文第一次出現時也會自動連回這裡。</p>
+  <div class="tblwrap">
+  <table>
+    <tr><th>名詞</th><th>白話解釋</th></tr>
+    <tr><td id="g-15"><b>中位數</b></td><td>排序後正中間那個數（見 1-1）</td></tr>
+    <tr><td id="g-16"><b>胞體 (soma)</b></td><td>神經元的細胞本體，通常是最亮最大的一團</td></tr>
+    <tr><td id="g-17"><b>百分位數</b></td><td>第 p% 的位置；p95＝第 95 百分位</td></tr>
+    <tr><td id="g-18"><b>突起 / 軸突</b></td><td>神經元伸出去的細長分支</td></tr>
+    <tr><td id="g-19"><b>峰值</b></td><td>全部裡面最大的那一個，很容易被一點綁架</td></tr>
+    <tr><td id="g-20"><b>品系 (driver line)</b></td><td>檔名前綴，標記這顆神經元屬於哪一類</td></tr>
+    <tr><td id="g-21"><b>飽和 / 頂到上限</b></td><td>亮度已達可表示的最大值，再亮也記不下來</td></tr>
+    <tr><td id="g-22"><b>背腹 / 前後</b></td><td>解剖學上的方向；這一集沒有核對過</td></tr>
+    <tr><td id="g-23"><b>過曝</b></td><td>窗位設太低，一大片全變成白的</td></tr>
+    <tr><td id="g-24"><b>標準腦</b></td><td>共用的參考座標系，各檔疊回去才能互相比位置</td></tr>
+    <tr><td id="g-25"><b>射線 (ray)</b></td><td>投影時「看穿」立體的那一條視線</td></tr>
+    <tr><td id="g-26"><b>非零比例</b></td><td>有訊號的體素佔整個立體的百分比</td></tr>
+    <tr><td id="g-27"><b>投影深度</b></td><td>那條射線穿過的距離；三個視角各不同</td></tr>
+    <tr><td id="g-28"><b>訊噪比 (SNR)</b></td><td>訊號比雜訊強多少；太低就分不出誰是誰</td></tr>
+    <tr><td id="g-29"><b>等效厚度</b></td><td>mean × 深度 ÷ MIP，算出「這條線多厚」</td></tr>
+    <tr><td id="g-30"><b>閾值 (threshold)</b></td><td>亮度超過它算訊號，低於它算背景（見 1-4）</td></tr>
+    <tr><td id="g-31"><b>假接合</b></td><td>3D 上分開的東西，投影後疊成同一個像素</td></tr>
+    <tr><td id="g-32"><b>質心 (centroid)</b></td><td>所有訊號點的平均位置，不一定落在實體上</td></tr>
+    <tr><td id="g-33"><b>26-連通</b></td><td>3D 上判定「相鄰」的規則，含斜對角共 26 個鄰居</td></tr>
+    <tr><td id="g-34"><b>二值侵蝕</b></td><td>把訊號區域從邊緣往內削一層，用來找粗的部分</td></tr>
+    <tr><td id="g-35"><b>gamma</b></td><td>中間調要壓暗或提亮的旋鈕（見 1-2）</td></tr>
+    <tr><td id="g-36"><b>點雲</b></td><td>只保留有訊號的座標清單，不保留整個立方體</td></tr>
+    <tr><td id="g-37"><b>四捨六入五成雙</b></td><td>遇到 .5 進到偶數的捨入法（見 1-5）</td></tr>
+    <tr><td id="g-38"><b>TTS</b></td><td>文字轉語音；影片的旁白是這樣產生的</td></tr>
+  </table>
+  </div>
+
+<div class="pnav"><a class="prev" href="colors.html"><span class="k">← 上一頁</span><span class="v">對話框顏色說明</span></a><a class="next" href="quickstart.html"><span class="k">下一頁 →</span><span class="v">畫科學影像的 6 個核心觀念</span></a></div>
+</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-2</div>
+
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

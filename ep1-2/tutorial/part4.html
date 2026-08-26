@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9 個核心教訓｜EP1-2 畫出來的圖，能信到什麼程度</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-2<span class="ttl">　畫出來的圖，能信到什麼程度</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 7 部分／共 8　9 個核心教訓</span></div></div>
+<div class="wrap">
+<p class="rt">約 1 分鐘</p>
+<h2 id="part4">9 個核心教訓</h2>
+
+  <div class="lesson"><h4>1　任何並排的圖，先問「比例尺一樣嗎」</h4>
+    各自縮放填滿版面是最容易騙人的畫法。這一集各檔寬度差 5.5 倍，不強制共用比例尺，圖版就是假的。</div>
+
+  <div class="lesson"><h4>2　圖太暗或太亮，先懷疑顯示設定，不要先怪資料</h4>
+    <a class="gref" href="glossary.html#g-04" title="名詞速查表">平均投影</a>那一欄全黑是<a class="gref" href="glossary.html#g-06" title="名詞速查表">窗位</a>選錯（絕對<a class="gref" href="glossary.html#g-19" title="名詞速查表">峰值</a>被<a class="gref" href="glossary.html#g-16" title="名詞速查表">胞體</a>一個點決定），不是沒有訊號。<b>窗位與 <a class="gref" href="glossary.html#g-35" title="名詞速查表">gamma</a> 是選擇，要寫在圖上。</b></div>
+
+  <div class="lesson big-lesson"><h4>3　一張投影是「結構 × 觀看方向」的合成，不是結構本身</h4>
+    同一叢分支，0° 是實心扇形、90° 是一條細弧。側視圖近八成的像素疊了 ≥2 段分離構造。<b>方向沒講清楚，形狀的描述就沒有意義。</b></div>
+
+  <div class="lesson"><h4>4　「先只畫一顆」——把批次工作變成可檢查的單一結果</h4>
+    前三輪每一輪都改到了畫法。如果一開始就畫 20 顆，這些修正的成本會乘以 20。</div>
+
+  <div class="lesson"><h4>5　問 AI 用了什麼演算法，不要只看圖好不好看</h4>
+    「你用的是<a class="gref" href="glossary.html#g-03" title="名詞速查表">最大值投影</a>還是平均投影」這一問，才帶出後面所有關於投影本質的討論。</div>
+
+  <div class="lesson big-lesson"><h4>6　「說明你為什麼覺得不對勁」——逼出可查的量</h4>
+    這一句把「看起來怪怪的」變成<a class="gref" href="glossary.html#g-07" title="名詞速查表">連通元件</a>、局部半徑、<a class="gref" href="glossary.html#g-21" title="名詞速查表">飽和</a>比例、強度對比。<b>要求理由，不要只要求結論。</b></div>
+
+  <div class="lesson"><h4>7　找一個已知的正確答案，否則錯的圖一樣漂亮</h4>
+    這一集 AI 犯的四個錯裡，有兩個是靠對照抓到的：0° 必須等於正視圖；碎片畫出來必須看得到位置。</div>
+
+  <div class="lesson"><h4>8　同一個結論，換一個量法再驗一次</h4>
+    「碎片離<a class="gref" href="glossary.html#g-32" title="名詞速查表">質心</a> 445 µm」和「碎片離本體 13.6 µm」是同一批資料的兩種量法，結論完全相反。<b>先問這個量法有沒有幾何假象。</b></div>
+
+  <div class="lesson"><h4>9　讓 AI 把自己的錯寫進交付物，而且要能重驗</h4>
+    報告<a class="gref" href="glossary.html#g-13" title="名詞速查表">產生器</a>每次執行都重跑一次當初的 bug 與修正後的版本，跟精確值比對。<b>「我修好了」變成一個每次都會被檢查的斷言。</b></div>
+
+  <!-- ============ 結語 ============ -->
+  
+<div class="pnav"><a class="prev" href="part3.html"><span class="k">← 上一頁</span><span class="v">本次成果</span></a><a class="next" href="closing.html"><span class="k">下一頁 →</span><span class="v">結語：給初學者的下一步</span></a></div>
+</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-2</div>
+
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

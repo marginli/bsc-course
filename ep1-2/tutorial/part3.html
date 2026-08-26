@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>本次成果｜EP1-2 畫出來的圖，能信到什麼程度</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-2<span class="ttl">　畫出來的圖，能信到什麼程度</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 6 部分／共 8　本次成果</span></div></div>
+<div class="wrap">
+<p class="rt">約 2 分鐘</p>
+<h2 id="part3">本次成果</h2>
+
+  <h3>數字總結</h3>
+  <div class="statgrid">
+    <div class="stat"><div class="v">6</div><div class="k">使用者說的話（句）</div></div>
+    <div class="stat"><div class="v">7</div><div class="k">產出的程式</div></div>
+    <div class="stat"><div class="v">6</div><div class="k">產出的圖</div></div>
+    <div class="stat"><div class="v">20</div><div class="k">分析的神經元</div></div>
+    <div class="stat alt"><div class="v">4</div><div class="k">AI 犯的錯（含 1 個被推翻的結論）</div></div>
+    <div class="stat"><div class="v">0</div><div class="k">原始資料被修改的檔案</div></div>
+  </div>
+
+  <h3>產出的檔案</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th>檔案</th><th>做什麼</th></tr>
+    <tr><td><code>amreader.py</code></td><td>讀 AmiraMesh（zlib 解壓）成 <a class="gref" href="glossary.html#g-14" title="名詞速查表">numpy</a> 陣列，形狀 (nz, ny, nx)</td></tr>
+    <tr><td><code>three_view.py</code></td><td>單顆神經元的<a class="gref" href="glossary.html#g-05" title="名詞速查表">三視圖</a>，可帶編號當參數</td></tr>
+    <tr><td><code>compare_projection.py</code></td><td><a class="gref" href="glossary.html#g-03" title="名詞速查表">最大值投影</a>與<a class="gref" href="glossary.html#g-04" title="名詞速查表">平均投影</a>並排比較</td></tr>
+    <tr><td><code>projection_angles.py</code></td><td>繞 y 軸連續換視角的<a class="gref" href="glossary.html#g-02" title="名詞速查表">投影</a>序列</td></tr>
+    <tr><td><code>plate.py</code></td><td>20 顆圖版，<code>front</code>／<code>three</code> 兩種模式</td></tr>
+    <tr><td><code>anomaly_check.py</code></td><td>標示不屬於主<a class="gref" href="glossary.html#g-07" title="名詞速查表">連通元件</a>的訊號</td></tr>
+    <tr><td><code>make_report1_2.py</code></td><td>產生 <code>report1-2.docx</code>，所有數字執行時重算</td></tr>
+    <tr><td><code>Tutorial/</code>、<code>Video/</code></td><td>本頁與影片的原始檔與<a class="gref" href="glossary.html#g-13" title="名詞速查表">產生器</a></td></tr>
+  </table>
+  </div>
+
+  <h3>三顆被列為異常的神經元</h3>
+  <div class="grade">
+    <div class="row"><span class="lv no">處理方式不同</span><span class="txt"><b>fru-F-900054</b>每個指標都是唯一離群值；碎片數為 0 是最強的證據。疑似被膨脹／平滑／填實過。</span></div>
+    <div class="row"><span class="lv mid"><a class="gref" href="glossary.html#g-28" title="名詞速查表">訊噪比</a>問題</span><span class="txt"><b>VGlut-F-600670 等 4 顆</b>暗分支被<a class="gref" href="glossary.html#g-30" title="名詞速查表">閾值</a>切斷，最嚴重的一顆有 24% 的訊號與本體斷開。不影響形態判讀，但影響任何「連通性」的計算。</span></div>
+    <div class="row"><span class="lv no">未定論</span><span class="txt"><b>Trh-F-300000</b>唯一的碎片比本體還亮（286 vs 265），與其他 19 檔的模式相反。已列入待查。</span></div>
+  </div>
+
+  <h3>還沒做的事</h3>
+  <ul>
+    <li><b>解剖學方向未核對</b>——所有圖的縱向都是陣列列序，<a class="gref" href="glossary.html#g-22" title="名詞速查表">背腹</a>前後沒有用<a class="gref" href="glossary.html#g-24" title="名詞速查表">標準腦</a>的已知方向驗證過。</li>
+    <li><b>還沒疊回同一個標準腦空間</b>——各檔裁到自己的 bounding box，在疊回去之前，跨檔的位置比較沒有意義。</li>
+    <li><b>Trh-F-300000 那塊比本體還亮的脫離團塊是什麼，未確認。</b></li>
+    <li><b>fru-F-900054 只有間接證據</b>（形態統計），檔頭層面看不出來——EP1-1 已查過 20 檔檔頭除順序外完全一致。</li>
+    <li><b>平均投影若要跨檔比較</b>，需改成除以非零深度或標準腦固定深度，目前未實作。</li>
+  </ul>
+
+  <!-- ============ PART 4 ============ -->
+  
+<div class="pnav"><a class="prev" href="part2.html"><span class="k">← 上一頁</span><span class="v">最佳實踐清單</span></a><a class="next" href="part4.html"><span class="k">下一頁 →</span><span class="v">9 個核心教訓</span></a></div>
+</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-2</div>
+
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

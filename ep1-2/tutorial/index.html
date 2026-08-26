@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>畫出來的圖，能信到什麼程度｜Claude Code 初學者教學 EP1-2</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-2<span class="ttl">　畫出來的圖，能信到什麼程度</span></a><span class="sep">·</span><span class="here">實作目錄</span></div></div>
+<header class="hero">
+  <p class="eyebrow">BSC with Agentic AI Tutorial · EP1-2</p>
+  <h1>畫出來的圖，<br>能信到什麼程度</h1>
+  <p class="subtitle">從一顆神經元的三視圖，到 20 顆的異常稽核——以及 AI 在過程中犯的四個錯。</p>
+  <div class="meta-card">
+    <p><b>這份文件是什麼：</b>接續 <b>EP1-1</b>（判讀一個你打不開的檔案格式），把一次 Claude Code 協作從頭到尾拆解給你看。使用者只講了六句話，AI 犯了四個錯（其中一個是被自己推翻的結論）——全部保留在文件裡，沒有修飾。</p>
+    <p><b>適合誰讀：</b>BSC（腦空間體中心）同仁，或任何要把 3D 影像資料「畫成圖給人看」的人。<b>不需要會寫程式</b>。</p>
+    <p><b>成果（一句話）：</b>把 20 顆神經元畫成三視圖與圖版，並在最後用四個量化指標指出<b>哪幾顆的影像不對勁</b>——包括一顆疑似被另一條管線處理過的檔案。</p>
+  </div>
+</header>
+<div class="wrap">
+<h2 id="toc">目錄</h2>
+<blockquote>想直接看怎麼實做，可以從 <a href="part1.html#part1">第 4 部分 — 完整對話時序</a> 開始。最關鍵的兩段是 <a href="part1.html#s3">③ 換方向就變成另一個形狀</a> 與 <a href="part1.html#s5">⑤ 哪一顆不對勁</a>。</blockquote>
+<p class="rt">8 個部分、8 頁，全部讀完約 24 分鐘。每一頁底下都有「下一頁」，可以分次讀。</p>
+<div class="plist">
+<a class="pcard" href="colors.html"><div class="n">第 1 部分</div><div class="t">對話框顏色說明</div><p class="d">後面 第 4 部分 會逐句重現使用者跟 AI 的對話。所有使用者發言用五種顏色標示，一眼看出「這句話在做什麼」。</p><div class="m">約 1 分鐘</div></a>
+<a class="pcard" href="glossary.html"><div class="n">第 2 部分</div><div class="t">名詞速查表</div><p class="d">看到不懂的詞先回來查。兩張表分別對應這個案例的兩個面向。</p><div class="m">3 小節　·　約 3 分鐘</div></a>
+<a class="pcard" href="quickstart.html"><div class="n">第 3 部分</div><div class="t">畫科學影像的 6 個核心觀念</div><p class="d">體素、投影、窗位、比例尺……把 3D 影像畫成 2D 圖之前，先弄懂的 6 個觀念。每一個後面都會在對話裡出事一次。</p><div class="m">約 1 分鐘</div></a>
+<a class="pcard" href="part1.html"><div class="n">第 4 部分</div><div class="t">完整對話時序</div><p class="d">以下是這次協作的每一輪，依實際發生順序排列。使用者總共只講了 6 句話（第 7 句是「做成這份教材」）。</p><div class="m">7 小節　·　約 13 分鐘</div></a>
+<a class="pcard" href="part2.html"><div class="n">第 5 部分</div><div class="t">最佳實踐清單</div><p class="d">把這一集的做法整理成可以直接套用的清單。左欄是做法，右欄是這一集哪裡用到。</p><div class="m">約 1 分鐘</div></a>
+<a class="pcard" href="part3.html"><div class="n">第 6 部分</div><div class="t">本次成果</div><p class="d">20 顆神經元畫成了什麼、七支程式各自在做什麼、四個量化指標抓出哪幾顆不對勁，以及還沒做的事。</p><div class="m">4 小節　·　約 2 分鐘</div></a>
+<a class="pcard" href="part4.html"><div class="n">第 7 部分</div><div class="t">9 個核心教訓</div><p class="d">從「先只畫一顆」到「說明你為什麼這樣覺得」——這一集歸納出的 9 條，每一條都對得上前面某一輪對話。</p><div class="m">約 1 分鐘</div></a>
+<a class="pcard" href="closing.html"><div class="n">第 8 部分</div><div class="t">結語：給初學者的下一步</div><p class="d">把這套方法用到自己資料上的五個步驟：先掃一遍、先畫一個、找一個已知的正確答案來對、確認之後再批次、最後回頭問一次「有沒有哪一個不對勁」。</p><div class="m">2 小節　·　約 2 分鐘</div></a>
+</div>
+<div class="hubvid" id="video"><div class="video-box">
+    <p class="vlabel">📺 影片版</p>
+    <div class="video-wrap">
+      <div class="video-ph">
+        <div class="big">🎬</div>
+        <div class="t">影片尚未上架</div>
+        <div class="s">這一集的影片還沒有公開網址。上架之後這裡會換成播放器；
+          在那之前，文字版本身是完整的，不看影片也讀得完。</div>
+      </div>
+    </div>
+    
+  </div></div>
+<p class="allnote">想一次讀完或列印？看 <a href="all.html">完整單頁版</a>。</p>
+<p class="allnote">想跟著自己動手做一次？先看<a href="../../start.html">開始前你需要什麼</a>——怎麼取得 Claude Code、要不要花錢、什麼是終端機。</p><p class="allnote">← 上一步：<a href="../target.html">學習目標</a></p></div>
+<div class="foot">
+  <p>BSC with Agentic AI Tutorial · EP1-2　｜　由一次真實的 Claude Code 協作自動整理而成。</p>
+  <p>文中所有數值、統計與圖片都是實際執行結果，圖由 <code>numpy</code> + <code>Pillow</code> + <code>SciPy</code> 產生。
+     AI 在過程中犯的四個錯與被推翻的結論一併保留，未加修飾。</p>
+  <p>資料來源：EP1-1 整理的 <code>neuron_20/</code>，<b>全程唯讀</b>——原始資料一個位元組都沒有被改過。</p>
+</div>
+
+</body>
+</html>

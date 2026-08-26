@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>對話框顏色說明｜EP1-2 畫出來的圖，能信到什麼程度</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-2<span class="ttl">　畫出來的圖，能信到什麼程度</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 1 部分／共 8　對話框顏色說明</span></div></div>
+<div class="wrap">
+<p class="rt">約 1 分鐘</p>
+<h2 id="colors">對話框顏色說明</h2>
+  <p>後面 <a href="part1.html#part1">第 4 部分</a> 會逐句重現使用者跟 AI 的對話。所有使用者發言用五種顏色標示，一眼看出「這句話在做什麼」。這個分類本身就是重要觀念：<b>跟 AI 協作不是只會「叫它做事」，更重要的是問它用了什麼方法、要求它證明自己</b>。</p>
+  <div class="msg g"><span class="who">🟢 使用者：</span>請求動作 — 叫 AI 去做一件事（「把 20 顆都畫出來」）。</div>
+  <div class="msg b"><span class="who">🔵 使用者：</span>問問題 — 詢問方法、判斷、細節（「你用的是<a class="gref" href="glossary.html#g-03" title="名詞速查表">最大值投影</a>還是<a class="gref" href="glossary.html#g-04" title="名詞速查表">平均投影</a>？」）。</div>
+  <div class="msg p"><span class="who">🟣 使用者：</span>關鍵決策 / 概念提問 — 要求理解而不是產出（「換一種<a class="gref" href="glossary.html#g-02" title="名詞速查表">投影</a>方式代表什麼？」）。</div>
+  <div class="msg y"><span class="who">🟡 使用者：</span>中斷 / 踩剎車 — 限制 AI 的行動範圍（「先只畫一顆」）。</div>
+  <div class="msg r"><span class="who">🔴 使用者：</span>設計回饋 / 要求自我審視（「有沒有哪一顆不對勁？說明你為什麼這樣覺得」）。</div>
+  <p class="note">小提醒：這一集<b>價值最高的三句話是 🟡、🟣 和 🔴</b>——「先只畫一顆」把批次工作變成可檢查的單一結果；「代表什麼」逼出對投影本質的理解；「說明你為什麼」把視覺印象逼成可查的量。</p>
+
+  <!-- ============ 名詞速查表 ============ -->
+  
+<div class="pnav"><a class="next" href="glossary.html"><span class="k">下一頁 →</span><span class="v">名詞速查表</span></a></div>
+</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-2</div>
+
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>
