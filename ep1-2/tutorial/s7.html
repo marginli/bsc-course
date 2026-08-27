@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>做成教材｜EP1-2 畫出來的圖，能信到什麼程度</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-2<span class="ttl">　畫出來的圖，能信到什麼程度</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 4 部分　第 7 節／共 7 節　做成教材</span></div></div>
+<div class="wrap seg">
+<p class="ctx">第 4 部分　<a href="s1.html">完整對話時序</a>　·　第 7 節／共 7 節　·　約 3 分鐘（跳過操作原理約 1 分鐘）</p>
+<h3 class="seg" id="s7"><span class="num">7</span>做成教材</h3>
+<div class="clegend"><span class="cll">使用者發言的五種顏色</span><span class="cl g">🟢 請求動作</span><span class="cl b">🔵 問問題</span><span class="cl p">🟣 關鍵決策 / 概念提問</span><span class="cl y">🟡 中斷 / 踩剎車</span><span class="cl r">🔴 設計回饋 / 要求自我審視（「有沒有哪一顆不對勁？說明你為什麼這樣覺得」）。</span><a href="colors.html">完整說明 →</a></div>
+  <div class="msg g"><span class="who">🟢 使用者：</span>把從第一句到這裡的過程，按照 EP01 的格式做成一份含教學影片的教材，放到 <code>Tutorial/</code>。先不要公開，也不要 commit and push，但是要給我一個能看到成品的網址。</div>
+  <p>就是你現在看的這一頁，以及頁面最上方的影片。影片是「<a class="gref" href="glossary.html#g-02" title="名詞速查表">投影</a>片 + <a class="gref" href="glossary.html#g-38" title="名詞速查表">TTS</a> 旁白」形式（39 張投影片），內容與本頁一致。<b>當時依指令沒有公開、沒有 commit、沒有 push</b>——後來才整理成線上課程放上網。</p>
+<!-- METHOD:BOX:START -->
+  <p class="mhint">「操作原理」（四個欄位，點一下展開）——不寫程式的話整段可以跳過。</p>
+<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-31"><div class="mhead"><span class="mno">M-31</span><span class="mtt">產生單檔教材頁，圖片以 data URI 內嵌</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>教材原始碼寫在 <code>page_src.html</code>，圖片位置用 <code>{{FIG:名稱｜圖說}}</code> 標記；<code>build_page.py</code> 把標記換成內嵌圖片，產生自足的 <code>index.html</code>。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>教材頁要能「雙擊就開、寄給別人也能看」，所以不能有外部相依。但原圖動輒 2–4 MB，直接內嵌會讓頁面過大——所以先縮到網頁尺寸、轉成 WebP（品質 80）再以 data URI 內嵌，六張圖合計約 0.9 MB。縮圖存在 <code>_web/</code> 當快取，可以安全刪除後重跑。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>im = Image.open(src)
+im = im.resize((w, round(im.height * w / im.width)), Image.LANCZOS)
+im.save(dst, &#x27;WEBP&#x27;, quality=80, method=6)
+b64 = base64.b64encode(dst.read_bytes()).decode(&#x27;ascii&#x27;)
+html = f&#x27;&lt;img src=&quot;data:image/webp;base64,{b64}&quot;&gt;&#x27;</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p><b>展開後要檢查有沒有漏掉的標記</b>：<code>build_page.py</code> 在還找得到 <code>{{</code> 時會直接中止，不會靜默產出一頁少了圖的教材。另外縮圖快取要比對修改時間（<code>dst.stat().st_mtime &lt; src.stat().st_mtime</code>），不然換了原圖也不會重做。</p></div></div><div class="mbox" id="M-32"><div class="mhead"><span class="mno">M-32</span><span class="mtt">發布版把影片內嵌成 data URI</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p><code>build_artifact.py</code> 產生發布用的 <code>artifact_body.html</code>：去掉 HTML 外殼，並把影片換成內嵌的 data URI。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>私有 Artifact 的 CSP 會擋外部主機，所以 iframe 播放器載不出來。EP1-1 的影片在 YouTube，所以那邊是把 iframe 換成一張連往 YouTube 的連結卡（連結是導航，不是載資源，不受 CSP 影響）。<b>EP1-2 的影片還沒公開，沒有外部網址可連</b>，所以改成整個內嵌：data URI 屬於頁面自己的內容，不受 CSP 阻擋。母帶 1920×1080 有 51 MB，base64 之後會超過 16 MB 上限，所以內嵌的是 960×540 VP9 的 web 版（5.8 MB → base64 7.7 MB）。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>b64 = base64.b64encode(WEBM.read_bytes()).decode(&#x27;ascii&#x27;)
+assert len(b64) &lt; 16 * 1024 * 1024, &#x27;base64 之後超過 Artifact 上限&#x27;
+html = f&#x27;&lt;video controls src=&quot;data:video/webm;base64,{b64}&quot;&gt;&lt;/video&gt;&#x27;</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p><b>base64 會膨脹 4/3</b>，估上限時要用膨脹後的大小。<code>build_artifact.py</code> 在超過時直接報錯，不會靜默產出壞頁面。還有一個相反方向的坑：這個內嵌只適用於 Artifact。教材搬上公開網站時，本機相對路徑的影片在網站上不存在，網站<a class="gref" href="glossary.html#g-13" title="名詞速查表">產生器</a>會把播放器換成「尚未上架」的佔位卡。之後影片上架 YouTube，再把這段改回 EP1-1 的連結卡做法即可。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+
+  <!-- ============ PART 2 ============ -->
+  
+<div class="pnav"><a class="prev" href="s6.html"><span class="k">← 上一頁</span><span class="v">寫進報告</span></a><a class="next" href="part2.html"><span class="k">下一頁 →</span><span class="v">最佳實踐清單</span></a></div>
+</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-2</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

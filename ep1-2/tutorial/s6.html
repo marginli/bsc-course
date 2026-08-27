@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>寫進報告｜EP1-2 畫出來的圖，能信到什麼程度</title>
+<link rel="stylesheet" href="tutorial.css">
+</head>
+<body>
+<div class="tbar"><div class="in"><a href="../">← EP1-2<span class="ttl">　畫出來的圖，能信到什麼程度</span></a><span class="sep">·</span><a href="index.html">實作目錄</a><span class="sep">·</span><a href="glossary.html">名詞速查</a><span class="sep">·</span><a href="../prelim.html">前置知識</a><span class="here"><span class="sep">·</span> 第 4 部分　第 6 節／共 7 節　寫進報告</span></div></div>
+<div class="wrap seg">
+<p class="ctx">第 4 部分　<a href="s1.html">完整對話時序</a>　·　第 6 節／共 7 節　·　約 3 分鐘（跳過操作原理約 1 分鐘）</p>
+<h3 class="seg" id="s6"><span class="num">6</span>寫進報告</h3>
+<div class="clegend"><span class="cll">使用者發言的五種顏色</span><span class="cl g">🟢 請求動作</span><span class="cl b">🔵 問問題</span><span class="cl p">🟣 關鍵決策 / 概念提問</span><span class="cl y">🟡 中斷 / 踩剎車</span><span class="cl r">🔴 設計回饋 / 要求自我審視（「有沒有哪一顆不對勁？說明你為什麼這樣覺得」）。</span><a href="colors.html">完整說明 →</a></div>
+  <div class="msg g"><span class="who">🟢 使用者：</span>把剛才發生的所有事寫進報告 <code>report1-2.docx</code></div>
+  <p>兩條規矩（來自這個課程專案的 <code>CLAUDE.md</code>，AI 每次開工都會讀到）：</p>
+  <div class="twocol">
+    <div class="card"><div class="ct">① 用<a class="gref" href="glossary.html#g-13" title="名詞速查表">產生器</a>產出，不手寫</div>所有數字在<b>執行時從原始資料重算</b>。改了上游管線就重跑，數字不會過期。</div>
+    <div class="card"><div class="ct">② 要寫進 AI 自己犯的錯</div>包含被推翻的結論，<b>不修飾成一路順利</b>。</div>
+  </div>
+  <p>報告產生器 <code>make_report1_2.py</code> 執行約 1 分 50 秒（20 顆的<a class="gref" href="glossary.html#g-07" title="名詞速查表">連通元件</a>與<a class="gref" href="glossary.html#g-08" title="名詞速查表">距離變換</a>都要重算），產出 7 節、9 張表。連那個取整 bug 都<b>每次重驗一次</b>：</p>
+  <div class="tblwrap">
+  <table>
+    <tr><th class="num-cell">角度</th><th class="num-cell">精確值（軸對齊）</th><th class="num-cell">當初的寫法</th><th class="num-cell">只剩</th><th class="num-cell">修正後</th><th>比對</th></tr>
+    <tr><td class="num-cell">0°</td><td class="num-cell">31,089</td><td class="num-cell">9,828</td><td class="num-cell"><b>32%</b></td><td class="num-cell">31,089</td><td>相符</td></tr>
+    <tr><td class="num-cell">90°</td><td class="num-cell">23,186</td><td class="num-cell">11,967</td><td class="num-cell"><b>52%</b></td><td class="num-cell">23,186</td><td>相符</td></tr>
+  </table>
+  </div>
+  <p>這樣一來，「我修好了」這句話是<b>每次產生報告時被重新驗證一次</b>的，而不是一句口頭承諾。</p>
+<!-- METHOD:BOX:START -->
+  <p class="mhint">「操作原理」（四個欄位，點一下展開）——不寫程式的話整段可以跳過。</p>
+<div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-29"><div class="mhead"><span class="mno">M-29</span><span class="mtt">用產生器產出報告，數字執行時重算</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>報告不是手寫的 Word 檔，而是 <code>make_report1_2.py</code> 執行的產物；文中每一個數字都在執行時從原始資料重算。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>手寫文件的數字一旦上游改了就過期，而且<b>沒有任何機制會提醒你</b>。產生器把「數字」與「敘述」綁在同一份程式碼裡：改了管線就重跑，數字自動跟上。代價是產生器本身要跑得動——這一份跑約 1 分 50 秒（20 顆的連通元件與距離變換都要重算），產出 7 節、9 張表。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>stats = {}
+for path in sorted(SRC.glob(&#x27;*.am&#x27;)):        # 每次執行都重算
+    ...
+table([&#x27;檔名&#x27;, &#x27;元件數&#x27;], [(k, v[&#x27;components&#x27;]) for k, v in stats.items()])
+doc.save(OUT)</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>產生器慢就會有人想快取。<b>要快取就快取原始資料的中間結果，不要快取數字</b>——快取數字等於又回到手寫。另外報告裡引用的每個數字都要有對應的變數，不要在字串裡硬打一個「大約 24%」。</p></div></div></div>
+<!-- METHOD:BOX:END -->
+  <div class="danger">✋ <b>寫報告時又抓到第四個錯</b>：AI 先前說「其餘 19 檔的元件數是 13–562」，實際是 <b>2–562</b>（<code>Trh-F-300000</code> 只有 2 個）。報告初稿沿用了這個錯誤說法，發現後改成從資料直接算出的敘述並重跑產生器。<b>fru-F-900054 是唯一單一元件</b>這個結論不受影響。</div>
+<!-- METHOD:BOX:START -->
+  <div class="mgroup"><p class="mglabel">操作原理 · method</p><div class="mbox" id="M-30"><div class="mhead"><span class="mno">M-30</span><span class="mtt">把 bug 寫進報告，而且每次重跑都重驗</span><span class="mtabs"><button class="mtab" type="button" data-k="0" aria-expanded="false">做什麼</button><button class="mtab" type="button" data-k="1" aria-expanded="false">原理</button><button class="mtab" type="button" data-k="2" aria-expanded="false">自己寫</button><button class="mtab" type="button" data-k="3" aria-expanded="false">坑</button></span></div><div class="mpane" data-k="0" data-label="做什麼" hidden><p>報告裡保留取整 bug 的表，而且<b>當初那版與修正版每次執行都各算一次</b>，跟精確值比對。</p></div><div class="mpane" data-k="1" data-label="原理" hidden><p>「我修好了」是一句口頭承諾，沒有人能驗。把有 bug 的版本保留成一個函式（<code>visible_rint_wmid()</code>），報告產生時同時跑它與修正版，並印出比對結果——<b>這樣那句話就變成一個每次都會被檢查的斷言</b>。如果哪天有人不小心把修正改回去，報告會自己顯示「不符」。</p></div><div class="mpane" data-k="2" data-label="自己寫" hidden><div class="prewrap"><pre><code>for angle, exact in ((0, exact0), (90, exact90)):
+    buggy = visible_rint_wmid(angle)      # 當初的寫法，故意留著
+    fixed = int((splat_mip(...) &gt; 0).sum())
+    rows.append((angle, exact, buggy, fixed,
+                 &#x27;相符&#x27; if fixed == exact else &#x27;不符&#x27;))</code></pre><span class="prehint">← 可左右滑動 →</span></div></div><div class="mpane" data-k="3" data-label="坑" hidden><p>寫報告時又抓到第四個錯：AI 先前說「其餘 19 檔的元件數是 13–562」，<b>實際是 2–562</b>（<code>Trh-F-300000</code> 只有 2 個）。報告初稿沿用了這個錯誤說法，發現後改成從資料直接算出的敘述並重跑產生器。教訓：<b>敘述性的區間也要從資料算，不要照抄上一段的印象。</b></p></div></div></div>
+<!-- METHOD:BOX:END -->
+
+  
+<div class="pnav"><a class="prev" href="s5.html"><span class="k">← 上一頁</span><span class="v">哪一顆不對勁——以及「你為什麼這樣覺得」</span></a><a class="next" href="s7.html"><span class="k">下一頁 →</span><span class="v">做成教材</span></a></div>
+</div>
+<div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-2</div>
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
+<script>
+// 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
+(function () {
+  function mark() {
+    document.querySelectorAll('.prewrap').forEach(function (w) {
+      var pre = w.querySelector('pre');
+      if (!pre || pre.offsetParent === null) return;   // 還收著，量不到
+      w.classList.toggle('canscroll', pre.scrollWidth > pre.clientWidth + 2);
+    });
+  }
+  window.addEventListener('load', mark);
+  window.addEventListener('resize', mark);
+  document.addEventListener('click', function () { setTimeout(mark, 0); });
+  mark();
+})();
+</script>
+</body>
+</html>

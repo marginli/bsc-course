@@ -44,7 +44,32 @@
 <div class="pnav"><a class="prev" href="part3.html"><span class="k">← 上一頁</span><span class="v">本次成果</span></a><a class="next" href="closing.html"><span class="k">下一頁 →</span><span class="v">結語：給初學者的下一步</span></a></div>
 </div>
 <div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-2</div>
-
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
 <script>
 // 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
 (function () {

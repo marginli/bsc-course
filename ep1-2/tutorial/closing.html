@@ -17,11 +17,11 @@
   <div class="tblwrap">
   <table>
     <tr><th>#</th><th>問題</th><th>回去看</th></tr>
-    <tr><td>1</td><td>「先只畫一顆」擋下了什麼？前三輪各修掉了畫法上的哪一個選擇？</td><td><a href="part1.html#s1">第 ① 節</a></td></tr>
-    <tr><td>2</td><td><a class="gref" href="glossary.html#g-04" title="名詞速查表">平均投影</a>那一欄全黑，原因是什麼？為什麼<b>不能</b>拿絕對<a class="gref" href="glossary.html#g-19" title="名詞速查表">峰值</a>當<a class="gref" href="glossary.html#g-06" title="名詞速查表">窗位</a>？</td><td><a href="part1.html#s2">第 ② 節</a></td></tr>
-    <tr><td>3</td><td>「換算符」與「換方向」，哪一個會改變輪廓、哪一個不會？側視圖有多少比例的像素不能拿來判斷連通性？</td><td><a href="part1.html#s3">第 ③ 節</a></td></tr>
-    <tr><td>4</td><td>「碎片離<a class="gref" href="glossary.html#g-32" title="名詞速查表">質心</a> 445 µm」和「碎片離本體 13.6 µm」是同一批資料，為什麼結論相反？</td><td><a href="part1.html#s5">第 ⑤ 節</a></td></tr>
-    <tr><td>5</td><td>這一集四個錯裡，有哪兩個是靠「<a class="gref" href="glossary.html#g-11" title="名詞速查表">已知的正確答案</a>」抓到的？報告<a class="gref" href="glossary.html#g-13" title="名詞速查表">產生器</a>每次重跑都在驗什麼？</td><td><a href="part1.html#s3">第 ③</a>、<a href="part1.html#s6">第 ⑥ 節</a></td></tr>
+    <tr><td>1</td><td>「先只畫一顆」擋下了什麼？前三輪各修掉了畫法上的哪一個選擇？</td><td><a href="s1.html#s1">第 ① 節</a></td></tr>
+    <tr><td>2</td><td><a class="gref" href="glossary.html#g-04" title="名詞速查表">平均投影</a>那一欄全黑，原因是什麼？為什麼<b>不能</b>拿絕對<a class="gref" href="glossary.html#g-19" title="名詞速查表">峰值</a>當<a class="gref" href="glossary.html#g-06" title="名詞速查表">窗位</a>？</td><td><a href="s2.html#s2">第 ② 節</a></td></tr>
+    <tr><td>3</td><td>「換算符」與「換方向」，哪一個會改變輪廓、哪一個不會？側視圖有多少比例的像素不能拿來判斷連通性？</td><td><a href="s3.html#s3">第 ③ 節</a></td></tr>
+    <tr><td>4</td><td>「碎片離<a class="gref" href="glossary.html#g-32" title="名詞速查表">質心</a> 445 µm」和「碎片離本體 13.6 µm」是同一批資料，為什麼結論相反？</td><td><a href="s5.html#s5">第 ⑤ 節</a></td></tr>
+    <tr><td>5</td><td>這一集四個錯裡，有哪兩個是靠「<a class="gref" href="glossary.html#g-11" title="名詞速查表">已知的正確答案</a>」抓到的？報告<a class="gref" href="glossary.html#g-13" title="名詞速查表">產生器</a>每次重跑都在驗什麼？</td><td><a href="s3.html#s3">第 ③</a>、<a href="s6.html#s6">第 ⑥ 節</a></td></tr>
   </table>
   </div>
   <p class="note">第 4 題如果只答得出「換了一種量法」，那只答到一半——關鍵是<b>為什麼質心會騙人</b>：這顆神經元橫跨 836 µm、左右兩叢中間是空的，質心落在空白處，所以任何在分支裡的碎片離它都有 400 µm 以上。那是幾何假象，不是距離。</p>
@@ -42,7 +42,32 @@
 <div class="pnav"><a class="prev" href="part4.html"><span class="k">← 上一頁</span><span class="v">9 個核心教訓</span></a></div>
 </div>
 <div class="foot">所有數值皆為實際執行結果，AI 犯的錯與被推翻的結論一併保留——<a href="index.html">說明</a>｜EP1-2</div>
-
+<!-- METHOD:JS:START -->
+<script>
+// 每個動作的 method 連結：點一下就地展開該欄，再點一下收起。
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.mtab') : null;
+  if (!btn) return;
+  var box = btn.closest('.mbox');
+  var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+  box.querySelectorAll('.mtab').forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+  box.querySelectorAll('.mpane').forEach(function (p) { p.hidden = true; });
+  if (!wasOpen) {
+    btn.setAttribute('aria-expanded', 'true');
+    box.querySelector('.mpane[data-k="' + btn.dataset.k + '"]').hidden = false;
+  }
+});
+// 網址帶 #M-05 這種片段時，把該動作捲進畫面並打開第一欄
+window.addEventListener('DOMContentLoaded', function () {
+  var m = /^#M-\d\d[a-z]?$/.test(location.hash) && document.querySelector(location.hash);
+  if (m && m.classList.contains('mbox')) {
+    m.scrollIntoView();
+    var t = m.querySelector('.mtab');
+    if (t) t.click();
+  }
+});
+</script>
+<!-- METHOD:JS:END -->
 <script>
 // 程式碼區塊在窄螢幕上是可以橫向捲動的，但看起來像被切掉——真的溢出時才把提示打開。
 (function () {
