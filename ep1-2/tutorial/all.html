@@ -164,7 +164,12 @@
 .tbar .sep{color:var(--faint)}
 .tbar .here{color:var(--soft)}
 /* 麵包屑多了「名詞速查」，手機上不能因此變成三行——課名收起來就好 */
-@media(max-width:620px){.tbar .ttl{display:none}}
+@media(max-width:620px){.tbar .ttl{display:none}
+  /* 手機上麵包屑本來就要換兩行（第二行是「第 n 部分／共 8」那一段），
+     再多一項「這一組」就變三行、把內文推下去。組目錄在窄螢幕上收起來，
+     從「實作目錄」點一下也到得了；名詞速查與前置知識不能收，
+     那兩個是逐頁都要能查的（見大一新生試讀報告）。 */
+  .tbar .grp{display:none}}
 
 /* 每一頁的第一個標題是頁面標題，不需要原本那條「跟上一段分隔」的上框線 */
 .wrap>h2:first-child,.wrap>.rt+h2{margin-top:20px; padding-top:0; border-top:none}
@@ -221,6 +226,16 @@ a.mref{font-variant-numeric:tabular-nums; white-space:nowrap}
 .pcard .t{font-size:18.5px; font-weight:700; margin:3px 0 7px; line-height:1.4}
 .pcard .d{font-size:14.5px; color:var(--soft); line-height:1.7; margin:0}
 .pcard .m{margin-top:auto; padding-top:11px; font-size:12.5px; color:var(--faint)}
+
+/* 實作目錄上的三顆按鈕。整頁只有三個入口，所以做得比組內的部分按鈕大一級，
+   而且**排成一欄**：三張卡放進 auto-fit 的格線會變成上排兩張、下排一張，
+   看起來像是漏了一張；由上往下一張一張讀，才看得出來這是三個先後步驟。 */
+.hublist{grid-template-columns:1fr; gap:12px}
+.gcard{padding:20px 22px 16px}
+.gcard .n{font-size:12.5px}
+.gcard .t{font-size:21px; margin:4px 0 8px}
+.gcard .d{font-size:15px; max-width:62em}
+.gcard .m{padding-top:10px}
 
 /* 被切成好幾節的部分，在目錄頁上收成一組，不要跟其他部分混成一排 */
 .pgroup{grid-column:1/-1; margin:6px 0; border:1px solid var(--border);
